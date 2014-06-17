@@ -38,16 +38,12 @@
 (function () {
     'use strict';
 
-    var map = BW.MapCore.createMap(
+    var map = new BW.MapCore.MapConfig(
         'map',
         {
             baseLayers: [
-                {id: 1, visible: true}
-            ],            
-            overlays: [
-                {id: 100, opacity: 0.7, visible: true},
-                {id: 101, opacity: 0.7}
-            ],
+                {id: 101, visible: true}
+            ],   
             baseLayerList: [
                 {
                     id: 1,
@@ -62,16 +58,6 @@
                     name: 'Havbunn Grunnkart',
                     url: 'http://opencache.statkart.no/gatekeeper/gk/gk.open_wmts?',
                     layerName: 'havbunn_grunnkart'                    
-                }
-            ],
-            overlayList: [
-                {
-                    id: 100,
-                    protocol: 'WMS',
-                    name: 'Grenser',
-                    url: 'http://maps.imr.no/geoserver/wms?',
-                    layerName: 'currents:atlantic_water',
-                    tiled: false
                 },
                 {
                     id: 101,
@@ -80,14 +66,44 @@
                     url: 'http://kart.kystverket.no/wms.aspx',
                     layerName: 'layer_452',
                     tiled: false
-                }                
+                } 
             ]
         }
     );
-
+    
+    //the overlayList can be set at a later time
+    map.setOverlayList([
+        {
+            id: 100,
+            protocol: 'WMS',
+            name: 'Grenser',
+            url: 'http://maps.imr.no/geoserver/wms?',
+            layerName: 'currents:atlantic_water',
+            tiled: false
+        },
+        {
+            id: 101,
+            protocol: 'WMS',
+            name: 'Fartøy med oljevernutstyr',
+            url: 'http://kart.kystverket.no/wms.aspx',
+            layerName: 'layer_452',
+            tiled: false
+        },
+        {
+            id: 102,
+            protocol: 'WMS',
+            name: 'Test',
+            url: 'http://wms.dirnat.no/geoserver/forvaltningsplanomrader_hav/wms',
+            layerName: 'forvaltningsplanomrader_hav:fp_nordsjoen',
+            tiled: false
+        }      
+    ]).setOverlays([
+        {id: 100, opacity: 0.7, visible: true},
+        {id: 102, visible: true}
+    ]); //and the selected overlays as well
 
     var ul = $('<ul></ul>')    
-    var lis = map.layers.map(function (overlay) {
+    var lis = map.overlays.map(function (overlay) {
         return $('<li>' + overlay.get('layerName') + '</li>');
     });
     ul.append(lis);

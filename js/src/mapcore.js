@@ -121,12 +121,20 @@ BW.MapCore = {};
         }));
     }
 
-    ns.createMap = function (divName, config) {
+    ns.MapConfig = function (divName, config) {
         config = config || {};
         config = _.extend(mapDefaults, config);
 
+        if (config.baseLayerList) {
+            this.baseLayerList = config.baseLayerList;
+        }
+
+        if (config.overlayList) {
+            this.overlayList = config.overlayList;
+        }
+
         var mapBounds = new OpenLayers.Bounds(config.bounds);
-        var map = new OpenLayers.Map(
+        this.map = new OpenLayers.Map(
             divName,
             {
                 maxExtent: mapBounds,
@@ -139,36 +147,57 @@ BW.MapCore = {};
         );
 
         var base = new OpenLayers.Layer('', {isBaseLayer: true});
-        map.addLayer(base);
+        this.map.addLayer(base);
 
         var layers = [];
 
-        var baseLayers = createLayerCollection(
-            config.baseLayerList,
+        this.baseLayers = createLayerCollection(
+            this.baseLayerList,
             config.baseLayers,
-            map
+            this.map
         );
 
-        var overlays = createLayerCollection(
-            config.overlayList,
+        this.overlays = createLayerCollection(
+            this.overlayList,
             config.overlays,
-            map
+            this.map
         );
 
-        layers = layers.concat(baseLayers.getLayers());
-        layers = layers.concat(overlays.getLayers());
+        layers = layers.concat(this.baseLayers.getLayers());
 
-        map.addLayers(layers);
+        if (config.overlays) {
+            this.setOverlays(config.overlays);
+        }
 
-        map.setCenter(
+        this.map.addLayers(layers);
+
+        this.map.setCenter(
             new OpenLayers.LonLat(config.initPos.x, config.initPos.y),
             config.initZoom
         );
 
-        return {
-            map: map,
-            layers: overlays
-        };
+        return this;
     };
+
+    ns.MapConfig.prototype.setOverlayList = function (overlayList) {
+        this.overlayList = overlayList;
+        return this;
+    };
+
+
+    ns.MapConfig.prototype.setOverlays = function (overlays) {
+
+        this.overlays.each(function (layer) {
+            layer.get('layer').destroy();
+        });
+        this.overlays = createLayerCollection(
+            this.overlayList,
+            overlays,
+            this.map
+        );
+        this.map.addLayers(this.overlays.getLayers());
+        return this;
+    };
+
 
 }(BW.MapCore));
