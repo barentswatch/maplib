@@ -184,7 +184,6 @@ BW.MapCore = {};
         return this;
     };
 
-
     ns.MapConfig.prototype.setOverlays = function (overlays) {
 
         this.overlays.each(function (layer) {

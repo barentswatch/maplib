@@ -5,25 +5,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style type="text/css">
         #left {  
-            position: absolute;
-            left: 0;
-            width: 200px;
-            top: 0;
-            bottom: 0;
-            background: #ddd;
+            float: left;
+            width: 300px;
         }
         #map {
-            position: absolute;
-            left: 200px;
-            right: 0;
-            top: 0;
-            bottom: 0;            
+           
+            height: 500px;
+            width: 500px;
+            float: left;   
+            border: 1px solid black;
         }
 
     </style>
 </head>
 <body>
-<div id="left"></div>
+
+<h1>Kartkjerne</h1>
+
+<div id="left">
+    <h2>Kartlag</h2>
+</div>
 <div id="map"></div>
 
 
@@ -42,7 +43,7 @@
         'map',
         {
             baseLayers: [
-                {id: 101, visible: true}
+                {id: 1, visible: true}
             ],   
             baseLayerList: [
                 {
@@ -92,7 +93,7 @@
         {
             id: 102,
             protocol: 'WMS',
-            name: 'Test',
+            name: 'Forvaltningsplanområde Nordsjøen',
             url: 'http://wms.dirnat.no/geoserver/forvaltningsplanomrader_hav/wms',
             layerName: 'forvaltningsplanomrader_hav:fp_nordsjoen',
             tiled: false
@@ -102,9 +103,11 @@
         {id: 102, visible: true}
     ]); //and the selected overlays as well
 
+
+    //the overlays-property of the map is a backbone collection
     var ul = $('<ul></ul>')    
     var lis = map.overlays.map(function (overlay) {
-        return $('<li>' + overlay.get('layerName') + '</li>');
+        return $('<li>' + overlay.get('name') + '</li>');
     });
     ul.append(lis);
 
