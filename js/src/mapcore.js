@@ -1,5 +1,5 @@
 var BW = this.BW || {};
-BW.MapCore = {};
+BW.MapCore = BW.MapCore || {};
 
 (function (ns) {
     'use strict';
