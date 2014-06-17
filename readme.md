@@ -1,4 +1,4 @@
-Barentswtach MapCore
+Barentswatch MapCore
 ====================
 
 Dette er et javascript-bibliotek som inneholder kjernefunkjsonalitet for kart i Barentswatch. Biblioteket baserer seg på OpenLayers 2 og har i tillegg underscore.js som en avhengighet.
