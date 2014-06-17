@@ -5,6 +5,18 @@ Dette er et javascript-bibliotek som inneholder kjernefunkjsonalitet for kart i 
 
 Biblioteket etterstreber å være *lettvekts*, *modularisert* og *gjenbrukbart*.
 
+Oppsett
+-------
+    1. Installer node og npm (se http://howtonode.org/introduction-to-npm)
+    2. Installer Grunt
+    3. kjør npm install
+    4. cd til js/
+    5. kjør ''grunt'' for å bygge
+    6. kjør ''grunt buster'' for å kjøre tester
+
+Komponenter
+-----------
+
 MapConfig
 ---------
 
@@ -64,3 +76,8 @@ For å legge til "overlays" må man definere disse (på samme måte som baseLaye
             {id: 100, opacity: 0.7, visible: true},
             {id: 101, visible: true}
         ]);
+
+
+CircleControl
+-------------
+Lar deg tegne en sirkel i kartet, se circle_demo.html        
