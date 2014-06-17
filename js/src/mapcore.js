@@ -4,6 +4,19 @@ BW.MapCore = {};
 (function (ns) {
     'use strict';
 
+    var Layer = Backbone.Model.extend({});
+
+    var LayerCollection = Backbone.Collection.extend({
+
+        model: Layer,
+
+        getLayers: function () {
+            return this.map(function (overlay) {
+                return overlay.get('layer');
+            });
+        }
+    });
+
     var mapDefaults = {
         bounds:
             [
@@ -22,15 +35,14 @@ BW.MapCore = {};
     };
 
 
-    function getDefaultParams(config, isBaseLayer) {
+    function getDefaultParams(config) {
         var opacity = config.opacity || 1;
         var visibility = config.visible;
         if (_.isUndefined(visibility)) {
             visibility = true;
         }
-
         return {
-            isBaseLayer: isBaseLayer,
+            isBaseLayer: false,
             transitionEffect: 'resize',
             opacity: opacity,
             visibility: visibility
@@ -38,16 +50,15 @@ BW.MapCore = {};
 
     }
 
-    function createWMSLayer(config, isBaseLayer) {
+    function createWMSLayer(config) {
 
-        var transparent = true;
-        if (isBaseLayer) {
-            transparent = false;
+        if (_.isUndefined(config.transparent)) {
+            config.transparent = true;
         }
 
         var singleTile = !config.tiled;
         var options = _.extend(
-            getDefaultParams(config, isBaseLayer),
+            getDefaultParams(config),
             {singleTile: singleTile}
         );
 
@@ -56,13 +67,13 @@ BW.MapCore = {};
             config.url,
             {
                 layers: config.layerName,
-                transparent: transparent
+                transparent: config.transparent
             },
             options
         );
     }
 
-    function createWMTSLayer(config, isBaseLayer, map) {
+    function createWMTSLayer(config, map) {
 
         return new OpenLayers.Layer.WMTS(
             {
@@ -76,18 +87,17 @@ BW.MapCore = {};
                     return map.projection + ':' + i;
                 })
             },
-            getDefaultParams(config, isBaseLayer)
+            getDefaultParams(config)
         );
     }
 
-    function createLayer(config, isBaseLayer, map) {
-
+    function createLayer(config, map) {
         if (config.protocol === 'WMTS') {
-            return createWMTSLayer(config, isBaseLayer, map);
+            return createWMTSLayer(config, map);
         }
 
         if (config.protocol === 'WMS') {
-            return createWMSLayer(config, isBaseLayer);
+            return createWMSLayer(config);
         }
 
         throw new Error(
@@ -99,6 +109,16 @@ BW.MapCore = {};
         return _.find(list, function (element) {
             return element.id === id;
         });
+    }
+
+    function createLayerCollection(allLayersList, layersList, map) {
+        return new LayerCollection(_.map(layersList, function (overlay) {
+            var data = findById(allLayersList, overlay.id);
+            return new Layer(_.extend(
+                data,
+                {layer: createLayer(_.extend(data, overlay), map)}
+            ));
+        }));
     }
 
     ns.createMap = function (divName, config) {
@@ -113,20 +133,30 @@ BW.MapCore = {};
                 maxResolution: config.maxResolution,
                 numZoomLevels: config.numZoomLevels,
                 units: config.units,
-                projection: config.srs
+                projection: config.srs,
+                allOverlays: true
             }
         );
 
-        var baseLayerConfig = findById(config.baseLayerList, config.baseLayer);
+        var base = new OpenLayers.Layer('', {isBaseLayer: true});
+        map.addLayer(base);
+
         var layers = [];
-        layers.push(createLayer(baseLayerConfig, true, map));
 
-        var overlays = _.map(config.overlays, function (overlay) {
-            var data = findById(config.overlayList, overlay.id);
-            return createLayer(_.extend(data, overlay), false, map);
-        });
+        var baseLayers = createLayerCollection(
+            config.baseLayerList,
+            config.baseLayers,
+            map
+        );
 
-        layers = layers.concat(overlays);
+        var overlays = createLayerCollection(
+            config.overlayList,
+            config.overlays,
+            map
+        );
+
+        layers = layers.concat(baseLayers.getLayers());
+        layers = layers.concat(overlays.getLayers());
 
         map.addLayers(layers);
 
@@ -135,7 +165,10 @@ BW.MapCore = {};
             config.initZoom
         );
 
-        return map;
+        return {
+            map: map,
+            layers: overlays
+        };
     };
 
 }(BW.MapCore));
