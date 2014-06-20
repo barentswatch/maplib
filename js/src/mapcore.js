@@ -30,7 +30,8 @@ BW.MapCore = BW.MapCore || {};
         units: 'm',
         initPos: {x: 346108, y: 7432016},
         initZoom: 3,
-        overlays: []
+        overlays: [],
+        theme: OpenLayers._getScriptLocation() + 'theme/default/style.css'
     };
 
 
@@ -142,6 +143,8 @@ BW.MapCore = BW.MapCore || {};
             this.overlayList = config.overlayList;
         }
 
+        console.log(config.theme)
+
         var mapBounds = new OpenLayers.Bounds(config.bounds);
         this.map = new OpenLayers.Map(
             divName,
@@ -151,7 +154,8 @@ BW.MapCore = BW.MapCore || {};
                 numZoomLevels: config.numZoomLevels,
                 units: config.units,
                 projection: config.srs,
-                allOverlays: true
+                allOverlays: true,
+                theme: config.theme
             }
         );
 
