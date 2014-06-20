@@ -6,12 +6,17 @@ module.exports = function(grunt) {
             options: {
                 separator: '\n'
             },
-            dist: {
+            core: {
                 src: [
-                    'src/mapcore.js',
+                    'src/mapcore.js'                    
+                ],
+                dest: 'dist/kartkjerne.js'
+            },
+            circlecontrol: {
+              src: [                    
                     'src/CircleDraw.js'
                 ],
-                dest: 'dist/<%= pkg.name %>.js'
+                dest: 'dist/circledraw.js'  
             }
         },
         uglify: {
@@ -20,7 +25,12 @@ module.exports = function(grunt) {
             },
             dist: {
                 files: {
-                    'dist/<%= pkg.name %>.min.js': ['<%= concat.dist.dest %>']
+                    'dist/kartkjerne.min.js': ['<%= concat.core.dest %>']
+                }
+            },
+            circlecontrol: {
+                files: {
+                    'dist/circledraw.min.js': ['<%= concat.circlecontrol.dest %>']
                 }
             }
         },
