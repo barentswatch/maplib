@@ -17,6 +17,7 @@
         }
 
     </style>
+    <link rel="stylesheet" type="text/css" href="js/lib/OpenLayers-2.13.1/theme/default/style.css">
 </head>
 <body>
 
@@ -42,8 +43,9 @@
     var map = new BW.MapCore.MapConfig(
         'map',
         {
+            theme: null, //set theme to null, this means that OpenLayers won't load css
             baseLayers: [
-                {id: 1, visible: true}
+                {id: 2, visible: true}
             ],   
             baseLayerList: [
                 {

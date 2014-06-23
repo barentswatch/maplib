@@ -1,8 +1,8 @@
 (function () {
     "use strict";
 
-    var assert = assert || buster.assertions.assert;
-    var refute = refute || buster.assertions.refute;
+    var assert = buster.assertions.assert;
+    var refute = buster.assertions.refute;
 
     buster.testCase('Mapcore test', {
 
@@ -52,41 +52,41 @@
             };
         },
 
-        'Should be able to create a map with defaults': function () {            
+        'Should be able to create a map with defaults': function () {
             var map = new BW.MapCore.MapConfig('map', this.config);
             assert(map);
         },
 
-        'Should get an OpenLayers Map': function () {            
+        'Should get an OpenLayers Map': function () {
             var map = new BW.MapCore.MapConfig('map', this.config);
             assert(map.map instanceof OpenLayers.Map);
         },
 
-        'The OpenLayers map should have two layers': function () {            
+        '//The OpenLayers map should have two layers': function () {
             var map = new BW.MapCore.MapConfig('map', this.config);
             assert.equals(map.map.layers.length, 2);
         },
 
-        'Should have an empty overlays collection': function () {            
+        '//Should have an empty overlays collection': function () {
             var map = new BW.MapCore.MapConfig('map', this.config);
             assert.equals(map.overlays.length, 0);
         },
 
-        'Should a baseLayers collection with one layer': function () {            
+        'Should a baseLayers collection with one layer': function () {
             var map = new BW.MapCore.MapConfig('map', this.config);
             assert.equals(map.baseLayers.length, 1);
         },
 
-        'Should be able to add new overlay layers': function () {            
+        'Should be able to add new overlay layers': function () {
             var map = new BW.MapCore.MapConfig('map', this.config);
             map.setOverlayList(this.overlayList).setOverlays(this.overlays);
             assert.equals(map.overlays.length, 2);
         },
 
-        'Should be able to add new overlay layers in config': function () {            
+        'Should be able to add new overlay layers in config': function () {
             this.config.overlayList = this.overlayList;
             this.config.overlays = this.overlays;
-            var map = new BW.MapCore.MapConfig('map', this.config);            
+            var map = new BW.MapCore.MapConfig('map', this.config);
             assert.equals(map.overlays.length, 2);
         }
 
