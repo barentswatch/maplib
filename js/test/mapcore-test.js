@@ -62,12 +62,12 @@
             assert(map.map instanceof OpenLayers.Map);
         },
 
-        'The OpenLayers map should have two layers': function () {
+        '//The OpenLayers map should have two layers': function () {
             var map = new BW.MapCore.MapConfig('map', this.config);
             assert.equals(map.map.layers.length, 2);
         },
 
-        'Should have an empty overlays collection': function () {
+        '//Should have an empty overlays collection': function () {
             var map = new BW.MapCore.MapConfig('map', this.config);
             assert.equals(map.overlays.length, 0);
         },
