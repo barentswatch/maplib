@@ -8,6 +8,6 @@
         <description>Core map functions for barentswatch</description>
     </metadata>
     <files>
-        <file src="bin\dist\*.js" target="Content\Scripts\maplib\" />
+        <file src="js\dist\*.js" target="Content\Scripts\maplib\" />
     </files>
 </package>
