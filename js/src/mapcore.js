@@ -177,11 +177,11 @@ BW.MapCore = BW.MapCore || {};
 
         layers = layers.concat(this.baseLayers.getLayers());
 
+        this.map.addLayers(layers);
+
         if (config.overlays) {
             this.setOverlays(config.overlays);
         }
-
-        this.map.addLayers(layers);
 
         this.map.setCenter(
             new OpenLayers.LonLat(config.initPos.x, config.initPos.y),
