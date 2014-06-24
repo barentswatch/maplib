@@ -63,6 +63,15 @@ BW.MapCore = BW.MapCore || {};
             {singleTile: singleTile}
         );
 
+        var extraParams = ['maxResolution', 'minResolution'];
+        var extra = _.reduce(extraParams, function (extra, key) {
+            if (config[key]) {
+                extra[key] = config[key];
+            }
+            return extra;
+        }, {});
+
+
         return new OpenLayers.Layer.WMS(
             config.name,
             config.url,
@@ -70,7 +79,7 @@ BW.MapCore = BW.MapCore || {};
                 layers: config.layerName,
                 transparent: config.transparent
             },
-            options
+            _.extend(options, extra)
         );
     }
 
