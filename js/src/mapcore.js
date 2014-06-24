@@ -143,8 +143,6 @@ BW.MapCore = BW.MapCore || {};
             this.overlayList = config.overlayList;
         }
 
-        console.log(config.theme)
-
         var mapBounds = new OpenLayers.Bounds(config.bounds);
         this.map = new OpenLayers.Map(
             divName,
