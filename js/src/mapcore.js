@@ -204,6 +204,9 @@ BW.MapCore = BW.MapCore || {};
         );
     };
 
+    ns.MapConfig.prototype.registerMapEvent = function (event, callback, scope) {
+        this.map.events.register(event, scope, callback);
+    };
 
     //sets the list of available overlays
     ns.MapConfig.prototype.setOverlayList = function (overlayList) {
