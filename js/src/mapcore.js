@@ -191,13 +191,17 @@ BW.MapCore = BW.MapCore || {};
         if (config.overlays) {
             this.setOverlays(config.overlays);
         }
-
-        this.map.setCenter(
-            new OpenLayers.LonLat(config.initPos.x, config.initPos.y),
-            config.initZoom
-        );
-
+    
+        this.config = config;
+        this.setInitialCenter();
         return this;
+    };
+
+    ns.MapConfig.prototype.setInitialCenter = function () {
+        this.map.setCenter(
+            new OpenLayers.LonLat(this.config.initPos.x, this.config.initPos.y),
+            this.config.initZoom
+        );
     };
 
 
