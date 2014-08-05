@@ -17,6 +17,12 @@ module.exports = function(grunt) {
                     'src/CircleDraw.js'
                 ],
                 dest: 'dist/circledraw.js'  
+            },
+            wfslayer: {
+              src: [                    
+                    'src/WfsLayer.js'
+                ],
+                dest: 'dist/wfslayer.js'  
             }
         },
         uglify: {
@@ -31,6 +37,11 @@ module.exports = function(grunt) {
             circlecontrol: {
                 files: {
                     'dist/circledraw.min.js': ['<%= concat.circlecontrol.dest %>']
+                }
+            },
+            wfslayer: {
+                files: {
+                    'dist/wfslayer.min.js': ['<%= concat.wfslayer.dest %>']
                 }
             }
         },
