@@ -23,6 +23,12 @@ module.exports = function(grunt) {
                     'src/WfsLayer.js'
                 ],
                 dest: 'dist/wfslayer.js'  
+            },
+            clusterstyle: {
+              src: [                    
+                    'src/ClusterStyle.js'
+                ],
+                dest: 'dist/clusterstyle.js'  
             }
         },
         uglify: {
@@ -42,6 +48,11 @@ module.exports = function(grunt) {
             wfslayer: {
                 files: {
                     'dist/wfslayer.min.js': ['<%= concat.wfslayer.dest %>']
+                }
+            },
+            clusterstyle: {
+                files: {
+                    'dist/clusterstyle.min.js': ['<%= concat.clusterstyle.dest %>']
                 }
             }
         },
