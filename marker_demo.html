@@ -37,6 +37,7 @@
 (function () {
     'use strict';
 
+    //some points
     var data = {
         "type": "FeatureCollection",
         "features": [
@@ -103,6 +104,7 @@
         ]
     };
 
+    //create a simple map
     var map = new BW.MapCore.MapConfig(
         'map',
         {
@@ -123,13 +125,14 @@
     );
 
     //create a Markers object and get a styleMap
-    var markers = new BW.MapCore.Markers('img/kartpinner');
+    var markers = new BW.MapCore.Markers('img/markers');
     var sm = markers.createStyleMap('red', 'md');
     var layer = new OpenLayers.Layer.Vector(
         'Points', 
         {styleMap: sm}
     );
 
+    //read GeoJSON and add to the layer (using the set styleMap)
     var format = new OpenLayers.Format.GeoJSON();
     layer.addFeatures(format.read(data));
     map.map.addLayer(layer);

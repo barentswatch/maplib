@@ -33,6 +33,7 @@
 <script type="text/javascript" src="js/lib/OpenLayers-2.13.1/OpenLayers.js"></script>
 <script type="text/javascript" src="js/src/mapcore.js"></script>
 <script type="text/javascript" src="js/src/ClusterStyle.js"></script>
+<script type="text/javascript" src="js/src/Markers.js"></script>
 
 <script type="text/javascript">
 (function () {
@@ -89,17 +90,9 @@
         return features;
     }
 
-    var singleSymbolizer = {
-        externalGraphic: 'img/kartpinner/pin-md-sky.png', 
-        graphicWidth: 33,
-        graphicHeight: 40,
-        graphicYOffset: -40,
-        graphicOpacity: 1
-    };
-
     var clusterStyleMap = BW.MapCore.createClusterStyleMap(
         'sky', 
-        singleSymbolizer
+        BW.MapCore.Markers('img/markers').createStyleDict('sky', 'md')
     );
 
     var clusterStrategy = new OpenLayers.Strategy.Cluster();

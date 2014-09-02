@@ -4,6 +4,11 @@ BW.MapCore = BW.MapCore || {};
 (function (ns) {
     'use strict';
 
+    /*
+    Mapping of WFS features to a Backbone Collection and model.
+    Supports fetching of data as GeoJSON via WFS (using JSONP).
+    */
+
 
     function createWFSParameters(typeName, callback) {
         return {
