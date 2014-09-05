@@ -63,6 +63,15 @@ BW.MapCore = BW.MapCore || {};
             {singleTile: singleTile}
         );
 
+        var extraParams = ['maxResolution', 'minResolution'];
+        var extra = _.reduce(extraParams, function (extra, key) {
+            if (config[key]) {
+                extra[key] = config[key];
+            }
+            return extra;
+        }, {});
+
+
         return new OpenLayers.Layer.WMS(
             config.name,
             config.url,
@@ -70,7 +79,7 @@ BW.MapCore = BW.MapCore || {};
                 layers: config.layerName,
                 transparent: config.transparent
             },
-            options
+            _.extend(options, extra)
         );
     }
 
@@ -143,8 +152,6 @@ BW.MapCore = BW.MapCore || {};
             this.overlayList = config.overlayList;
         }
 
-        console.log(config.theme)
-
         var mapBounds = new OpenLayers.Bounds(config.bounds);
         this.map = new OpenLayers.Map(
             divName,
@@ -179,20 +186,27 @@ BW.MapCore = BW.MapCore || {};
 
         layers = layers.concat(this.baseLayers.getLayers());
 
+        this.map.addLayers(layers);
+
         if (config.overlays) {
             this.setOverlays(config.overlays);
         }
-
-        this.map.addLayers(layers);
-
-        this.map.setCenter(
-            new OpenLayers.LonLat(config.initPos.x, config.initPos.y),
-            config.initZoom
-        );
-
+    
+        this.config = config;
+        this.setInitialCenter();
         return this;
     };
 
+    ns.MapConfig.prototype.setInitialCenter = function () {
+        this.map.setCenter(
+            new OpenLayers.LonLat(this.config.initPos.x, this.config.initPos.y),
+            this.config.initZoom
+        );
+    };
+
+    ns.MapConfig.prototype.registerMapEvent = function (event, callback, scope) {
+        this.map.events.register(event, scope, callback);
+    };
 
     //sets the list of available overlays
     ns.MapConfig.prototype.setOverlayList = function (overlayList) {
