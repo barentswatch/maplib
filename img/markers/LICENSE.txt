@@ -1,0 +1,3 @@
+Map markers adapted from a symbol in a font from IcoMoon 
+(https://icomoon.io/#icons-icomoon) and are CC-BY-3.0 
+(http://creativecommons.org/licenses/by/3.0/).
