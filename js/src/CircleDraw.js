@@ -13,8 +13,19 @@
         Init: 
             var circle = new BW.MapCore.CircleControl(
                 theMap
-                callbackFunction
+                callbackFunction,
+                initData
             );
+
+            Where initData is a an optional pojo in the form of 
+            {
+                Lon: longitude in WGS84,
+                Lat: latitude in WGS84,
+                Distance: radius in nautical miles
+            }
+
+        show: 
+            circle.show(); shows the circle but does not enable edit            
 
         activate: 
             circle.activate(); (enables draw and edit)
@@ -39,6 +50,12 @@ BW.MapCore = BW.MapCore || {};
     }
 
 
+    function nauticalMilesToMeter(nauticalMiles) {
+        var metersPrNauticalMile = 1852;
+        return nauticalMiles * metersPrNauticalMile;
+    }
+
+
     function transformCoordTo4326(coord) {
         var transformed = proj4(
             proj4.defs['EPSG:32633'],
@@ -47,6 +64,18 @@ BW.MapCore = BW.MapCore || {};
         return {
             lon: transformed[0],
             lat: transformed[1]
+        };
+    }
+
+
+    function transformCoordFrom4326(coord) {
+        var transformed = proj4(
+            proj4.defs['EPSG:4326'],
+            proj4.defs['EPSG:32633']
+        ).forward([coord.x, coord.y]);
+        return {
+            x: transformed[0],
+            y: transformed[1]
         };
     }
 
@@ -72,6 +101,7 @@ BW.MapCore = BW.MapCore || {};
             if (this.nomove) {
                 this.events.triggerEvent('move', {xy: pixel});
             } else {
+                this.events.triggerEvent('drag');
                 OpenLayers.Control.DragFeature.prototype.moveFeature.apply(
                     this,
                     arguments
@@ -101,7 +131,7 @@ BW.MapCore = BW.MapCore || {};
     });
 
 
-    ns.CircleControl = function (map, callback) {
+    ns.CircleControl = function (map, callback, initData) {
         this.map = map;
         this.active = false;
         this.started = false;
@@ -118,10 +148,28 @@ BW.MapCore = BW.MapCore || {};
         this.dragControl.events.on({
             down: _.bind(this.startEditDraw, this),
             up: _.bind(this.stopDraw, this),
-            move: _.bind(this.move, this)
+            move: _.bind(this.move, this),
+            drag: _.bind(this.updateShadow, this)
         });
 
         this.map.addControl(this.dragControl);
+
+
+        if (initData) {
+            this.centerPoint = transformCoordFrom4326({
+                x: initData.Lon,
+                y: initData.Lat
+            });
+            this.radius = nauticalMilesToMeter(initData.Distance);
+        }
+    };
+
+    
+    ns.CircleControl.prototype.show = function () {    
+        if (this.centerPoint && this.radius) {
+            this.map.addLayer(this.layer);
+            this.drawRing(this.centerPoint, this.radius);
+        }
     };
 
     ns.CircleControl.prototype.activate = function () {
@@ -131,7 +179,9 @@ BW.MapCore = BW.MapCore || {};
             this.map.events.register('click', this, this.click);
 
             if (this.centerPoint && this.radius) {
+                this.drawRing(this.centerPoint, this.radius);
                 this.sendCallback(this.centerPoint, this.radius);
+                this.dragControl.activate();
             }
         }
     };
@@ -141,16 +191,16 @@ BW.MapCore = BW.MapCore || {};
             this.active = false;
             this.map.removeLayer(this.layer);
             this.map.events.unregister('click', this, this.click);
+            this.dragControl.deactivate();
         }
     };
 
     ns.CircleControl.prototype.startEditDraw = function (evt) {
         this.point2 = this.map.getLonLatFromPixel(evt.xy);
-        this.draw();
+        this.draw();        
     };
 
     ns.CircleControl.prototype.startDraw = function (evt) {
-        console.log("start draw!");
         this.map.events.register('mousemove', this, this.move);
         this.point1 = this.map.getLonLatFromPixel(evt.xy);
         this.point2 = this.map.getLonLatFromPixel(evt.xy);
@@ -254,6 +304,7 @@ BW.MapCore = BW.MapCore || {};
             ringStyle
         );
 
+        this.updateShadow();
         this.layer.addFeatures([this.feature]);
         this.drawDragRing();
 
@@ -287,6 +338,10 @@ BW.MapCore = BW.MapCore || {};
         } else {
             this.stopDraw(evt);
         }
+    };
+
+    ns.CircleControl.prototype.updateShadow = function () {
+        //console.log('update Shadow');
     };
 
 }(BW.MapCore));

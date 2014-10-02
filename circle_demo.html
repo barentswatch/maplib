@@ -19,9 +19,9 @@
 
 <div id="map"></div>
 <form autocomplete="off">
-    <input type="checkbox" id="active" value="active" checked> Aktiv
+    <input type="checkbox" id="active" value="active"> Aktiv
 </form>
-<div id="result">Klikk i kartet for å tegne en sirkel</div>
+<div id="result">Aktiver og klikk i kartet for å tegne en sirkel</div>
 
 <script type="text/javascript" src="js/lib/jquery-1.11.0.min.js"></script>
 <script type="text/javascript" src="js/lib/underscore-min.js"></script>
@@ -63,8 +63,15 @@
         map.map,
         function (res) {
             $('#result').html('Sirkel med ' + res.Distance + 'NM radius rundt (' + res.Lon + ', ' + res.Lat + ')');
+        },
+        {
+            Lon: -0.6971787128087309,
+            Lat: 59.22474117265253,
+            Distance: 1786.6
         }
     );
+
+    //circleControl.show();
 
     $('#active').change(function () {
         if ($(this).is(":checked")) {
@@ -76,9 +83,9 @@
             $('#result').html("");
         }
     });
-    $('#active').attr("checked", true);
+    $('#active').attr("checked", false);
 
-    circleControl.activate();
+    //circleControl.activate();
 
 }());
 </script>
