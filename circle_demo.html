@@ -15,9 +15,12 @@
 </head>
 <body>
 
-<h1>Kartkjerne</h1>
+<h1>Circle demo</h1>
 
 <div id="map"></div>
+<form autocomplete="off">
+    <input type="checkbox" id="active" value="active" checked> Aktiv
+</form>
 <div id="result">Klikk i kartet for å tegne en sirkel</div>
 
 <script type="text/javascript" src="js/lib/jquery-1.11.0.min.js"></script>
@@ -62,6 +65,18 @@
             $('#result').html('Sirkel med ' + res.Distance + 'NM radius rundt (' + res.Lon + ', ' + res.Lat + ')');
         }
     );
+
+    $('#active').change(function () {
+        if ($(this).is(":checked")) {
+            console.log("activate!");
+            circleControl.activate();
+        } else {
+            console.log("deactivate!");
+            circleControl.deactivate();
+            $('#result').html("");
+        }
+    });
+    $('#active').attr("checked", true);
 
     circleControl.activate();
 
