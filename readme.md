@@ -3,7 +3,7 @@ Barentswatch MapCore
 
 Dette er et javascript-bibliotek som inneholder kjernefunkjsonalitet for kart i Barentswatch. Biblioteket baserer seg på OpenLayers 2 og har i tillegg underscore.js som en avhengighet.
 
-Biblioteket etterstreber å være *lettvekts*, *modularisert* og *gjenbrukbart*.
+Biblioteket etterstreber å være *lettvekts*, *modularisert* og *gjenbrukbart*. Koden er tilgjengelig med en BSD-lisens.
 
 Oppsett
 -------
@@ -80,4 +80,4 @@ For å legge til "overlays" må man definere disse (på samme måte som baseLaye
 
 CircleControl
 -------------
-Lar deg tegne en sirkel i kartet, se circle_demo.html        
+Lar deg tegne en sirkel i kartet, se circle_demo.html
