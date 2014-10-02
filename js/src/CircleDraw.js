@@ -156,14 +156,17 @@ BW.MapCore = BW.MapCore || {};
 
 
         if (initData) {
-            this.centerPoint = transformCoordFrom4326({
-                x: initData.Lon,
-                y: initData.Lat
-            });
-            this.radius = nauticalMilesToMeter(initData.Distance);
+            this.setInitData(initData);
         }
     };
 
+    ns.CircleControl.prototype.setInitData = function (initData) {
+        this.centerPoint = transformCoordFrom4326({
+            x: initData.Lon,
+            y: initData.Lat
+        });
+        this.radius = nauticalMilesToMeter(initData.Distance);
+    };
     
     ns.CircleControl.prototype.show = function () {    
         if (this.centerPoint && this.radius) {
