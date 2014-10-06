@@ -63,15 +63,15 @@
         map.map,
         function (res) {
             $('#result').html('Sirkel med ' + res.Distance + 'NM radius rundt (' + res.Lon + ', ' + res.Lat + ')');
-        },
+        }/*,
         {
             Lon: -0.6971787128087309,
             Lat: 59.22474117265253,
             Distance: 1786.6
-        }
+        } */
     );
 
-    //circleControl.show();
+    circleControl.show();
 
     $('#active').change(function () {
         if ($(this).is(":checked")) {

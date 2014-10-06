@@ -180,7 +180,6 @@ BW.MapCore = BW.MapCore || {};
             this.active = true;
             this.map.addLayer(this.layer);
             this.map.events.register('click', this, this.click);
-
             if (this.centerPoint && this.radius) {
                 this.drawRing(this.centerPoint, this.radius);
                 this.sendCallback(this.centerPoint, this.radius);
@@ -203,7 +202,6 @@ BW.MapCore = BW.MapCore || {};
 
     ns.CircleControl.prototype.startEditDraw = function (evt) {
         this.point2 = this.map.getLonLatFromPixel(evt.xy);
-        this.draw();
     };
 
     ns.CircleControl.prototype.startDraw = function (evt) {
@@ -216,10 +214,13 @@ BW.MapCore = BW.MapCore || {};
     ns.CircleControl.prototype.stopDraw = function (evt) {
         this.map.events.unregister('mousemove', this, this.move);
         this.point2 = this.map.getLonLatFromPixel(evt.xy);
-        var coords = this.draw();
         this.map.events.unregister('click', this, this.click);
         this.dragControl.activate();
-        this.sendCallback(coords.centerPoint, coords.radius);
+
+        var coords = this.p;
+        if (coords) {
+            this.sendCallback(coords.centerPoint, coords.radius);
+        }
     };
 
     ns.CircleControl.prototype.sendCallback = function (centerPoint, radius) {
@@ -255,7 +256,7 @@ BW.MapCore = BW.MapCore || {};
 
     ns.CircleControl.prototype.move = function (evt) {
         this.point2 = this.map.getLonLatFromPixel(evt.xy);
-        this.draw();
+        this.p = this.draw();
     };
 
     ns.CircleControl.prototype.draw = function () {
