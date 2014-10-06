@@ -167,8 +167,8 @@ BW.MapCore = BW.MapCore || {};
         });
         this.radius = nauticalMilesToMeter(initData.Distance);
     };
-    
-    ns.CircleControl.prototype.show = function () {    
+
+    ns.CircleControl.prototype.show = function () {
         if (this.centerPoint && this.radius) {
             this.map.addLayer(this.layer);
             this.drawRing(this.centerPoint, this.radius);
@@ -186,12 +186,15 @@ BW.MapCore = BW.MapCore || {};
                 this.sendCallback(this.centerPoint, this.radius);
                 this.dragControl.activate();
             }
+
         }
     };
 
     ns.CircleControl.prototype.deactivate = function () {
         if (this.active) {
             this.active = false;
+            this.feature = null;
+            this.layer.removeAllFeatures();
             this.map.removeLayer(this.layer);
             this.map.events.unregister('click', this, this.click);
             this.dragControl.deactivate();
@@ -200,7 +203,7 @@ BW.MapCore = BW.MapCore || {};
 
     ns.CircleControl.prototype.startEditDraw = function (evt) {
         this.point2 = this.map.getLonLatFromPixel(evt.xy);
-        this.draw();        
+        this.draw();
     };
 
     ns.CircleControl.prototype.startDraw = function (evt) {
