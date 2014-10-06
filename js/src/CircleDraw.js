@@ -189,12 +189,20 @@ BW.MapCore = BW.MapCore || {};
         }
     };
 
+    ns.CircleControl.prototype.removeLayer = function () {
+        this.feature = null;
+        if (this.layer) {
+            this.layer.removeAllFeatures();
+            if (this.layer.map) {
+                this.map.removeLayer(this.layer);
+            }
+        }
+    };
+
     ns.CircleControl.prototype.deactivate = function () {
         if (this.active) {
             this.active = false;
-            this.feature = null;
-            this.layer.removeAllFeatures();
-            this.map.removeLayer(this.layer);
+            this.removeLayer();
             this.map.events.unregister('click', this, this.click);
             this.dragControl.deactivate();
         }
