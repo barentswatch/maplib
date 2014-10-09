@@ -94,8 +94,17 @@ BW.MapCore = BW.MapCore || {};
         strokeOpacity: 0.0
     };
 
+
+    function getGeomType(feature) {
+        if (!feature.geometry) {
+            return null;
+        }
+        return feature.geometry.CLASS_NAME.replace('OpenLayers.Geometry.', '');
+    }
+
+
     function polyContainsLonLat(feature, lonlat) {
-        if (feature.geometry.CLASS_NAME !== 'OpenLayers.Geometry.Polygon') {
+        if (getGeomType(feature) !== 'Polygon') {
             return false;
         }
         var point = new OpenLayers.Geometry.Point(lonlat.lon, lonlat.lat);
@@ -120,7 +129,7 @@ BW.MapCore = BW.MapCore || {};
         downFeature: function (pixel) {
             if (this.nomove) {
                 this.nomove = false;
-            } else if (this.feature.geometry.CLASS_NAME === 'OpenLayers.Geometry.LineString') {
+            } else if (getGeomType(this.feature) === 'LineString') {
                 this.nomove = true;
                 this.events.triggerEvent('down', {xy: pixel});
             }
@@ -133,7 +142,6 @@ BW.MapCore = BW.MapCore || {};
 
                 // "deselect" the line feature
                 this.outFeature(this.feature);
-
 
                 //find out if we are over a polygon feature, if so, "select" it
                 var point = this.map.getLonLatFromPixel(pixel);
