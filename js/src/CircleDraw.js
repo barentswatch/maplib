@@ -94,6 +94,14 @@ BW.MapCore = BW.MapCore || {};
         strokeOpacity: 0.0
     };
 
+    function polyContainsLonLat(feature, lonlat) {
+        if (feature.geometry.CLASS_NAME !== 'OpenLayers.Geometry.Polygon') {
+            return false;
+        }
+        var point = new OpenLayers.Geometry.Point(lonlat.lon, lonlat.lat);
+        return feature.geometry.containsPoint(point);
+    }
+
 
     var Drag = OpenLayers.Class(OpenLayers.Control.DragFeature, {
 
@@ -110,7 +118,9 @@ BW.MapCore = BW.MapCore || {};
         },
 
         downFeature: function (pixel) {
-            if (this.feature.geometry.CLASS_NAME === 'OpenLayers.Geometry.LineString') {
+            if (this.nomove) {
+                this.nomove = false;
+            } else if (this.feature.geometry.CLASS_NAME === 'OpenLayers.Geometry.LineString') {
                 this.nomove = true;
                 this.events.triggerEvent('down', {xy: pixel});
             }
@@ -120,10 +130,25 @@ BW.MapCore = BW.MapCore || {};
 
         upFeature: function (pixel) {
             if (this.nomove) {
+
+                // "deselect" the line feature
+                this.outFeature(this.feature);
+
+
+                //find out if we are over a polygon feature, if so, "select" it
+                var point = this.map.getLonLatFromPixel(pixel);
+                var i, length, feature;
+                for (i = 0, length = this.layer.features.length; i < length; i++) {
+                    feature = this.layer.features[i];
+                    polyContainsLonLat(feature, point);
+                    if (polyContainsLonLat(feature, point)) {
+                        this.overFeature(feature);
+                        break;
+                    }
+                }
                 this.events.triggerEvent('up', {xy: pixel});
                 this.nomove = false;
             }
-
             if (!this.over) {
                 this.handlers.drag.deactivate();
             }
