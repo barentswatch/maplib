@@ -256,6 +256,12 @@ BW.MapCore = BW.MapCore || {};
 
     ns.CircleControl.prototype.startEditDraw = function (evt) {
         this.point2 = this.map.getLonLatFromPixel(evt.xy);
+        //set the start point to a point mirrored across the center point from point1
+        var point = this.feature.geometry.getCentroid();
+        var deltax = point.x - this.point2.lon;
+        var deltay = point.y - this.point2.lat;
+        var newPoint = new OpenLayers.Geometry.Point(point.x + deltax, point.y + deltay);
+        this.point1 = new OpenLayers.LonLat(newPoint.x, newPoint.y);
     };
 
     ns.CircleControl.prototype.startDraw = function (evt) {
