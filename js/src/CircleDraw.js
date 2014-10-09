@@ -80,6 +80,7 @@ BW.MapCore = BW.MapCore || {};
     }
 
 
+    //used to draw the ring itself
     var ringStyle = {
         strokeColor: '#B80000',
         strokeWidth: 2,
@@ -87,6 +88,8 @@ BW.MapCore = BW.MapCore || {};
     };
 
 
+    //used to draw an invisible, thick, line on the circumference of the ring to 
+    //allow for easy resize
     var ringOverlayStyle = {
         strokeColor: '#B800FF',
         strokeWidth: 10,
@@ -111,14 +114,19 @@ BW.MapCore = BW.MapCore || {};
         return feature.geometry.containsPoint(point);
     }
 
-
+    /**
+        Override the DragFeature control to allow for resize when clicking the 
+        circumference linestring of a polygon feature. The circumference line
+        is added in ns.CircleControl
+    **/
     var Drag = OpenLayers.Class(OpenLayers.Control.DragFeature, {
 
         moveFeature: function (pixel) {
             if (this.nomove) {
+                //tell other control about resize
                 this.events.triggerEvent('move', {xy: pixel});
             } else {
-                this.events.triggerEvent('drag');
+                //handle drag as normal                
                 OpenLayers.Control.DragFeature.prototype.moveFeature.apply(
                     this,
                     arguments
@@ -127,9 +135,10 @@ BW.MapCore = BW.MapCore || {};
         },
 
         downFeature: function (pixel) {
-            if (this.nomove) {
-                this.nomove = false;
-            } else if (getGeomType(this.feature) === 'LineString') {
+
+            //if it's the circumference we want to shortcut the drag option
+            //and tell the other control that we now are in "resize mode"
+            if (getGeomType(this.feature) === 'LineString') {
                 this.nomove = true;
                 this.events.triggerEvent('down', {xy: pixel});
             }
@@ -138,6 +147,8 @@ BW.MapCore = BW.MapCore || {};
         },
 
         upFeature: function (pixel) {
+
+            //if we are in resize mode we have to stop that
             if (this.nomove) {
 
                 // "deselect" the line feature
@@ -154,6 +165,8 @@ BW.MapCore = BW.MapCore || {};
                         break;
                     }
                 }
+
+                //tell other control to stop resize
                 this.events.triggerEvent('up', {xy: pixel});
                 this.nomove = false;
             }
