@@ -88,6 +88,14 @@ BW.MapCore = BW.MapCore || {};
     };
 
 
+    //used to draw the ring itself as "inactive"
+    var blackCircle = {
+        strokeColor: '#000000',
+        strokeWidth: 2,
+        fillOpacity: 0.0,
+    };
+
+
     //used to draw an invisible, thick, line on the circumference of the ring to 
     //allow for easy resize
     var ringOverlayStyle = {
@@ -217,7 +225,7 @@ BW.MapCore = BW.MapCore || {};
     ns.CircleControl.prototype.show = function () {
         if (this.centerPoint && this.radius) {
             this.map.addLayer(this.layer);
-            this.drawRing(this.centerPoint, this.radius);
+            this.drawRing(this.centerPoint, this.radius, blackCircle);
         }
     };
 
@@ -355,8 +363,8 @@ BW.MapCore = BW.MapCore || {};
         }
     };
 
-    ns.CircleControl.prototype.drawRing = function (centerPoint, radius) {
-
+    ns.CircleControl.prototype.drawRing = function (centerPoint, radius, customStyle) {
+        var style = customStyle || ringStyle;
         var geom = OpenLayers.Geometry.Polygon.createRegularPolygon(
             centerPoint,
             radius,
@@ -368,7 +376,7 @@ BW.MapCore = BW.MapCore || {};
         this.feature = new OpenLayers.Feature.Vector(
             geom,
             {},
-            ringStyle
+            style
         );
 
         this.updateShadow();
