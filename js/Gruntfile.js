@@ -8,27 +8,33 @@ module.exports = function(grunt) {
             },
             core: {
                 src: [
-                    'src/mapcore.js'                    
+                    'src/mapcore.js'
                 ],
                 dest: 'dist/kartkjerne.js'
             },
             circlecontrol: {
-              src: [                    
+              src: [
                     'src/CircleDraw.js'
                 ],
-                dest: 'dist/circledraw.js'  
+                dest: 'dist/circledraw.js'
             },
             wfslayer: {
-              src: [                    
+              src: [
                     'src/WfsLayer.js'
                 ],
-                dest: 'dist/wfslayer.js'  
+                dest: 'dist/wfslayer.js'
             },
             clusterstyle: {
-              src: [                    
+              src: [
                     'src/ClusterStyle.js'
                 ],
-                dest: 'dist/clusterstyle.js'  
+                dest: 'dist/clusterstyle.js'
+            },
+            wmshttpsproxy: {
+              src: [
+                    'src/WmsHttpsProxy.js'
+                ],
+                dest: 'dist/wmshttpsproxy.js'
             }
         },
         uglify: {
@@ -54,6 +60,11 @@ module.exports = function(grunt) {
                 files: {
                     'dist/clusterstyle.min.js': ['<%= concat.clusterstyle.dest %>']
                 }
+            },
+            wmshttpsproxy: {
+                files: {
+                    'dist/wmshttpsproxy.min.js': ['<%= concat.wmshttpsproxy.dest %>']
+                }
             }
         },
         buster: {
@@ -66,7 +77,7 @@ module.exports = function(grunt) {
     });
 
     grunt.loadNpmTasks('grunt-contrib-uglify');
-   
+
     grunt.loadNpmTasks('grunt-contrib-concat');
     grunt.loadNpmTasks('grunt-buster');
 
