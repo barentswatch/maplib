@@ -102,6 +102,25 @@ BW.MapCore = BW.MapCore || {};
         );
     }
 
+    function createGeoJSONLayer(config, map) {
+
+        var style = new OpenLayers.Style().defaultStyle;
+        if (config.style) {
+            style = config.style;
+        }
+
+        return new OpenLayers.Layer.Vector(
+            config.name,
+            {
+                strategies: [new OpenLayers.Strategy.Fixed()],
+                protocol: new OpenLayers.Protocol.HTTP({
+                    url: config.url,
+                    format: new OpenLayers.Format.GeoJSON()
+                }),
+                style: style
+            }
+        );
+    }
 
     //create a layer of given type
     function createLayer(config, map) {
@@ -111,6 +130,10 @@ BW.MapCore = BW.MapCore || {};
 
         if (config.protocol === 'WMS') {
             return createWMSLayer(config);
+        }
+
+        if (config.protocol === 'GeoJSON') {
+            return createGeoJSONLayer(config);
         }
 
         throw new Error(
@@ -127,7 +150,7 @@ BW.MapCore = BW.MapCore || {};
     }
 
 
-    //create a layer collection from a list of selected layers and the 
+    //create a layer collection from a list of selected layers and the
     //complete list
     function createLayerCollection(allLayersList, layersList, map) {
         return new LayerCollection(_.map(layersList, function (overlay) {
@@ -142,7 +165,7 @@ BW.MapCore = BW.MapCore || {};
 
     ns.MapConfig = function (divName, config) {
         config = config || {};
-        config = _.extend(mapDefaults, config);
+        config = _.extend(_.clone(mapDefaults), config);
 
         if (config.baseLayerList) {
             this.baseLayerList = config.baseLayerList;
@@ -191,7 +214,7 @@ BW.MapCore = BW.MapCore || {};
         if (config.overlays) {
             this.setOverlays(config.overlays);
         }
-    
+
         this.config = config;
         this.setInitialCenter();
         return this;

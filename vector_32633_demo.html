@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style type="text/css">
+        .map {
+            height: 500px;
+            width: 500px;
+            float: left;
+            border: 1px solid black;
+        }
+
+    </style>
+    <link rel="stylesheet" type="text/css" href="js/lib/OpenLayers-2.13.1/theme/default/style.css">
+</head>
+<body>
+
+<h1>Vector map demo UTM 33</h1>
+
+<table>
+    <tr>
+        <td>
+            <h3>110m_land UTM33 (18K)</h3>
+            <div class="map" id="map1"></div>
+        </td>
+        <td>
+            <h3>50m_land UTM33 (314K)</h3>
+            <div class="map" id="map2"></div>
+        </td>
+        <td>
+            <h3>10m_land UTM33 (2,4M)</h3>
+            <div class="map" id="map3"></div>
+        </td>
+    </tr>
+</table>
+
+
+<script type="text/javascript" src="js/lib/jquery-1.11.0.min.js"></script>
+<script type="text/javascript" src="js/lib/underscore-min.js"></script>
+<script type="text/javascript" src="js/lib/backbone-min.js"></script>
+<script type="text/javascript" src="js/lib/OpenLayers-2.13.1/OpenLayers.js"></script>
+<script type="text/javascript" src="js/src/mapcore.js"></script>
+<script type="text/javascript" src="js/src/Markers.js"></script>
+<script type="text/javascript">
+(function () {
+    'use strict';
+
+    var map1 = new BW.MapCore.MapConfig(
+        'map1',
+        {
+            initZoom: 0,
+            theme: null, //set theme to null, this means that OpenLayers won't load css
+            baseLayers: [
+                {id: 2, visible: true}
+            ],
+            baseLayerList: [
+                {
+                    id: 2,
+                    protocol: 'GeoJSON',
+                    name: 'Enkel bakgrunn',
+                    url: '/data/110m_land_32633.geojson',
+                    style: {fillColor: '#085382', strokeWidth: 1, strokeColor: '#000000'}
+                }
+            ]
+        }
+    );
+
+    var map2 = new BW.MapCore.MapConfig(
+        'map2',
+        {
+            initZoom: 0,
+            theme: null, //set theme to null, this means that OpenLayers won't load css
+            baseLayers: [
+                {id: 2, visible: true}
+            ],
+            baseLayerList: [
+                {
+                    id: 2,
+                    protocol: 'GeoJSON',
+                    name: 'Enkel bakgrunn',
+                    url: '/data/50m_land_32633.geojson',
+                    style: {fillColor: '#085382', strokeWidth: 1, strokeColor: '#000000'}
+                }
+            ]
+        }
+    );
+
+    var map3 = new BW.MapCore.MapConfig(
+        'map3',
+        {
+            initZoom: 0,
+            theme: null, //set theme to null, this means that OpenLayers won't load css
+            baseLayers: [
+                {id: 2, visible: true}
+            ],
+            baseLayerList: [
+                {
+                    id: 2,
+                    protocol: 'GeoJSON',
+                    name: 'Enkel bakgrunn',
+                    url: '/data/10m_land_32633.geojson',
+                    style: {fillColor: '#085382', strokeWidth: 1, strokeColor: '#000000'}
+                }
+            ]
+        }
+    );
+
+}());
+</script>
+
+</body>
+</html>
