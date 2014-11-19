@@ -46,7 +46,7 @@
 <script type="text/javascript" src="js/src/BW.Repository/BW.Repository.ConfigRepository.js"></script>
 <script type="text/javascript" src="js/src/BW.Repository/BW.Repository.MapConfig.js"></script>
 <script type="text/javascript" src="js/src/BW.FeatureParser/BW.FeatureParser.ResultParser.js"></script>
-
+<script type="text/javascript" src="js/src/ol3wrapper.js"></script>
 
 
 <script type="text/javascript">
@@ -77,38 +77,19 @@
                         "tiled": true
                     }
                 ],
-                "visibleOnLoad": true,
-                "categoryId": "0"
+                "visibleOnLoad": true
             }
         ]
     }
 
-    function setupMap (mapDiv, mapConfig, callback) {
-        //manuell dependency-injection
-        var facade = {
-            getMapConfig: function (url, callback) {
-                callback(mapConfig);
-            }
-        };
-        //manuell dependency-injection
-        var eventHandler = new BW.Events.EventHandler();
-        var repo =  new BW.Repository.ConfigRepository(facade);
-        var map = new BW.Map.OL3Map(repo, eventHandler);
-        var mapModel = new BW.MapModel.Map(map, repo, eventHandler);
 
-        function initMap (data) {
-            mapModel.Init(mapDiv, data, callback);
-        }
-
-        //lag kartet
-        repo.GetMapConfig(null, initMap);
-    }
 
     function mapInit(olmap) {
+        //get the actual ol3 map object back
         console.log(olmap);
     }
 
-    setupMap('map', mapConfig, mapInit);
+    BW.MapCore.setupMap('map', mapConfig, mapInit);
 
 }());
 </script>
