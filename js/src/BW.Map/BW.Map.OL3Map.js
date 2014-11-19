@@ -12,7 +12,7 @@ BW.Map.OL3Map = function(repository, eventHandler){
     var proxyHost = "";
     var layout = "";
 
-    function initMap(targetId, mapConfig){
+    function initMap(targetId, mapConfig, callback){
         proxyHost = mapConfig.proxyHost;
         var numZoomLevels = mapConfig.numZoomLevels;
         var newMapRes = [];
@@ -43,6 +43,9 @@ BW.Map.OL3Map = function(repository, eventHandler){
         });
 
         registerMapCallbacks();
+        if (callback) {
+            callback(map);
+        }
     }
 
     function registerMapCallbacks(){

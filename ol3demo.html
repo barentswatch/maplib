@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style type="text/css">
+        #left {
+            float: left;
+            width: 300px;
+        }
+        #map {
+
+            height: 500px;
+            width: 500px;
+            float: left;
+            border: 1px solid black;
+        }
+
+    </style>
+    <link rel="stylesheet" type="text/css" href="js/lib/OpenLayers-2.13.1/theme/default/style.css">
+</head>
+<body>
+
+<h1>Kartkjerne</h1>
+
+<div id="left">
+</div>
+<div id="map"></div>
+
+
+
+<script type="text/javascript" src="js/lib/jquery-1.11.0.min.js"></script>
+<script type="text/javascript" src="js/lib/underscore-min.js"></script>
+<script type="text/javascript" src="js/lib/backbone-min.js"></script>
+<script type="text/javascript" src="js/lib/ol.js"></script>
+
+
+<script type="text/javascript" src="js/src/BW.Map/BW.Map.OL3Map.js"></script>
+<script type="text/javascript" src="js/src/BW.Utils/BW.Utils.Guid.js"></script>
+<script type="text/javascript" src="js/src/BW.Events/BW.Events.EventHandler.js"></script>
+<script type="text/javascript" src="js/src/BW.MapModel/BW.MapModel.Layer.js"></script>
+<script type="text/javascript" src="js/src/BW.MapModel/BW.MapModel.Map.js"></script>
+<script type="text/javascript" src="js/src/BW.MapModel/BW.MapModel.SubLayer.js"></script>
+<script type="text/javascript" src="js/src/BW.MapModel/BW.MapModel.LegendGraphic.js"></script>
+<script type="text/javascript" src="js/src/BW.MapModel/BW.MapModel.CustomCrsLoader.js"></script>
+<script type="text/javascript" src="js/src/BW.Repository/BW.Repository.ConfigRepository.js"></script>
+<script type="text/javascript" src="js/src/BW.Repository/BW.Repository.MapConfig.js"></script>
+<script type="text/javascript" src="js/src/BW.FeatureParser/BW.FeatureParser.ResultParser.js"></script>
+
+
+
+<script type="text/javascript">
+(function () {
+    'use strict';
+
+    var mapConfig = {
+        "zoom": 2,
+        "layers": [
+            {
+                "id": "1992",
+                "isBaseLayer": true,
+                "subLayers": [
+                    {
+                        "source": "WMTS",
+                        "url": "http://opencache.statkart.no/gatekeeper/gk/gk.open_wmts?",
+                        "name": "havbunn_grunnkart",
+                        "format": "image/png",
+                        "coordinate_system": "EPSG:32633",
+                        "extent": [
+                            -2500000,
+                            3500000,
+                            3045984,
+                            9045984
+                        ],
+                        "extentUnits": "m",
+                        "id": "1992",
+                        "tiled": true
+                    }
+                ],
+                "visibleOnLoad": true,
+                "categoryId": "0"
+            }
+        ]
+    }
+
+    function setupMap (mapDiv, mapConfig, callback) {
+        //manuell dependency-injection
+        var facade = {
+            getMapConfig: function (url, callback) {
+                callback(mapConfig);
+            }
+        };
+        //manuell dependency-injection
+        var eventHandler = new BW.Events.EventHandler();
+        var repo =  new BW.Repository.ConfigRepository(facade);
+        var map = new BW.Map.OL3Map(repo, eventHandler);
+        var mapModel = new BW.MapModel.Map(map, repo, eventHandler);
+
+        function initMap (data) {
+            mapModel.Init(mapDiv, data, callback);
+        }
+
+        //lag kartet
+        repo.GetMapConfig(null, initMap);
+    }
+
+    function mapInit(olmap) {
+        console.log(olmap);
+    }
+
+    setupMap('map', mapConfig, mapInit);
+
+}());
+</script>
+
+</body>
+</html>

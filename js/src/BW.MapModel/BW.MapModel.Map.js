@@ -7,10 +7,10 @@ BW.MapModel.Map = function(mapInstance, httpHelper, eventHandler) {
     var config;
     var infoMarker;
 
-    function init(targetId, mapConfig){
+    function init(targetId, mapConfig, callback){
         config = mapConfig;
         layers = mapConfig.layers;
-        mapInstance.InitMap(targetId, mapConfig);
+        mapInstance.InitMap(targetId, mapConfig, callback);
 
         _setUpLayerIndex();
         _loadCustomCrs();
