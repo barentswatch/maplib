@@ -35,6 +35,23 @@ module.exports = function(grunt) {
                     'src/WmsHttpsProxy.js'
                 ],
                 dest: 'dist/wmshttpsproxy.js'
+            },
+            ol3core: {
+              src: [
+                    'src/BW.Map/BW.Map.OL3Map.js',
+                    'src/BW.Utils/BW.Utils.Guid.js',
+                    'src/BW.Events/BW.Events.EventHandler.js',
+                    'src/BW.MapModel/BW.MapModel.Layer.js',
+                    'src/BW.MapModel/BW.MapModel.Map.js',
+                    'src/BW.MapModel/BW.MapModel.SubLayer.js',
+                    'src/BW.MapModel/BW.MapModel.LegendGraphic.js',
+                    'src/BW.MapModel/BW.MapModel.CustomCrsLoader.js',
+                    'src/BW.Repository/BW.Repository.ConfigRepository.js',
+                    'src/BW.Repository/BW.Repository.MapConfig.js',
+                    'src/BW.FeatureParser/BW.FeatureParser.ResultParser.js',
+                    'src/ol3wrapper.js'
+                ],
+                dest: 'dist/ol3core.js'
             }
         },
         uglify: {
@@ -64,6 +81,11 @@ module.exports = function(grunt) {
             wmshttpsproxy: {
                 files: {
                     'dist/wmshttpsproxy.min.js': ['<%= concat.wmshttpsproxy.dest %>']
+                }
+            },
+            ol3core: {
+                files: {
+                    'dist/ol3core.min.js': ['<%= concat.ol3core.dest %>']
                 }
             }
         },
