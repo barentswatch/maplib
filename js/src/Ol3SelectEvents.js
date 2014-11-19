@@ -17,13 +17,14 @@ BW.SelectEvents = BW.SelectEvents || {};
                     return feature;
                 }
             });
-
             if (selected) {
+                map.getTarget().style.cursor = '';
                 selected[on] = false;
                 selected.trigger(off, selected);
             }
 
             if (feature && feature !== selected) {
+                map.getTarget().style.cursor = 'pointer';
                 feature[on] = true;
                 feature.trigger(on, feature);
             }
