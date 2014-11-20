@@ -118,30 +118,11 @@
     });
 
 
-    function createCollection(data, options) {
-        var format = new ol.format.GeoJSON();
-
-        //map features til data for å populere collection
-        var elements = _.map(data, function (element) {
-            element.feature = new ol.Feature({
-                geometry:format.readGeometry(element.geometry)
-            });
-            element.geometry = null; //unset geometri (denne får vi fra feature)
-            return element;
-        });
-
-        return new BW.FeatureCollection(
-            elements,
-            options
-        );
-    }
-
-
     function initPage(data, mapConfig, mapEl, listEl) {
         var markers = new BW.MapCore.Markers('img/markers');
         var normalStyle = markers.createMarkerStyle('green', 'md');
         var hlStyle = markers.createMarkerStyle('red', 'md', 1000);
-        var harbours = createCollection(
+        var harbours = new BW.FeatureCollection(
             data,
             {
                 featureStyle: normalStyle,
@@ -158,7 +139,7 @@
             BW.SelectEvents.registerClickEvents(olmap, vector);
         }
 
-        BW.MapCore.setupMap(mapEl, mapConfig, mapInit);
+        BW.MapCore.setupMap(document.getElementById(mapEl), mapConfig, mapInit);
 
          //lag liste-elementer
         var elements = harbours.map(function (havn) {

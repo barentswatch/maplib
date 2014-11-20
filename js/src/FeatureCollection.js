@@ -73,9 +73,34 @@ var BW = this.BW || {};
 
         model: ns.FeatureModel,
 
+        reset: function(models, options) {
+            var format = new ol.format.GeoJSON();
+            var modifiedModels = models.map(function (model) {
+                if (model instanceof Backbone.Model) {
+                    model.set('feature', new ol.Feature({
+                        geometry: format.readGeometry(model.get('geometry'))
+                    }));
+                    model.unset('geometry', {silent: true});
+                } else {
+                    model.feature =  new ol.Feature({
+                        geometry: format.readGeometry(model.geometry)
+                    });
+                    delete model.geometry;
+                }
+                return model;
+            });
+
+            var d = Backbone.Collection.prototype.reset.apply(
+                this,
+                [modifiedModels, options]
+            );
+            return d;
+        },
+
         initialize: function (data, options) {
             this.options = options;
             this.on('select', this.featureSelected, this);
+            this.on('reset', this.parseFeatures, this);
         },
 
         featureSelected: function (selectedFeature) {
