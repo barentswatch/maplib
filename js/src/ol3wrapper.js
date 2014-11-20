@@ -6,11 +6,7 @@ BW.MapCore = BW.MapCore || {};
     ns.setupMap = function (mapDiv, mapConfig, callback) {
 
         //load config from json-
-        var facade = {
-            getMapConfig: function (url, callback) {
-                callback(mapConfig);
-            }
-        };
+        var facade = new BW.Facade.JSONConfigFacade();
         //manual dependency-injection
         var eventHandler = new BW.Events.EventHandler();
         var repo =  new BW.Repository.ConfigRepository(facade);
@@ -22,6 +18,6 @@ BW.MapCore = BW.MapCore || {};
         }
 
         //lag kartet
-        repo.GetMapConfig(null, initMap);
+        repo.GetMapConfig(mapConfig, initMap);
     };
 }(BW.MapCore));

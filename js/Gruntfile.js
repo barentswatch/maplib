@@ -38,6 +38,7 @@ module.exports = function(grunt) {
             },
             ol3core: {
               src: [
+                    'src/BW.Facade/BW.Facade.JSONConfigFacade.js',
                     'src/BW.Map/BW.Map.OL3Map.js',
                     'src/BW.Utils/BW.Utils.Guid.js',
                     'src/BW.Events/BW.Events.EventHandler.js',
