@@ -51,6 +51,7 @@ var BW = this.BW || {};
             this.get('feature').setStyle(
                 this.collection.options.featureStyle
             );
+            this.get('feature').select = false;
         },
 
         highlightFeature: function () {
