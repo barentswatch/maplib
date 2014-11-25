@@ -1,12 +1,20 @@
 {
-  "name": "kartkjerne",
+  "name": "bwmaplib",
+  "license": "BSD",
+  "version": "0.0.1+build.1416873933210",
   "description": "Kartfunkjsonalitet for BW",
+  "main": "dist/kartkjerne.js",
+  "repository": {
+    "type": "git",
+    "url": "git:code.barentswatch.net/stash/projects/BW/repos/maplib.git"
+  },
   "devDependencies": {
     "grunt": "~0.4.5",
     "grunt-contrib-uglify": "~0.4.0",
     "grunt-contrib-concat": "~0.3.0",
     "buster": "*",
     "grunt-buster": "~0.3.1",
-    "phantomjs": "~1.9.7-1"
+    "phantomjs": "~1.9.7-1",
+    "grunt-bump-build-git": "~1.1.1"
   }
 }

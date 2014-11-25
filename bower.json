@@ -1,0 +1,19 @@
+{
+  "name": "bwmaplib",
+  "version": "0.0.1+build.1416873933210",
+  "authors": [
+    "Atle Frenvik Sveen <atle.sveen@gmail.com>"
+  ],
+  "description": "Kartfunkjsonalitet for BW",
+  "main": "dist/kartkjerne.js",
+  "license": "BSD",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "src",
+    "lib",
+    "Gruntfile"
+  ]
+}

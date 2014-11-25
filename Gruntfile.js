@@ -73,6 +73,10 @@ module.exports = function(grunt) {
                     port: 1112
                 }
             }
+        },
+        build: {
+            tasks: ['default'],
+            gitAdd: 'package.json bower.json dist/*'
         }
     });
 
@@ -80,7 +84,7 @@ module.exports = function(grunt) {
 
     grunt.loadNpmTasks('grunt-contrib-concat');
     grunt.loadNpmTasks('grunt-buster');
-
+    grunt.loadNpmTasks('grunt-bump-build-git');
     grunt.registerTask('default', ['concat', 'uglify']);
 
 };
