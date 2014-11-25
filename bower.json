@@ -15,6 +15,7 @@
     "test",
     "src",
     "lib",
-    "Gruntfile"
+    "Gruntfile.js",
+    "sonar-project.properties"
   ]
 }
