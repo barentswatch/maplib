@@ -4,15 +4,15 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style type="text/css">
-        #left {  
+        #left {
             float: left;
             width: 300px;
         }
         #map {
-           
+
             height: 500px;
             width: 500px;
-            float: left;   
+            float: left;
             border: 1px solid black;
         }
 
@@ -45,7 +45,7 @@
             theme: null, //set theme to null, this means that OpenLayers won't load css
             baseLayers: [
                 {id: 2, visible: true}
-            ],   
+            ],
             baseLayerList: [
                 {
                     id: 1,
@@ -59,7 +59,7 @@
                     protocol: 'WMTS',
                     name: 'Havbunn Grunnkart',
                     url: 'http://opencache.statkart.no/gatekeeper/gk/gk.open_wmts?',
-                    layerName: 'havbunn_grunnkart'                    
+                    layerName: 'havbunn_grunnkart'
                 },
                 {
                     id: 101,
@@ -68,7 +68,7 @@
                     url: 'http://kart.kystverket.no/wms.aspx',
                     layerName: 'layer_452',
                     tiled: false
-                } 
+                }
             ]
         }
     );
@@ -91,24 +91,24 @@
     }
 
     var clusterStyleMap = BW.MapCore.createClusterStyleMap(
-        'sky', 
-        BW.MapCore.Markers('img/markers').createStyleDict('sky', 'md')
+        'sky',
+        BW.MapCore.Markers('../img/markers').createStyleDict('sky', 'md')
     );
 
     var clusterStrategy = new OpenLayers.Strategy.Cluster();
-    clusterStrategy.distance = 50;                
+    clusterStrategy.distance = 50;
     var clusters = new OpenLayers.Layer.Vector('Clusters', {
         strategies: [clusterStrategy],
         styleMap: clusterStyleMap
     });
-    var f = createFeatures(map.map.getMaxExtent());    
+    var f = createFeatures(map.map.getMaxExtent());
     var select = new OpenLayers.Control.SelectFeature(
         clusters,
         {hover: true}
     );
     map.map.addControl(select);
-    select.activate();      
-    
+    select.activate();
+
     map.map.addLayers([clusters]);
     clusters.addFeatures(f);
 

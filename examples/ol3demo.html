@@ -17,7 +17,7 @@
         }
 
     </style>
-    <link rel="stylesheet" type="text/css" href="js/lib/OpenLayers-2.13.1/theme/default/style.css">
+    <link rel="stylesheet" type="text/css" href="../lib/OpenLayers-2.13.1/theme/default/style.css">
 </head>
 <body>
 
@@ -30,16 +30,16 @@
 
 
 
-<script type="text/javascript" src="js/lib/jquery-1.11.0.min.js"></script>
-<script type="text/javascript" src="js/lib/underscore-min.js"></script>
-<script type="text/javascript" src="js/lib/backbone-min.js"></script>
-<script type="text/javascript" src="js/lib/ol.js"></script>
+<script type="text/javascript" src="../lib/jquery-1.11.0.min.js"></script>
+<script type="text/javascript" src="../lib/underscore-min.js"></script>
+<script type="text/javascript" src="../lib/backbone-min.js"></script>
+<script type="text/javascript" src="../lib/ol.js"></script>
 
 
-<script type="text/javascript" src="js/dist/ol3core.js"></script>
-<script type="text/javascript" src="js/dist/ol3listmap.js"></script>
-<script type="text/javascript" src="js/dist/ol3selectevents.js"></script>
-<script type="text/javascript" src="js/dist/ol3markers.js"></script>
+<script type="text/javascript" src="../dist/ol3core.js"></script>
+<script type="text/javascript" src="../dist/ol3listmap.js"></script>
+<script type="text/javascript" src="../dist/ol3selectevents.js"></script>
+<script type="text/javascript" src="../dist/ol3markers.js"></script>
 
 
 <script type="text/javascript">
@@ -119,7 +119,7 @@
 
 
     function initPage(data, mapConfig, mapEl, listEl) {
-        var markers = new BW.MapCore.Markers('img/markers');
+        var markers = new BW.MapCore.Markers('../img/markers');
         var normalStyle = markers.createMarkerStyle('green', 'md');
         var hlStyle = markers.createMarkerStyle('red', 'md', 1000);
         var harbours = new BW.FeatureCollection(
