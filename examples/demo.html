@@ -4,15 +4,15 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style type="text/css">
-        #left {  
+        #left {
             float: left;
             width: 300px;
         }
         #map {
-           
+
             height: 500px;
             width: 500px;
-            float: left;   
+            float: left;
             border: 1px solid black;
         }
 
@@ -30,9 +30,9 @@
 
 
 
-<script type="text/javascript" src="../lib/jquery-1.11.0.min.js"></script>
-<script type="text/javascript" src="../lib/underscore-min.js"></script>
-<script type="text/javascript" src="../lib/backbone-min.js"></script>
+<script type="text/javascript" src="../lib/jquery/dist/jquery.min.js"></script>
+<script type="text/javascript" src="../lib/underscore/underscore-min.js"></script>
+<script type="text/javascript" src="../lib/backbone/backbone.js"></script>
 <script type="text/javascript" src="../lib/OpenLayers-2.13.1/OpenLayers.js"></script>
 <script type="text/javascript" src="../src/mapcore.js"></script>
 
@@ -46,7 +46,7 @@
             theme: null, //set theme to null, this means that OpenLayers won't load css
             baseLayers: [
                 {id: 2, visible: true}
-            ],   
+            ],
             baseLayerList: [
                 {
                     id: 1,
@@ -60,7 +60,7 @@
                     protocol: 'WMTS',
                     name: 'Havbunn Grunnkart',
                     url: 'http://opencache.statkart.no/gatekeeper/gk/gk.open_wmts?',
-                    layerName: 'havbunn_grunnkart'                    
+                    layerName: 'havbunn_grunnkart'
                 },
                 {
                     id: 101,
@@ -69,11 +69,11 @@
                     url: 'http://kart.kystverket.no/wms.aspx',
                     layerName: 'layer_452',
                     tiled: false
-                } 
+                }
             ]
         }
     );
-    
+
     //the overlayList can be set at a later time
     map.setOverlayList([
         {
@@ -99,7 +99,7 @@
             url: 'http://wms.dirnat.no/geoserver/forvaltningsplanomrader_hav/wms',
             layerName: 'forvaltningsplanomrader_hav:fp_nordsjoen',
             tiled: false
-        }      
+        }
     ]).setOverlays([
         {id: 100, opacity: 0.7, visible: true},
         {id: 102, visible: true}
@@ -107,7 +107,7 @@
 
 
     //the overlays-property of the map is a backbone collection
-    var ul = $('<ul></ul>')    
+    var ul = $('<ul></ul>')
     var lis = map.overlays.map(function (overlay) {
         return $('<li>' + overlay.get('name') + '</li>');
     });

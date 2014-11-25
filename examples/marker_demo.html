@@ -4,15 +4,15 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style type="text/css">
-        #left {  
+        #left {
             float: left;
             width: 300px;
         }
         #map {
-           
+
             height: 500px;
             width: 500px;
-            float: left;   
+            float: left;
             border: 1px solid black;
         }
 
@@ -27,9 +27,9 @@
 
 
 
-<script type="text/javascript" src="../lib/jquery-1.11.0.min.js"></script>
-<script type="text/javascript" src="../lib/underscore-min.js"></script>
-<script type="text/javascript" src="../lib/backbone-min.js"></script>
+<script type="text/javascript" src="../lib/jquery/dist/jquery.min.js"></script>
+<script type="text/javascript" src="../lib/underscore/underscore-min.js"></script>
+<script type="text/javascript" src="../lib/backbone/backbone.js"></script>
 <script type="text/javascript" src="../lib/OpenLayers-2.13.1/OpenLayers.js"></script>
 <script type="text/javascript" src="../src/mapcore.js"></script>
 <script type="text/javascript" src="../src/Markers.js"></script>
@@ -47,7 +47,7 @@
                 },
                 "geometry": {
                     "type": "Point",
-                    "coordinates": [                    
+                    "coordinates": [
                         170088,
                         6686300.5
                     ]
@@ -55,49 +55,49 @@
             },
             {
                 "type": "Feature",
-                    "properties": {      
+                    "properties": {
                 },
                 "geometry": {
                     "type": "Point",
                     "coordinates": [
                         11670,
-                        6791912.5                    
+                        6791912.5
                     ]
                 }
             },
             {
                 "type": "Feature",
-                "properties": {      
+                "properties": {
                 },
                 "geometry": {
                     "type": "Point",
                     "coordinates": [
                         269607,
-                        7020738.5                        
+                        7020738.5
                     ]
                 }
             },
             {
                 "type": "Feature",
-                "properties": {      
+                "properties": {
                 },
                 "geometry": {
                     "type": "Point",
                     "coordinates": [
                         -30981,
-                        6886015.5                        
+                        6886015.5
                     ]
                 }
             },
             {
                 "type": "Feature",
-                "properties": {      
+                "properties": {
                 },
                 "geometry": {
                     "type": "Point",
                     "coordinates": [
                         -57384,
-                        6702548.5,                                
+                        6702548.5,
                     ]
                 }
             }
@@ -111,14 +111,14 @@
             theme: null, //set theme to null, this means that OpenLayers won't load css
             baseLayers: [
                 {id: 2, visible: true}
-            ],   
-            baseLayerList: [                
+            ],
+            baseLayerList: [
                 {
                     id: 2,
                     protocol: 'WMTS',
                     name: 'Havbunn Grunnkart',
                     url: 'http://opencache.statkart.no/gatekeeper/gk/gk.open_wmts?',
-                    layerName: 'havbunn_grunnkart'                    
+                    layerName: 'havbunn_grunnkart'
                 }
             ]
         }
@@ -128,7 +128,7 @@
     var markers = new BW.MapCore.Markers('../img/markers');
     var sm = markers.createStyleMap('red', 'md');
     var layer = new OpenLayers.Layer.Vector(
-        'Points', 
+        'Points',
         {styleMap: sm}
     );
 

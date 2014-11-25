@@ -1,6 +1,6 @@
 {
   "name": "bwmaplib",
-  "version": "0.1.0",
+  "version": "0.1.0+build.1416929511369",
   "authors": [
     "Atle Frenvik Sveen <atle.sveen@gmail.com>"
   ],
@@ -17,5 +17,11 @@
     "lib",
     "Gruntfile.js",
     "sonar-project.properties"
-  ]
+  ],
+  "dependencies": {
+    "openlayers3": "~3.0.0",
+    "jquery": "~2.1.1",
+    "backbone": "~1.1.2",
+    "proj4": "~2.3.3"
+  }
 }

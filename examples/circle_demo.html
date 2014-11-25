@@ -4,11 +4,11 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style type="text/css">
-        
+
         #map {
-           
+
             height: 500px;
-            width: 500px;            
+            width: 500px;
             border: 1px solid black;
         }
     </style>
@@ -23,11 +23,12 @@
 </form>
 <div id="result">Aktiver og klikk i kartet for å tegne en sirkel</div>
 
-<script type="text/javascript" src="../lib/jquery-1.11.0.min.js"></script>
-<script type="text/javascript" src="../lib/underscore-min.js"></script>
-<script type="text/javascript" src="../lib/backbone-min.js"></script>
+
+<script type="text/javascript" src="../lib/jquery/dist/jquery.min.js"></script>
+<script type="text/javascript" src="../lib/underscore/underscore-min.js"></script>
+<script type="text/javascript" src="../lib/backbone/backbone.js"></script>
 <script type="text/javascript" src="../lib/OpenLayers-2.13.1/OpenLayers.js"></script>
-<script type="text/javascript" src="../lib/proj4.js"></script>
+<script type="text/javascript" src="../lib/proj4/dist/proj4.js"></script>
 <script type="text/javascript" src="../src/mapcore.js"></script>
 <script type="text/javascript" src="../src/CircleDraw.js"></script>
 
@@ -46,7 +47,7 @@
             initZoom: 0,
             baseLayers: [
                 {id: 1, visible: true}
-            ],   
+            ],
             baseLayerList: [
                 {
                     id: 1,
@@ -54,7 +55,7 @@
                     name: 'Hovedkart Sjø',
                     url: 'http://opencache.statkart.no/gatekeeper/gk/gk.open_wmts?',
                     layerName: 'sjo_hovedkart2'
-                } 
+                }
             ]
         }
     );
