@@ -43,12 +43,56 @@ BW.SelectEvents = BW.SelectEvents || {};
 
 
     ns.registerHoverEvents = function (map, layer) {
+        //TODO when https://github.com/openlayers/ol3/pull/2965 gets merged
+        //to ol3 master and released we should rewrite this to work in the same
+        //fashion as registerClickEvents (using a ol.events.condition.mouseMove
+        // condition with a Select interaction. Then we can drop all style-
+        //related stuff in FeatureCollection.js
         registerSelectEvents('mousemove', map, layer, 'over', 'out');
     };
 
 
-    ns.registerClickEvents = function (map, layer) {
-        registerSelectEvents('click', map, layer, 'select', 'deselect');
+    ns.registerClickEvents = function (map, layer, selectStyle) {
+
+        var selectClick = new ol.interaction.Select({
+            condition: ol.events.condition.click,
+            layers: [layer],
+            style: selectStyle
+        });
+        map.addInteraction(selectClick);
+        var features = selectClick.getFeatures();
+        var selectedHere = null;
+
+        features.on('change:length', function (e) {
+            if (features.getLength() > 0) {
+                var sel = features.getArray()[0];
+                if (sel !== selectedHere) {
+                    selectedHere = sel;
+                    selectedHere.trigger('select', selectedHere);
+                }
+            } else {
+                layer.getSource().forEachFeature(function (e) {
+                    e.trigger('deselect', e);
+                });
+                selectedHere = null;
+            }
+        });
+
+        layer.on('deselectFeature', function (e) {
+            layer.getSource().forEachFeature(function (e) {
+                if (!e.select) {
+                    features.remove(e);
+                }
+            });
+        });
+
+        layer.on('selectFeature', function () {
+            layer.getSource().forEachFeature(function (e) {
+                if (e.select && e !== selectedHere) {
+                    features.push(e);
+                }
+            });
+        })
     };
 
 }(BW.SelectEvents));

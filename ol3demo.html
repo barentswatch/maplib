@@ -147,7 +147,7 @@
             olmap.addLayer(vector);
             //registrer events
             BW.SelectEvents.registerHoverEvents(olmap, vector);
-            BW.SelectEvents.registerClickEvents(olmap, vector);
+            BW.SelectEvents.registerClickEvents(olmap, vector, hlStyle);
         }
 
         BW.MapCore.setupMap(document.getElementById(mapEl), mapConfig, mapInit);

@@ -83,17 +83,13 @@ var BW = this.BW || {};
         },
 
         selectFeature: function () {
-            this.get('feature').setStyle(
-                this.collection.options.selectStyle
-            );
             this.get('feature').select = true;
+            this.collection.getLayer().dispatchEvent('selectFeature');
         },
 
         deselectFeature: function () {
-            this.get('feature').setStyle(
-                this.collection.options.featureStyle
-            );
             this.get('feature').select = false;
+            this.collection.getLayer().dispatchEvent('deselectFeature');
         },
 
         highlightFeature: function () {
@@ -103,11 +99,9 @@ var BW = this.BW || {};
         },
 
         unhighlightFeature: function () {
-            if (!this.get('feature').select) {
-                this.get('feature').setStyle(
-                    this.collection.options.featureStyle
-                );
-            }
+            this.get('feature').setStyle(
+                this.collection.options.featureStyle
+            );
         }
 
     });
