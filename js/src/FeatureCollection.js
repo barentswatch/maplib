@@ -46,7 +46,6 @@ var BW = this.BW || {};
 (function (ns) {
     'use strict';
 
-     //modell for havn
     ns.FeatureModel = Backbone.Model.extend({
         initialize: function (data) {
 
@@ -94,7 +93,7 @@ var BW = this.BW || {};
 
         highlightFeature: function () {
             this.get('feature').setStyle(
-                this.collection.options.selectStyle
+                this.collection.options.hoverStyle
             );
         },
 
@@ -110,29 +109,28 @@ var BW = this.BW || {};
 
         model: ns.FeatureModel,
 
-        reset: function(models, options) {
+        reset: function (models, options) {
             var format = new ol.format.GeoJSON();
-            var modifiedModels = _.map(models, function(model) {
+            var modifiedModels = _.map(models, function (model) {
                 if (!model.feature) {
-                        model.feature = new ol.Feature({
+                    model.feature = new ol.Feature({
                         geometry: format.readGeometry(model.geometry)
                     });
                     delete model.geometry;
                 }
                 return model;
             });
-            var d = Backbone.Collection.prototype.reset.apply(
+            var resetResult = Backbone.Collection.prototype.reset.apply(
                 this,
                 [modifiedModels, options]
             );
             this.populateLayer();
-            return d;
+            return resetResult;
         },
 
         initialize: function (data, options) {
             this.options = options;
             this.on('select', this.featureSelected, this);
-            this.on('reset', this.parseFeatures, this);
             this.createLayer();
         },
 
@@ -153,12 +151,12 @@ var BW = this.BW || {};
         },
 
         populateLayer: function () {
-            this.each(function(harbour) {
-                this.vectorSource.addFeature(harbour.get('feature'));
+            this.each(function (model) {
+                this.vectorSource.addFeature(model.get('feature'));
             }, this);
         },
 
-        getLayer: function() {
+        getLayer: function () {
             if (!this.layer) {
                 this.createLayer();
             }

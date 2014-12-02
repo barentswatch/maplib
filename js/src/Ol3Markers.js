@@ -10,6 +10,14 @@
 
     Use the createMarkerStyleDict in the same fashion to get a POJO (ie not wrapped i ol.styleStyle).
     This is useful for creating more complicated rules and such.
+
+    For available colors, see the COLORS array below.
+    For available markers, see the img/markers folder
+    There are three sizes:
+        - sm (small)  (23x28 px)
+        - md (medium) (33x40 px)
+        - lg (large)  (44x56 px)
+
 */
 
 var BW = this.BW || {};
@@ -51,9 +59,9 @@ BW.MapCore.Markers = function (imgUrl) {
     function getMarkerFilename(color, size) {
         var validSize = (['sm', 'md', 'lg'].indexOf(size) !== -1);
         var validColor = (_.keys(COLORS).indexOf(color) !== -1);
-        if (! validColor) {
+        if (!validColor) {
             throw new Error(
-                'Color "' + color+ '"" is not supported!'
+                'Color "' + color + '"" is not supported!'
             );
         }
         if (!validSize) {

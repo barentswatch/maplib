@@ -3,7 +3,7 @@
 /*
     Base Backbone view that can be used to provided map-list interactions as in Havnebase.
 
-    Assumes that the model bassed has a feature property (which should be an ol3 vector feature)
+    Assumes that the model passed has a feature property (which should be an ol3 vector feature)
 
     Assumes that the model triggers the following events:
         over: for mouseover on marker

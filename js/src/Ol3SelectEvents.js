@@ -84,7 +84,7 @@ BW.SelectEvents = BW.SelectEvents || {};
         });
     }
 
-    ns.registerHoverEvents = function (map, layer, hoverStyle) {
+    ns.registerHoverEvents = function (map, layer, hightlightStyle) {
         registerSelectEventsHack('mousemove', map, layer, 'over', 'out');
 
         /*
@@ -100,7 +100,7 @@ BW.SelectEvents = BW.SelectEvents || {};
         var on = 'over';
         var off = 'out';
         var condition = ol.events.condition.mouseMove;
-        registerSelectEvents(map, layer, hoverStyle, condition, on, off);
+        registerSelectEvents(map, layer, hightlightStyle, condition, on, off);
         */
 
         /*
