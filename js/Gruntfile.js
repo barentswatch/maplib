@@ -8,31 +8,31 @@ module.exports = function(grunt) {
             },
             core: {
                 src: [
-                    'src/mapcore.js'
+                    'src/ol2/Mapcore.js'
                 ],
                 dest: 'dist/kartkjerne.js'
             },
             circlecontrol: {
               src: [
-                    'src/CircleDraw.js'
+                    'src/ol2/CircleDraw.js'
                 ],
                 dest: 'dist/circledraw.js'
             },
             wfslayer: {
               src: [
-                    'src/WfsLayer.js'
+                    'src/ol2/WfsLayer.js'
                 ],
                 dest: 'dist/wfslayer.js'
             },
             clusterstyle: {
               src: [
-                    'src/ClusterStyle.js'
+                    'src/ol2/ClusterStyle.js'
                 ],
                 dest: 'dist/clusterstyle.js'
             },
             wmshttpsproxy: {
               src: [
-                    'src/WmsHttpsProxy.js'
+                    'src/ol2/WmsHttpsProxy.js'
                 ],
                 dest: 'dist/wmshttpsproxy.js'
             },
@@ -50,26 +50,26 @@ module.exports = function(grunt) {
                     'src/BW.Repository/BW.Repository.ConfigRepository.js',
                     'src/BW.Repository/BW.Repository.MapConfig.js',
                     'src/BW.FeatureParser/BW.FeatureParser.ResultParser.js',
-                    'src/ol3wrapper.js'
+                    'src/ol3/ParserWrapper.js'
                 ],
                 dest: 'dist/ol3core.js'
             },
             ol3listmap: {
               src: [
-                    'src/FeatureCollection.js',
-                    'src/ListMapView.js'
+                    'src/ol3/FeatureCollection.js',
+                    'src/ol3/ListMapView.js'
                 ],
                 dest: 'dist/ol3listmap.js'
             },
             ol3markers: {
               src: [
-                    'src/Ol3Markers.js'
+                    'src/ol3/Markers.js'
                 ],
                 dest: 'dist/ol3markers.js'
             },
             ol3selectevents: {
               src: [
-                    'src/Ol3SelectEvents.js'
+                    'src/ol3/SelectEvents.js'
                 ],
                 dest: 'dist/ol3selectevents.js'
             }
