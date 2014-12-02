@@ -29,7 +29,7 @@ BW.MapCore.Markers = function (imgUrl) {
     var COLORS = {
         'black':    '#000000',
         'blue':     '#085382',
-        'gray':     '#4C4C4E',
+        'grey':     '#4C4C4E',
         'green':    '#118208',
         'orange':   '#F05A28',
         'red':      '#D72323',
