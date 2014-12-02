@@ -17,7 +17,7 @@
         }
 
     </style>
-    <link rel="stylesheet" type="text/css" href="js/lib/OpenLayers-2.13.1/theme/default/style.css">
+    <link rel="stylesheet" type="text/css" href="js/lib/ol.css">
 </head>
 <body>
 
@@ -120,7 +120,7 @@
 
     function initPage(data, mapConfig, mapEl, listEl) {
         var markers = new BW.MapCore.Markers('img/markers');
-        //var normalStyle = markers.createMarkerStyle('green', 'md');
+
         var normalStyle = markers.createResDependant({
             30000: {type: 'circle', color: 'green', size: 4},
             2000: {type: 'marker', color: 'green', size: 'sm'},
@@ -142,6 +142,8 @@
         );
 
         function mapInit(olmap) {
+            //legg til en zoom-control
+            olmap.addControl(new ol.control.Zoom());
             var vector = harbours.getLayer()
             //legg til kartet
             olmap.addLayer(vector);
