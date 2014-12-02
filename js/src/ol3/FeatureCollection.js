@@ -110,16 +110,7 @@ var BW = this.BW || {};
         model: ns.FeatureModel,
 
         reset: function (models, options) {
-            var format = new ol.format.GeoJSON();
-            var modifiedModels = _.map(models, function (model) {
-                if (!model.feature) {
-                    model.feature = new ol.Feature({
-                        geometry: format.readGeometry(model.geometry)
-                    });
-                    delete model.geometry;
-                }
-                return model;
-            });
+            var modifiedModels = _.map(models, this.parseGeom);
             var resetResult = Backbone.Collection.prototype.reset.apply(
                 this,
                 [modifiedModels, options]
@@ -128,7 +119,19 @@ var BW = this.BW || {};
             return resetResult;
         },
 
+        parseGeom: function (model) {
+            var format = new ol.format.GeoJSON();
+            if (!model.feature) {
+                model.feature = new ol.Feature({
+                    geometry: format.readGeometry(model.geometry)
+                });
+                delete model.geometry;
+            }
+            return model;
+        },
+
         initialize: function (data, options) {
+            options = options || {};
             this.options = options;
             this.on('select', this.featureSelected, this);
             this.createLayer();
