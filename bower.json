@@ -1,0 +1,12 @@
+{
+  "name": "areaManagement",
+  "version": "0.0.1",
+  "devDependencies": {},
+  "dependencies": {
+    "openlayers3": "*",
+    "underscore": "*",
+    "xml2json": "*",
+    "proj4": "*",
+    "portal-css-bower": "https://code.barentswatch.net/stash/scm/bw/portal-css-bower.git"
+  }
+}

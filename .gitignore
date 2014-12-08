@@ -1,2 +1,12 @@
-js/node_modules/
-js/dist/
+*.sw*
+*~
+build/
+bin/
+dist/
+node_modules/
+vendor/
+.bower-cache/
+.bower-registry/
+.idea/
+.sass-cache/
+.divshot-cache/
