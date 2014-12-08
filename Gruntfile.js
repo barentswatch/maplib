@@ -10,12 +10,10 @@ module.exports = function ( grunt ) {
   grunt.loadNpmTasks('grunt-contrib-concat');
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-contrib-uglify');
-  grunt.loadNpmTasks('grunt-contrib-compass');
   grunt.loadNpmTasks('grunt-conventional-changelog');
   grunt.loadNpmTasks('grunt-bump');
   grunt.loadNpmTasks('grunt-karma');
   grunt.loadNpmTasks('grunt-ngmin');
-  grunt.loadNpmTasks('grunt-html2js');
 
   /**
    * Load in our build configuration file.
@@ -186,9 +184,7 @@ module.exports = function ( grunt ) {
         src: [ 
           '<%= vendor_files.js %>', 
           'module.prefix', 
-          '<%= build_dir %>/src/**/*.js', 
-          '<%= html2js.app.dest %>', 
-          '<%= html2js.common.dest %>', 
+          '<%= build_dir %>/src/**/*.js',
           'module.suffix' 
         ],
         dest: '<%= compile_dir %>/assets/<%= pkg.name %>-<%= pkg.version %>.js'
@@ -222,24 +218,6 @@ module.exports = function ( grunt ) {
         },
         files: {
           '<%= concat.compile_js.dest %>': '<%= concat.compile_js.dest %>'
-        }
-      }
-    },
-
-    compass: {
-      dist: {
-        options: {
-          sassDir: 'src/sass/',
-          cssDir: '<%= build_dir %>/css/',
-          raw: "preferred_syntax = :scss\n"
-        }
-      },
-      dev: {
-        options: {
-          outputStyle: 'compact',
-          sassDir: 'src/sass/',
-          cssDir: '<%= build_dir %>/css/',
-          raw: "preferred_syntax = :scss\n"
         }
       }
     },
@@ -280,36 +258,6 @@ module.exports = function ( grunt ) {
     },
 
     /**
-     * HTML2JS is a Grunt plugin that takes all of your template files and
-     * places them into JavaScript files as strings that are added to
-     * AngularJS's template cache. This means that the templates too become
-     * part of the initial payload as one JavaScript file. Neat!
-     */
-    html2js: {
-      /**
-       * These are the templates from `src/app`.
-       */
-      app: {
-        options: {
-          base: 'src/app'
-        },
-        src: [ '<%= app_files.atpl %>' ],
-        dest: '<%= build_dir %>/templates-app.js'
-      },
-
-      /**
-       * These are the templates from `src/common`.
-       */
-      common: {
-        options: {
-          base: 'src/common'
-        },
-        src: [ '<%= app_files.ctpl %>' ],
-        dest: '<%= build_dir %>/templates-common.js'
-      }
-    },
-
-    /**
      * The Karma configurations.
      */
     karma: {
@@ -342,8 +290,6 @@ module.exports = function ( grunt ) {
         src: [
           '<%= vendor_files.js %>',
           '<%= build_dir %>/src/**/*.js',
-          '<%= html2js.common.dest %>',
-          '<%= html2js.app.dest %>',
           '<%= build_dir %>/assets/<%= pkg.name %>-<%= pkg.version %>.css'
         ]
       },
@@ -372,8 +318,6 @@ module.exports = function ( grunt ) {
         dir: '<%= build_dir %>',
         src: [ 
           '<%= vendor_files.js %>',
-          '<%= html2js.app.dest %>',
-          '<%= html2js.common.dest %>',
           '<%= test_files.js %>'
         ]
       }
@@ -435,14 +379,6 @@ module.exports = function ( grunt ) {
       },
 
       /**
-       * When index.html changes, we need to compile it.
-       */
-      html: {
-        files: [ '<%= app_files.html %>' ],
-        tasks: [ 'index:build' ]
-      },
-
-      /**
        * When our templates change, we only rewrite the template cache.
        */
       tpls: {
@@ -450,7 +386,7 @@ module.exports = function ( grunt ) {
           '<%= app_files.atpl %>', 
           '<%= app_files.ctpl %>'
         ],
-        tasks: [ 'html2js' ]
+        tasks: [ ]
       },
 
       /**
@@ -458,7 +394,7 @@ module.exports = function ( grunt ) {
        */
       sass: {
         files: [ 'src/**/*.scss' ],
-        tasks: [ 'compass:dev', 'concat:build_css' ]
+        tasks: [ 'concat:build_css' ]
       },
 
       /**
@@ -498,26 +434,24 @@ module.exports = function ( grunt ) {
    * The `build` task gets your app ready to run for development and testing.
    */
   grunt.registerTask( 'build', [
-    'clean', 'html2js', 'jshint', 'compass:dev',
+    'clean', 'jshint',
     'concat:build_css', 'copy:build_app_assets', 'copy:build_vendor_assets', 'copy:build_vendor_fonts',
-    'copy:build_appjs', 'copy:build_vendorjs', 'index:build', 'karmaconfig',
+    'copy:build_appjs', 'copy:build_vendorjs', 'karmaconfig',
     'karma:continuous' 
   ]);
 
-    grunt.registerTask( 'build-ci', [
-        'clean', 'html2js', 'jshint', 'compass:dist',
-        'concat:build_css', 'copy:build_app_assets', 'copy:build_vendor_assets', 'copy:build_vendor_fonts',
-        'copy:build_appjs', 'copy:build_vendorjs', 'index:build', 'karmaconfig'
-    ]);
-
-
+  grunt.registerTask( 'build-ci', [
+      'clean', 'jshint',
+      'concat:build_css', 'copy:build_app_assets', 'copy:build_vendor_assets', 'copy:build_vendor_fonts',
+      'copy:build_appjs', 'copy:build_vendorjs', 'karmaconfig'
+  ]);
 
   /**
    * The `compile` task gets your app ready for deployment by concatenating and
    * minifying your code.
    */
   grunt.registerTask( 'compile', [
-    'compass:dev', 'copy:compile_assets', 'ngmin', 'concat:compile_js', 'uglify', 'index:compile'
+    'copy:compile_assets', 'ngmin', 'concat:compile_js', 'uglify'
   ]);
 
   /**
@@ -528,53 +462,6 @@ module.exports = function ( grunt ) {
       return file.match( /\.js$/ );
     });
   }
-
-  /**
-   * A utility function to get all app CSS sources.
-   */
-  function filterForCSS ( files ) {
-    return files.filter( function ( file ) {
-      return file.match( /\.css$/ );
-    });
-  }
-
-  /** 
-   * The index.html template includes the stylesheet and javascript sources
-   * based on dynamic names calculated in this Gruntfile. This task assembles
-   * the list into variables for the template to use and then runs the
-   * compilation.
-   */
-  grunt.registerMultiTask( 'index', 'Process index.html template', function () {
-    var dirRE = new RegExp( '^('+grunt.config('build_dir')+'|'+grunt.config('compile_dir')+')\/', 'g' );
-    var jsFiles = filterForJS( this.filesSrc ).map( function ( file ) {
-      return file.replace( dirRE, '' );
-    });
-    var cssFiles = filterForCSS( this.filesSrc ).map( function ( file ) {
-      return file.replace( dirRE, '' );
-    });
-
-    var copyOptions = {
-      process: function ( contents ) {
-        return grunt.template.process( contents, {
-          data: {
-            scripts: jsFiles,
-            styles: cssFiles,
-            version: grunt.config( 'pkg.version' )
-          }
-        });
-      }
-    };
-
-    grunt.file.copy('src/index.html', this.data.dir + '/index.html', copyOptions);
-    grunt.file.copy('src/indexMobile.html', this.data.dir + '/indexMobile.html', copyOptions);
-    grunt.file.copy('src/lov.html', this.data.dir + '/lov.html', copyOptions);
-    grunt.file.copy('src/config.html', this.data.dir + '/config.html', copyOptions);
-    grunt.file.copy('src/robots.txt', this.data.dir + '/robots.txt', copyOptions);
-  });
-  /**
-   * LovData - END
-   */
-
 
   /**
    * In order to avoid having to specify manually the files needed for karma to

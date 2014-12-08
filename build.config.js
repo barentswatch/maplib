@@ -26,8 +26,7 @@ module.exports = {
     atpl: [ 'src/app/**/*.tpl.html' ],
     ctpl: [ 'src/common/**/*.tpl.html' ],
 
-    html: [ 'src/index.html', 'src/indexMobile.html', 'src/lov.html', 'src/config.html' ],
-    sass: 'src/sass/main.scss'
+    html: [ ]
   },
 
   /**
@@ -35,7 +34,6 @@ module.exports = {
    */
   test_files: {
     js: [
-      'vendor/angular-mocks/angular-mocks.js'
     ]
   },
 
@@ -60,28 +58,16 @@ module.exports = {
   vendor_files: {
     js: [
       'vendor/jquery/dist/jquery.js',
-      'vendor/angular/angular.js',
-      'vendor/angular-route/angular-route.js',
-      'vendor/angular-bootstrap/ui-bootstrap.js',
-      'vendor/angular-bootstrap/ui-bootstrap-tpls.js',
-      'vendor/placeholders/angular-placeholders-0.0.1-SNAPSHOT.min.js',
-      'vendor/angular-ui-router/release/angular-ui-router.js',
-      'vendor/angular-ui-utils/modules/route/route.js',
       'vendor/openlayers3/build/ol.js',
-      'vendor/bootstrap/dist/js/bootstrap.min.js',
-      'vendor/angular-tree-control/angular-tree-control.js',
       'vendor/underscore/underscore-min.js',
       'vendor/underscore/underscore-min.map',
       'vendor/xml2json/xml2json.js',
-      'vendor/angular-translate/angular-translate.js',
       'vendor/proj4/dist/proj4.js'
     ],
     css: [
-      'src/assets/barentswatch.css',
       'vendor/openlayers3/build/ol.css'
     ],
     assets: [
-        'src/assets/img/'
     ],
     fonts: [
       'vendor/bootstrap/fonts/glyphicons-halflings-regular.woff',
