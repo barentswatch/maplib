@@ -94,37 +94,16 @@ module.exports = function ( grunt ) {
      * `build_dir`, and then to copy the assets to `compile_dir`.
      */
     copy: {
-      build_app_assets: {
-        files: [
-          { 
-            src: [ '**' ],
-            dest: '<%= build_dir %>/assets/',
-            cwd: 'src/assets',
-            expand: true
-          }
-       ]   
-      },
       build_vendor_assets: {
         files: [
           { 
             src: [ '<%= vendor_files.assets %>' ],
-            dest: '<%= build_dir %>/assets/',
+            dest: '<%= build_dir %>/',
             cwd: '.',
             expand: true,
             flatten: true
           }
        ]   
-      },
-      build_vendor_fonts: {
-        files: [
-          {
-            src: [ '<%= vendor_files.fonts %>' ],
-            dest: '<%= build_dir %>/fonts/',
-            cwd: '.',
-            expand: true,
-            flatten: true
-          }
-       ]
       },
       build_appjs: {
         files: [
@@ -149,7 +128,7 @@ module.exports = function ( grunt ) {
       compile_assets: {
         files: [
           {
-            src: [ '**' ],
+            src: [ '**', '!karma*.js' ],
             dest: '<%= compile_dir %>',
             cwd: '<%= build_dir %>',
             expand: true
@@ -169,7 +148,7 @@ module.exports = function ( grunt ) {
         src: [
           '<%= vendor_files.css %>'
         ],
-        dest: '<%= build_dir %>/assets/<%= pkg.name %>-<%= pkg.version %>.css'
+        dest: '<%= build_dir %>/<%= pkg.name %>-<%= pkg.version %>.css'
       },
       /**
        * The `compile_js` target is the concatenation of our application source
@@ -179,8 +158,8 @@ module.exports = function ( grunt ) {
         options: {
           banner: '<%= meta.banner %>'
         },
-        src: [ 
-          '<%= vendor_files.js %>',
+        src: [
+          /*'<%= vendor_files.js %>',*/
           'module.prefix',
           '<%= build_dir %>/src/**/*.js',
           'module.suffix'
@@ -288,7 +267,7 @@ module.exports = function ( grunt ) {
         src: [
           '<%= vendor_files.js %>',
           '<%= build_dir %>/src/**/*.js',
-          '<%= build_dir %>/assets/<%= pkg.name %>-<%= pkg.version %>.css'
+          '<%= build_dir %>/<%= pkg.name %>-<%= pkg.version %>.css'
         ]
       },
 
@@ -432,15 +411,12 @@ module.exports = function ( grunt ) {
    * The `build` task gets your app ready to run for development and testing.
    */
   grunt.registerTask( 'build', [
-    'clean', 'jshint',
-    'concat:build_css', 'copy:build_app_assets', 'copy:build_vendor_assets', 'copy:build_vendor_fonts',
-    'copy:build_appjs', 'copy:build_vendorjs', 'karmaconfig',
-    'karma:continuous' 
+    'clean', 'jshint', 'concat:build_css', 'copy:build_vendor_assets',
+    'copy:build_appjs', 'copy:build_vendorjs', 'karmaconfig', 'karma:continuous'
   ]);
 
   grunt.registerTask( 'build-ci', [
-      'clean', 'jshint',
-      'concat:build_css', 'copy:build_app_assets', 'copy:build_vendor_assets', 'copy:build_vendor_fonts',
+      'clean', 'jshint', 'concat:build_css', 'copy:build_vendor_assets',
       'copy:build_appjs', 'copy:build_vendorjs', 'karmaconfig'
   ]);
 
@@ -449,7 +425,7 @@ module.exports = function ( grunt ) {
    * minifying your code.
    */
   grunt.registerTask( 'compile', [
-    'copy:compile_assets', 'ngmin', 'concat:compile_js', 'uglify'
+    'copy:compile_assets', /*'ngmin',*/ 'concat:compile_js'/*, 'uglify'*/
   ]);
 
   /**
