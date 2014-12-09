@@ -60,10 +60,10 @@ module.exports = {
       'vendor/jquery/dist/jquery.js',
       'vendor/openlayers3/build/ol.js',
       'vendor/xml2json/xml2json.js',
-      'vendor/proj4/dist/proj4.js'
+      'vendor/proj4/dist/proj4.js',
+      'vendor/openlayers3/build/ol.css'
     ],
     css: [
-      'vendor/openlayers3/build/ol.css'
     ],
     assets: [
     ],
