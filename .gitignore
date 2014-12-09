@@ -3,7 +3,7 @@
 .bower-cache/
 .bower-registry/
 .bower-tmp/
-build/
+/build/
 karma/
 node_modules/
 /vendor/
