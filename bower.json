@@ -1,11 +1,10 @@
 {
-  "name": "areaManagement",
+  "name": "maplib",
   "version": "0.0.1",
   "devDependencies": {},
   "dependencies": {
     "jquery": "*",
     "openlayers3": "*",
-    "underscore": "*",
     "xml2json": "*",
     "proj4": "*",
     "portal-css-bower": "https://code.barentswatch.net/stash/scm/bw/portal-css-bower.git"

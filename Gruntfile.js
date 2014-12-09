@@ -43,7 +43,7 @@ module.exports = function ( grunt ) {
         ' * <%= pkg.homepage %>\n' +
         ' *\n' +
         ' * Copyright (c) <%= grunt.template.today("yyyy") %> <%= pkg.author %>\n' +
-        ' * Licensed <%= pkg.licenses.type %> <<%= pkg.licenses.url %>>\n' +
+        /*' * Licensed <%= pkg.licenses.type %> <<%= pkg.licenses.url %>>\n' +*/
         ' */\n'
     },
 
@@ -150,8 +150,8 @@ module.exports = function ( grunt ) {
         files: [
           {
             src: [ '**' ],
-            dest: '<%= compile_dir %>/assets',
-            cwd: '<%= build_dir %>/assets',
+            dest: '<%= compile_dir %>',
+            cwd: '<%= build_dir %>',
             expand: true
           }
         ]
@@ -163,13 +163,11 @@ module.exports = function ( grunt ) {
      */
     concat: {
       /**
-       * The `build_css` target concatenates compiled CSS and vendor CSS
-       * together.
+       * The `build_css` target concatenates vendor CSS.
        */
       build_css: {
         src: [
-          '<%= vendor_files.css %>',
-          '<%= build_dir %>/css/main.css'
+          '<%= vendor_files.css %>'
         ],
         dest: '<%= build_dir %>/assets/<%= pkg.name %>-<%= pkg.version %>.css'
       },
@@ -182,12 +180,12 @@ module.exports = function ( grunt ) {
           banner: '<%= meta.banner %>'
         },
         src: [ 
-          '<%= vendor_files.js %>', 
-          'module.prefix', 
+          '<%= vendor_files.js %>',
+          'module.prefix',
           '<%= build_dir %>/src/**/*.js',
-          'module.suffix' 
+          'module.suffix'
         ],
-        dest: '<%= compile_dir %>/assets/<%= pkg.name %>-<%= pkg.version %>.js'
+        dest: '<%= compile_dir %>/<%= pkg.name %>-<%= pkg.version %>.js'
       }
     },
 
@@ -304,7 +302,7 @@ module.exports = function ( grunt ) {
         src: [
           '<%= concat.compile_js.dest %>',
           '<%= vendor_files.css %>',
-          '<%= build_dir %>/assets/<%= pkg.name %>-<%= pkg.version %>.css'
+          '<%= build_dir %>/<%= pkg.name %>-<%= pkg.version %>.css'
         ]
       }
     },

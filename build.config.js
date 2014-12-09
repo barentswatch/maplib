@@ -8,7 +8,7 @@ module.exports = {
    * completely built.
    */
   build_dir: 'build',
-  compile_dir: 'bin',
+  compile_dir: 'dist',
 
   /**
    * This is a collection of file patterns that refer to our app code (the
@@ -59,8 +59,6 @@ module.exports = {
     js: [
       'vendor/jquery/dist/jquery.js',
       'vendor/openlayers3/build/ol.js',
-      'vendor/underscore/underscore-min.js',
-      'vendor/underscore/underscore-min.map',
       'vendor/xml2json/xml2json.js',
       'vendor/proj4/dist/proj4.js'
     ],
