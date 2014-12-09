@@ -1,8 +1,12 @@
-/*
+
 describe('BW.Events.EventHandler is triggered', function() {
     var eventHandler, val;
 
     beforeEach(function(){
+
+    });
+
+    it('should run its callback', function() {
         eventHandler = new BW.Events.EventHandler();
 
         val = 0;
@@ -12,9 +16,6 @@ describe('BW.Events.EventHandler is triggered', function() {
         });
 
         eventHandler.TriggerEvent("TestEvent", 10);
-    });
-
-    it('should run its callback', inject( function() {
         expect(val).toEqual(10);
-    }));
-});*/
+    });
+});

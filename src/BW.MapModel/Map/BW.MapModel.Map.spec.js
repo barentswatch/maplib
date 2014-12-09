@@ -1,4 +1,4 @@
-/*
+
 describe('new BW.MapModel.Map', function() {
     var mapModel;
     var map;
@@ -13,7 +13,7 @@ describe('new BW.MapModel.Map', function() {
         mapModel = new BW.MapModel.Map(map);
     });
 
-    it('should return its public methods', inject( function() {
+    it('should return its public methods',  function() {
         expect(mapModel.Init).not.toBe(undefined);
         expect(mapModel.ShowLayer).not.toBe(undefined);
         expect(mapModel.HideLayer).not.toBe(undefined);
@@ -21,16 +21,16 @@ describe('new BW.MapModel.Map', function() {
         expect(mapModel.GetBaseLayers).not.toBe(undefined);
         expect(mapModel.SetBaseLayer).not.toBe(undefined);
         expect(mapModel.SetLayerOpacity).not.toBe(undefined);
-    }));
+    });
 
-    */
+
 /**
      * Obsolete, config is called outside mapInit
 
     it("gets the map config from the repository", function() {
         expect(repository.GetMapConfig).toHaveBeenCalled();
     });
-     *//*
+     */
 
 
 });
@@ -142,4 +142,4 @@ describe('BW.MapModel.Map.Init', function() {
             expect(subLayers[layerIndex].layerIndex).toEqual(layerIndex);
         }
     });
-});*/
+});
