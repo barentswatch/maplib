@@ -148,7 +148,7 @@ module.exports = function ( grunt ) {
         src: [
           '<%= vendor_files.css %>'
         ],
-        dest: '<%= build_dir %>/<%= pkg.name %>-<%= pkg.version %>.css'
+        dest: '<%= build_dir %>/<%= pkg.name %>.css'
       },
       /**
        * The `compile_js` target is the concatenation of our application source
@@ -164,7 +164,7 @@ module.exports = function ( grunt ) {
           '<%= build_dir %>/src/**/*.js',
           'module.suffix'
         ],
-        dest: '<%= compile_dir %>/<%= pkg.name %>-<%= pkg.version %>.js'
+        dest: '<%= compile_dir %>/<%= pkg.name %>.js'
       }
     },
 
@@ -267,7 +267,7 @@ module.exports = function ( grunt ) {
         src: [
           '<%= vendor_files.js %>',
           '<%= build_dir %>/src/**/*.js',
-          '<%= build_dir %>/<%= pkg.name %>-<%= pkg.version %>.css'
+          '<%= build_dir %>/<%= pkg.name %>.css'
         ]
       },
 
@@ -281,7 +281,7 @@ module.exports = function ( grunt ) {
         src: [
           '<%= concat.compile_js.dest %>',
           '<%= vendor_files.css %>',
-          '<%= build_dir %>/<%= pkg.name %>-<%= pkg.version %>.css'
+          '<%= build_dir %>/<%= pkg.name %>.css'
         ]
       }
     },
@@ -411,12 +411,12 @@ module.exports = function ( grunt ) {
    * The `build` task gets your app ready to run for development and testing.
    */
   grunt.registerTask( 'build', [
-    'clean', 'jshint', 'concat:build_css', 'copy:build_vendor_assets',
+    'clean', 'jshint', /*'concat:build_css',*/ 'copy:build_vendor_assets',
     'copy:build_appjs', 'copy:build_vendorjs', 'karmaconfig', 'karma:continuous'
   ]);
 
   grunt.registerTask( 'build-ci', [
-      'clean', 'jshint', 'concat:build_css', 'copy:build_vendor_assets',
+      'clean', 'jshint', /*'concat:build_css',*/ 'copy:build_vendor_assets',
       'copy:build_appjs', 'copy:build_vendorjs', 'karmaconfig'
   ]);
 
