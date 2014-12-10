@@ -42,10 +42,10 @@ BW.Map.OL3.Map = function(repository, eventHandler, httpHelper, measure, feature
             overlays: []
         });
 
-        registerMapCallbacks();
+        _registerMapCallbacks();
     }
 
-    function registerMapCallbacks(){
+    function _registerMapCallbacks(){
         var view = map.getView();
 
         var changeCenter = function(){
@@ -508,7 +508,6 @@ BW.Map.OL3.Map = function(repository, eventHandler, httpHelper, measure, feature
     return {
         // Start up start
         InitMap: initMap,
-        RegisterMapCallbacks: registerMapCallbacks,
         ChangeView: changeView,
         // Start up end
 
