@@ -84,8 +84,7 @@ module.exports = function ( grunt ) {
      * The directories to delete when `grunt clean` is executed.
      */
     clean: [ 
-      '<%= build_dir %>', 
-      '<%= compile_dir %>'
+      '<%= build_dir %>'
     ],
 
     /**
