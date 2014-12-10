@@ -6,7 +6,6 @@
     "jquery": "*",
     "openlayers3": "*",
     "xml2json": "*",
-    "proj4": "*",
-    "portal-css-bower": "https://code.barentswatch.net/stash/scm/bw/portal-css-bower.git"
+    "proj4": "*"
   }
 }
