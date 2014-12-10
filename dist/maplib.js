@@ -1,5 +1,5 @@
 /**
- * maplib - v0.0.1 - 2014-12-09
+ * maplib - v0.0.1 - 2014-12-10
  * http://localhost
  *
  * Copyright (c) 2014 
@@ -23,6 +23,16 @@ BW.Domain.FeatureInfo = function(config){
     var instance =  $.extend({}, defaults, config);
 
     return instance;
+};
+var BW = BW || {};
+BW.Domain = BW.Domain || {};
+
+BW.Domain.FeatureResponse = function() {
+    return {
+        geometryObject: '',
+        crs: '',
+        attributes: []
+    };
 };
 var BW = BW || {};
 BW.Domain = BW.Domain || {};
@@ -1271,7 +1281,7 @@ BW.MapModel.FeatureInfo = function(mapInstance, httpHelper, eventHandler, featur
         var responseFeatureCollections = [];
         for(var i = 0; i < layersToRequest.length; i++){
             var layerToRequest = layersToRequest[i];
-            var responseFeatureCollection = new BW.MapModel.Parsers.LayerResponse();
+            var responseFeatureCollection = new BW.Domain.LayerResponse();
             responseFeatureCollection.id = layerToRequest.id;
             responseFeatureCollection.isLoading = true;
             responseFeatureCollections.push(responseFeatureCollection);
@@ -1295,7 +1305,7 @@ BW.MapModel.FeatureInfo = function(mapInstance, httpHelper, eventHandler, featur
         catch(e){
             exception = e;
         }
-        var responseFeatureCollection = new BW.MapModel.Parsers.LayerResponse();
+        var responseFeatureCollection = new BW.Domain.LayerResponse();
         responseFeatureCollection.id = subLayer.id;
         responseFeatureCollection.isLoading = false;
         responseFeatureCollection.features = parsedResult;
@@ -2139,17 +2149,6 @@ var BW = BW || {};
 BW.MapModel = BW.MapModel || {};
 BW.MapModel.Parsers = BW.MapModel.Parsers || {};
 
-BW.MapModel.Parsers.FeatureResponse = function() {
-    return {
-        geometryObject: '',
-        crs: '',
-        attributes: []
-    };
-};
-var BW = BW || {};
-BW.MapModel = BW.MapModel || {};
-BW.MapModel.Parsers = BW.MapModel.Parsers || {};
-
 BW.MapModel.Parsers.FiskeriDir = function(mapApi){
     var insteadOfGml = 'insteadofgml';
     var x, y;
@@ -2183,7 +2182,7 @@ BW.MapModel.Parsers.FiskeriDir = function(mapApi){
         for(var i = 0; i < resultArray.length; i++){
             var feature = resultArray[i];
 
-            var responseFeature = new BW.MapModel.Parsers.FeatureResponse();
+            var responseFeature = new BW.Domain.FeatureResponse();
             responseFeature.attributes = _getAttributesArray(feature);
             var crs = gmlObject[Object.keys(gmlObject)[0]]["srsname"];
             var extent = gmlObject[Object.keys(gmlObject)[0]][insteadOfGml + "coordinates"];
@@ -2280,7 +2279,7 @@ BW.MapModel.Parsers.GeoJSON = function() {
         for(var i = 0; i < features.length; i++){
             var feature = features[i];
 
-            var responseFeature = new BW.MapModel.Parsers.FeatureResponse();
+            var responseFeature = new BW.Domain.FeatureResponse();
             responseFeature.crs = crs;
             responseFeature.geometryObject = feature;
             responseFeature.attributes = _getAttributesArray(feature.properties);
@@ -2335,7 +2334,7 @@ BW.MapModel.Parsers.KartKlifNo = function() {
     function _convertToFeatureResponse(jsonFeatures){
         var responseFeatureCollection = [];
         for(var i = 0; i < jsonFeatures.length; i++){
-            var responseFeature = new BW.MapModel.Parsers.FeatureResponse();
+            var responseFeature = new BW.Domain.FeatureResponse();
             responseFeature.attributes = _getAttributesArray(jsonFeatures[i]);
             responseFeatureCollection.push(responseFeature);
         }
@@ -2355,10 +2354,9 @@ BW.MapModel.Parsers.KartKlifNo = function() {
     };
 };
 var BW = BW || {};
-BW.MapModel = BW.MapModel || {};
-BW.MapModel.Parsers = BW.MapModel.Parsers || {};
+BW.Domain = BW.Domain || {};
 
-BW.MapModel.Parsers.LayerResponse = function(){
+BW.Domain.LayerResponse = function(){
     return{
         id: -1,
         isLoading: false,

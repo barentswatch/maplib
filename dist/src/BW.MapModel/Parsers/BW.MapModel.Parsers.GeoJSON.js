@@ -15,7 +15,7 @@ BW.MapModel.Parsers.GeoJSON = function() {
         for(var i = 0; i < features.length; i++){
             var feature = features[i];
 
-            var responseFeature = new BW.MapModel.Parsers.FeatureResponse();
+            var responseFeature = new BW.Domain.FeatureResponse();
             responseFeature.crs = crs;
             responseFeature.geometryObject = feature;
             responseFeature.attributes = _getAttributesArray(feature.properties);

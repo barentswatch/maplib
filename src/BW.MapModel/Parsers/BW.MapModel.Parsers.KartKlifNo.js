@@ -29,7 +29,7 @@ BW.MapModel.Parsers.KartKlifNo = function() {
     function _convertToFeatureResponse(jsonFeatures){
         var responseFeatureCollection = [];
         for(var i = 0; i < jsonFeatures.length; i++){
-            var responseFeature = new BW.MapModel.Parsers.FeatureResponse();
+            var responseFeature = new BW.Domain.FeatureResponse();
             responseFeature.attributes = _getAttributesArray(jsonFeatures[i]);
             responseFeatureCollection.push(responseFeature);
         }

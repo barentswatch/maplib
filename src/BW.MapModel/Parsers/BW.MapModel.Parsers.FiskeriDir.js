@@ -35,7 +35,7 @@ BW.MapModel.Parsers.FiskeriDir = function(mapApi){
         for(var i = 0; i < resultArray.length; i++){
             var feature = resultArray[i];
 
-            var responseFeature = new BW.MapModel.Parsers.FeatureResponse();
+            var responseFeature = new BW.Domain.FeatureResponse();
             responseFeature.attributes = _getAttributesArray(feature);
             var crs = gmlObject[Object.keys(gmlObject)[0]]["srsname"];
             var extent = gmlObject[Object.keys(gmlObject)[0]][insteadOfGml + "coordinates"];

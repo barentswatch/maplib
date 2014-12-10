@@ -21,7 +21,7 @@ BW.MapModel.FeatureInfo = function(mapInstance, httpHelper, eventHandler, featur
         var responseFeatureCollections = [];
         for(var i = 0; i < layersToRequest.length; i++){
             var layerToRequest = layersToRequest[i];
-            var responseFeatureCollection = new BW.MapModel.Parsers.LayerResponse();
+            var responseFeatureCollection = new BW.Domain.LayerResponse();
             responseFeatureCollection.id = layerToRequest.id;
             responseFeatureCollection.isLoading = true;
             responseFeatureCollections.push(responseFeatureCollection);
@@ -45,7 +45,7 @@ BW.MapModel.FeatureInfo = function(mapInstance, httpHelper, eventHandler, featur
         catch(e){
             exception = e;
         }
-        var responseFeatureCollection = new BW.MapModel.Parsers.LayerResponse();
+        var responseFeatureCollection = new BW.Domain.LayerResponse();
         responseFeatureCollection.id = subLayer.id;
         responseFeatureCollection.isLoading = false;
         responseFeatureCollection.features = parsedResult;
