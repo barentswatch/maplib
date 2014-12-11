@@ -46,7 +46,6 @@ var BW = this.BW || {};
 (function (ns) {
     'use strict';
 
-     //modell for havn
     ns.FeatureModel = Backbone.Model.extend({
         initialize: function (data) {
 
@@ -83,31 +82,25 @@ var BW = this.BW || {};
         },
 
         selectFeature: function () {
-            this.get('feature').setStyle(
-                this.collection.options.selectStyle
-            );
             this.get('feature').select = true;
+            this.collection.getLayer().dispatchEvent('selectFeature');
         },
 
         deselectFeature: function () {
-            this.get('feature').setStyle(
-                this.collection.options.featureStyle
-            );
             this.get('feature').select = false;
+            this.collection.getLayer().dispatchEvent('deselectFeature');
         },
 
         highlightFeature: function () {
             this.get('feature').setStyle(
-                this.collection.options.selectStyle
+                this.collection.options.hoverStyle
             );
         },
 
         unhighlightFeature: function () {
-            if (!this.get('feature').select) {
-                this.get('feature').setStyle(
-                    this.collection.options.featureStyle
-                );
-            }
+            this.get('feature').setStyle(
+                this.collection.options.featureStyle
+            );
         }
 
     });
@@ -116,34 +109,32 @@ var BW = this.BW || {};
 
         model: ns.FeatureModel,
 
-        reset: function(models, options) {
-            var format = new ol.format.GeoJSON();
-            var modifiedModels = models.map(function (model) {
-                if (model instanceof Backbone.Model) {
-                    model.set('feature', new ol.Feature({
-                        geometry: format.readGeometry(model.get('geometry'))
-                    }));
-                    model.unset('geometry', {silent: true});
-                } else {
-                    model.feature =  new ol.Feature({
-                        geometry: format.readGeometry(model.geometry)
-                    });
-                    delete model.geometry;
-                }
-                return model;
-            });
-
-            var d = Backbone.Collection.prototype.reset.apply(
+        reset: function (models, options) {
+            var modifiedModels = _.map(models, this.parseGeom);
+            var resetResult = Backbone.Collection.prototype.reset.apply(
                 this,
                 [modifiedModels, options]
             );
-            return d;
+            this.populateLayer();
+            return resetResult;
+        },
+
+        parseGeom: function (model) {
+            var format = new ol.format.GeoJSON();
+            if (!model.feature) {
+                model.feature = new ol.Feature({
+                    geometry: format.readGeometry(model.geometry)
+                });
+                delete model.geometry;
+            }
+            return model;
         },
 
         initialize: function (data, options) {
+            options = options || {};
             this.options = options;
             this.on('select', this.featureSelected, this);
-            this.on('reset', this.parseFeatures, this);
+            this.createLayer();
         },
 
         featureSelected: function (selectedFeature) {
@@ -154,17 +145,23 @@ var BW = this.BW || {};
             });
         },
 
+        createLayer: function () {
+            this.vectorSource = new ol.source.Vector();
+            this.layer = new ol.layer.Vector({
+                source: this.vectorSource,
+                style: this.options.featureStyle
+            });
+        },
+
+        populateLayer: function () {
+            this.each(function (model) {
+                this.vectorSource.addFeature(model.get('feature'));
+            }, this);
+        },
+
         getLayer: function () {
             if (!this.layer) {
-                this.vectorSource = new ol.source.Vector();
-                this.layer =  new ol.layer.Vector({
-                    source: this.vectorSource,
-                    style: this.options.featureStyle
-                });
-                //legg features til layer
-                this.each(function (harbour) {
-                    this.vectorSource.addFeature(harbour.get('feature'));
-                }, this);
+                this.createLayer();
             }
             return this.layer;
         }
@@ -177,7 +174,7 @@ var BW = this.BW || {};
 /*
     Base Backbone view that can be used to provided map-list interactions as in Havnebase.
 
-    Assumes that the model bassed has a feature property (which should be an ol3 vector feature)
+    Assumes that the model passed has a feature property (which should be an ol3 vector feature)
 
     Assumes that the model triggers the following events:
         over: for mouseover on marker

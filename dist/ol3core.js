@@ -1411,7 +1411,7 @@ BW.MapCore = BW.MapCore || {};
 
     ns.setupMap = function (mapDiv, mapConfig, callback) {
 
-        //load config from json-
+        //load config from json
         var facade = new BW.Facade.JSONConfigFacade();
         //manual dependency-injection
         var eventHandler = new BW.Events.EventHandler();
