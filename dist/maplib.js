@@ -11,9 +11,12 @@ BW.Domain.Category = function(config){
     var defaults = {
         id: -1,
         name: '',
-        open: false,
+        isOpen: false,
         parent: -1,
-        subCategories: []
+        subCategories: [],
+        bwLayers: [],
+        isAllLayersSelected: false
+
     };
     var categoryInstance = $.extend({}, defaults, config); // categoryInstance
 
