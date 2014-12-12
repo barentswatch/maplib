@@ -11,6 +11,7 @@ BW.Repository.StaticRepository = function() {
         coordinate_system: "EPSG:32633",
         extent: [-2500000.0, 3500000.0, 3045984.0, 9045984.0],
         extentunits: 'm',
+        proxyHost: '',
         layers:[
             new BW.Domain.Layer({
                 name: 'Hovedkart Sjø',

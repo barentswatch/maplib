@@ -1,9 +1,31 @@
 /**
- * maplib - v0.0.1 - 2014-12-10
+ * maplib - v0.0.1 - 2014-12-12
  * http://localhost
  *
  * Copyright (c) 2014 
  */
+var BW = BW || {};
+BW.Domain = BW.Domain || {};
+
+BW.Domain.Category = function(config){
+    var defaults = {
+        id: -1,
+        name: '',
+        open: false,
+        parent: -1,
+        subCategories: []
+    };
+    var categoryInstance = $.extend({}, defaults, config); // categoryInstance
+
+    var subCategories = [];
+    for(var i = 0; i < config.subCategories.length; i++){
+        subCategories.push(new BW.Domain.Category(config.subCategories[i]));
+    }
+
+    categoryInstance.subCategories = subCategories;
+
+    return categoryInstance;
+};
 var BW = BW || {};
 BW.Domain = BW.Domain || {};
 
@@ -62,6 +84,17 @@ BW.Domain.Layer = function(config){
     layerInstance.subLayers = subLayers;
 
     return layerInstance;
+};
+var BW = BW || {};
+BW.Domain = BW.Domain || {};
+
+BW.Domain.LayerResponse = function(){
+    return{
+        id: -1,
+        isLoading: false,
+        exception: '',
+        features: []
+    };
 };
 var BW = BW || {};
 BW.Domain = BW.Domain || {};
@@ -545,10 +578,10 @@ BW.Map.OL3.Map = function(repository, eventHandler, httpHelper, measure, feature
             overlays: []
         });
 
-        registerMapCallbacks();
+        _registerMapCallbacks();
     }
 
-    function registerMapCallbacks(){
+    function _registerMapCallbacks(){
         var view = map.getView();
 
         var changeCenter = function(){
@@ -1011,7 +1044,6 @@ BW.Map.OL3.Map = function(repository, eventHandler, httpHelper, measure, feature
     return {
         // Start up start
         InitMap: initMap,
-        RegisterMapCallbacks: registerMapCallbacks,
         ChangeView: changeView,
         // Start up end
 
@@ -1243,6 +1275,46 @@ BW.Map.OL3.Styles.Default = function () {
 
     return {
         Styles: styles
+    };
+};
+var BW = BW || {};
+BW.MapModel = BW.MapModel || {};
+
+BW.MapModel.Categories = function(){
+    var config;
+    var categories;
+
+    function init(mapConfig) {
+        config = mapConfig;
+        categories = mapConfig.categories;
+    }
+
+    function getCategories() {
+        if (config !== undefined) {
+            return config.categories;
+        }
+        return [];
+    }
+
+    function getCategoryById(id) {
+        for(var i = 0; i < categories.length; i++){
+            var cat = categories[i];
+            if (cat.id.toString() === id.toString()){
+                return cat;
+            }
+            for (var j = 0; j < categories[i].subCategories.length; j++) {
+                var subcat = categories[i].subCategories[j];
+                if (subcat.id.toString() === id.toString()){
+                    return subcat;
+                }
+            }
+        }
+    }
+
+    return {
+        Init: init,
+        GetCategoryById: getCategoryById,
+        GetCategories: getCategories
     };
 };
 var BW = BW || {};
@@ -1721,7 +1793,7 @@ BW.MapModel.Layers = function(mapInstance){
 var BW = BW || {};
 BW.MapModel = BW.MapModel || {};
 
-BW.MapModel.Map = function(mapInstance, eventHandler, featureInfo, layerHandler) {
+BW.MapModel.Map = function(mapInstance, eventHandler, featureInfo, layerHandler, categoryHandler) {
 
     /*
         Start up functions Start
@@ -1730,6 +1802,7 @@ BW.MapModel.Map = function(mapInstance, eventHandler, featureInfo, layerHandler)
     function init(targetId, mapConfig){
         mapInstance.InitMap(targetId, mapConfig);
         layerHandler.Init(mapConfig);
+        categoryHandler.Init(mapConfig);
 
         _loadCustomCrs();
 
@@ -1804,6 +1877,22 @@ BW.MapModel.Map = function(mapInstance, eventHandler, featureInfo, layerHandler)
 
     /*
         Layer functions End
+     */
+
+    /*
+     Categories functions Start
+     */
+
+    function getCategoryById(id) {
+        return categoryHandler.GetCategoryById(id);
+    }
+
+    function getCategories() {
+        return categoryHandler.GetCategories();
+    }
+
+    /*
+     Categories functions End
      */
 
     /*
@@ -1999,6 +2088,13 @@ BW.MapModel.Map = function(mapInstance, eventHandler, featureInfo, layerHandler)
         MoveLayerToIndex: moveLayerToIndex,
         MoveLayerAbove: moveLayerAbove,
         // Layer end
+
+        /***********************************/
+
+        // Category start
+        GetCategoryById: getCategoryById,
+        GetCategories: getCategories,
+        // Category end
 
         /***********************************/
 
@@ -2222,41 +2318,7 @@ BW.MapModel.Parsers = BW.MapModel.Parsers || {};
 BW.MapModel.Parsers.GML = function() {
     function parse(result) {
         console.log(result);
-        //console.log(utility);
-        //var jsonFeatures = map.ConvertGmlToGeoJson(result);
-        //return jsonFeatures;
-        //result = result.replace(/:/g, ''); // Remove colon to prevent xml errors
-        //var jsonFeatures = xml2json.parser(result);
-        //return jsonFeatures;
-        /*var responseFeatureCollection = [];
-
-        var crs;
-        if(result.crs){
-            crs = result.crs.type + ':' + result.crs.properties.code;
-        }
-
-        var features = result.features;
-        for(var i = 0; i < features.length; i++){
-            var feature = features[i];
-
-            var responseFeature = new BW.FeatureParser.FeatureResponse();
-            responseFeature.crs = crs;
-            responseFeature.geometryObject = feature;
-            responseFeature.attributes = _getAttributesArray(feature.properties);
-
-            responseFeatureCollection.push(responseFeature);
-        }
-
-        return responseFeatureCollection;*/
     }
-
-    /*function _getAttributesArray(properties){
-        var attributes = [];
-        for(var i in properties){
-            attributes.push([i, properties[i]]);
-        }
-        return attributes;
-    }*/
 
     return {
         Parse: parse
@@ -2351,17 +2413,6 @@ BW.MapModel.Parsers.KartKlifNo = function() {
 
     return {
       Parse: parse
-    };
-};
-var BW = BW || {};
-BW.Domain = BW.Domain || {};
-
-BW.Domain.LayerResponse = function(){
-    return{
-        id: -1,
-        isLoading: false,
-        exception: '',
-        features: []
     };
 };
 var BW = BW || {};
@@ -2618,6 +2669,7 @@ BW.Repository.StaticRepository = function() {
         coordinate_system: "EPSG:32633",
         extent: [-2500000.0, 3500000.0, 3045984.0, 9045984.0],
         extentunits: 'm',
+        proxyHost: '',
         layers:[
             new BW.Domain.Layer({
                 name: 'Hovedkart Sjø',
