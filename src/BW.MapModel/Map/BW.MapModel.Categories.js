@@ -12,15 +12,15 @@ BW.MapModel.Categories = function(){
         return categories;
     }
 
-    function getCategoryById(id) {
+    function getCategoryById(catId) {
         for(var i = 0; i < categories.length; i++){
             var cat = categories[i];
-            if (cat.id.toString() === id.toString()){
+            if (cat.catId.toString() === catId.toString()){
                 return cat;
             }
             for (var j = 0; j < categories[i].subCategories.length; j++) {
                 var subcat = categories[i].subCategories[j];
-                if (subcat.id.toString() === id.toString()){
+                if (subcat.catId.toString() === catId.toString()){
                     return subcat;
                 }
             }

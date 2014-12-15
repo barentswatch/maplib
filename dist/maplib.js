@@ -9,10 +9,10 @@ BW.Domain = BW.Domain || {};
 
 BW.Domain.Category = function(config){
     var defaults = {
-        id: -1,
+        catId: -1,
         name: '',
         isOpen: false,
-        parent: -1,
+        parentId: -1,
         subCategories: [],
         bwLayers: [],
         isAllLayersSelected: false
@@ -404,13 +404,6 @@ BW.Map.OL3.FeatureInfo = function(){
         var layerSource = mapLayer.getSource();
         var projection = view.getProjection();
 
-        /*var url = layerSource.getGetFeatureInfoUrl(coordinate, viewResolution, projection, {'INFO_FORMAT': bwSubLayer.featureInfo.getFeatureInfoFormat, 'feature_count': 10});
-        url = decodeURIComponent(url);
-        url = url.substring(url.lastIndexOf('?'), url.length);
-        url = url.replace('?', '');
-        url = encodeURIComponent(url);
-        return bwSubLayer.url.replace('proxy/wms', 'proxy/') + url;*/
-
         var url = layerSource.getGetFeatureInfoUrl(coordinate, viewResolution, projection, {'INFO_FORMAT': bwSubLayer.featureInfo.getFeatureInfoFormat, 'feature_count': 10});
         var decodedUrl = decodeURIComponent(url);
         var queryString = decodedUrl.substring(decodedUrl.lastIndexOf('?'), decodedUrl.length).replace('?', '');
@@ -498,7 +491,34 @@ BW.Map.OL3.FeatureInfo = function(){
 
             var vectorSource = new ol.source.GeoJSON({
                 projection: 'EPSG:4326',
-                url: 'assets/mapConfig/testdata.json'
+                // this is bogus, just to get the source initialized, can for sure be done a lot more appropriate.
+                object: {
+                    "type":"FeatureCollection",
+                    "totalFeatures":1,
+                    "features":[
+                        {
+                            "type":"Feature",
+                            "id":"thc.1",
+                            "geometry":
+                            {
+                                "type":"Point",
+                                "coordinates":[21.7495,71.721]},
+                            "geometry_name":"the_geom",
+                            "properties":
+                            {
+                                "Year":2003
+                            }
+                        }
+                    ],
+                    "crs":
+                    {
+                        "type":"EPSG",
+                        "properties":
+                        {
+                            "code":"4326"
+                        }
+                    }
+                }
             });
             highLightLayer = new ol.layer.Vector({
                 source: vectorSource,
@@ -1294,15 +1314,15 @@ BW.MapModel.Categories = function(){
         return categories;
     }
 
-    function getCategoryById(id) {
+    function getCategoryById(catId) {
         for(var i = 0; i < categories.length; i++){
             var cat = categories[i];
-            if (cat.id.toString() === id.toString()){
+            if (cat.catId.toString() === catId.toString()){
                 return cat;
             }
             for (var j = 0; j < categories[i].subCategories.length; j++) {
                 var subcat = categories[i].subCategories[j];
-                if (subcat.id.toString() === id.toString()){
+                if (subcat.catId.toString() === catId.toString()){
                     return subcat;
                 }
             }
@@ -2332,7 +2352,14 @@ BW.MapModel.Parsers.GeoJSON = function() {
 
         var crs;
         if(result.crs){
-            crs = result.crs.type + ':' + result.crs.properties.code;
+            var crsObject = result.crs;
+            if(crsObject.properties.code){
+                crs = crsObject.type + ':' + crsObject.properties.code;
+            }
+            else if(crsObject.properties.name){
+                // pattern name=urn:ogc:def:crs:EPSG::32633
+                crs = crsObject.properties.name.substring(crsObject.properties.name.indexOf('EPSG'), crsObject.properties.name.length);
+            }
         }
 
         var features = result.features;

@@ -3,10 +3,10 @@ BW.Domain = BW.Domain || {};
 
 BW.Domain.Category = function(config){
     var defaults = {
-        id: -1,
+        catId: -1,
         name: '',
         isOpen: false,
-        parent: -1,
+        parentId: -1,
         subCategories: [],
         bwLayers: [],
         isAllLayersSelected: false
