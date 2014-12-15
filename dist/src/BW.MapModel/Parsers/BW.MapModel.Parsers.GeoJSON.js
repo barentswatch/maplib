@@ -8,12 +8,13 @@ BW.MapModel.Parsers.GeoJSON = function() {
 
         var crs;
         if(result.crs){
-            if(result.crs.properties.code){
-                crs = result.crs.type + ':' + result.crs.properties.code;
+            var crsObject = result.crs;
+            if(crsObject.properties.code){
+                crs = crsObject.type + ':' + crsObject.properties.code;
             }
-            else if(result.properties.name){
+            else if(crsObject.properties.name){
                 // pattern name=urn:ogc:def:crs:EPSG::32633
-                crs = result.properties.name.substring(result.properties.name.indexOf('EPSG'), result.properties.name.length);
+                crs = crsObject.properties.name.substring(crsObject.properties.name.indexOf('EPSG'), crsObject.properties.name.length);
             }
         }
 
