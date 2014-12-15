@@ -8,7 +8,13 @@ BW.MapModel.Parsers.GeoJSON = function() {
 
         var crs;
         if(result.crs){
-            crs = result.crs.type + ':' + result.crs.properties.code;
+            if(result.crs.properties.code){
+                crs = result.crs.type + ':' + result.crs.properties.code;
+            }
+            else if(result.properties.name){
+                // pattern name=urn:ogc:def:crs:EPSG::32633
+                crs = result.properties.name.substring(result.properties.name.indexOf('EPSG'), result.properties.name.length);
+            }
         }
 
         var features = result.features;
