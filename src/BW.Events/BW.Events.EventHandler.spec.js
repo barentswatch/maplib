@@ -1,15 +1,13 @@
 
 describe('BW.Events.EventHandler is triggered', function() {
-    var eventHandler, val;
+    var eventHandler;
 
     beforeEach(function(){
-
+        eventHandler = new BW.Events.EventHandler();
     });
 
     it('should run its callback', function() {
-        eventHandler = new BW.Events.EventHandler();
-
-        val = 0;
+        var val = 0;
 
         eventHandler.RegisterEvent("TestEvent", function(newVal){
             val = newVal;
@@ -17,5 +15,22 @@ describe('BW.Events.EventHandler is triggered', function() {
 
         eventHandler.TriggerEvent("TestEvent", 10);
         expect(val).toEqual(10);
+    });
+
+    it('should handle multiple callbacks', function(){
+        var firstVal = 0;
+        var secondVal = 1;
+
+        eventHandler.RegisterEvent("TestEvent", function(newVal){
+            firstVal = newVal;
+        });
+
+        eventHandler.RegisterEvent("TestEvent", function(newVal){
+            secondVal = newVal;
+        });
+
+        eventHandler.TriggerEvent("TestEvent", 10);
+        expect(firstVal).toEqual(10);
+        expect(secondVal).toEqual(10);
     });
 });
