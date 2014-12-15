@@ -1284,19 +1284,14 @@ var BW = BW || {};
 BW.MapModel = BW.MapModel || {};
 
 BW.MapModel.Categories = function(){
-    var config;
-    var categories;
+    var categories = [];
 
     function init(mapConfig) {
-        config = mapConfig;
         categories = mapConfig.categories;
     }
 
     function getCategories() {
-        if (config !== undefined) {
-            return config.categories;
-        }
-        return [];
+        return categories;
     }
 
     function getCategoryById(id) {

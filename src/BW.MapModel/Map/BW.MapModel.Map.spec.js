@@ -22,17 +22,6 @@ describe('new BW.MapModel.Map', function() {
         expect(mapModel.SetBaseLayer).not.toBe(undefined);
         expect(mapModel.SetLayerOpacity).not.toBe(undefined);
     });
-
-
-/**
-     * Obsolete, config is called outside mapInit
-
-    it("gets the map config from the repository", function() {
-        expect(repository.GetMapConfig).toHaveBeenCalled();
-    });
-     */
-
-
 });
 
 describe('BW.MapModel.Map.Init', function() {
