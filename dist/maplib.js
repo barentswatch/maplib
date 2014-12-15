@@ -404,13 +404,6 @@ BW.Map.OL3.FeatureInfo = function(){
         var layerSource = mapLayer.getSource();
         var projection = view.getProjection();
 
-        /*var url = layerSource.getGetFeatureInfoUrl(coordinate, viewResolution, projection, {'INFO_FORMAT': bwSubLayer.featureInfo.getFeatureInfoFormat, 'feature_count': 10});
-        url = decodeURIComponent(url);
-        url = url.substring(url.lastIndexOf('?'), url.length);
-        url = url.replace('?', '');
-        url = encodeURIComponent(url);
-        return bwSubLayer.url.replace('proxy/wms', 'proxy/') + url;*/
-
         var url = layerSource.getGetFeatureInfoUrl(coordinate, viewResolution, projection, {'INFO_FORMAT': bwSubLayer.featureInfo.getFeatureInfoFormat, 'feature_count': 10});
         var decodedUrl = decodeURIComponent(url);
         var queryString = decodedUrl.substring(decodedUrl.lastIndexOf('?'), decodedUrl.length).replace('?', '');
@@ -498,7 +491,34 @@ BW.Map.OL3.FeatureInfo = function(){
 
             var vectorSource = new ol.source.GeoJSON({
                 projection: 'EPSG:4326',
-                url: 'assets/mapConfig/testdata.json'
+                // this is bogus, just to get the source initialized, can for sure be done a lot more appropriate.
+                object: {
+                    "type":"FeatureCollection",
+                    "totalFeatures":1,
+                    "features":[
+                        {
+                            "type":"Feature",
+                            "id":"thc.1",
+                            "geometry":
+                            {
+                                "type":"Point",
+                                "coordinates":[21.7495,71.721]},
+                            "geometry_name":"the_geom",
+                            "properties":
+                            {
+                                "Year":2003
+                            }
+                        }
+                    ],
+                    "crs":
+                    {
+                        "type":"EPSG",
+                        "properties":
+                        {
+                            "code":"4326"
+                        }
+                    }
+                }
             });
             highLightLayer = new ol.layer.Vector({
                 source: vectorSource,
