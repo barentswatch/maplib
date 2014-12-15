@@ -7,6 +7,31 @@
 var BW = BW || {};
 BW.Domain = BW.Domain || {};
 
+BW.Domain.Category = function(config){
+    var defaults = {
+        id: -1,
+        name: '',
+        isOpen: false,
+        parent: -1,
+        subCategories: [],
+        bwLayers: [],
+        isAllLayersSelected: false
+
+    };
+    var categoryInstance = $.extend({}, defaults, config); // categoryInstance
+
+    var subCategories = [];
+    for(var i = 0; i < config.subCategories.length; i++){
+        subCategories.push(new BW.Domain.Category(config.subCategories[i]));
+    }
+
+    categoryInstance.subCategories = subCategories;
+
+    return categoryInstance;
+};
+var BW = BW || {};
+BW.Domain = BW.Domain || {};
+
 BW.Domain.FeatureInfo = function(config){
     var defaults = {
         // single select via WMS GetFeatureInfo
@@ -1258,6 +1283,46 @@ BW.Map.OL3.Styles.Default = function () {
 var BW = BW || {};
 BW.MapModel = BW.MapModel || {};
 
+BW.MapModel.Categories = function(){
+    var config;
+    var categories;
+
+    function init(mapConfig) {
+        config = mapConfig;
+        categories = mapConfig.categories;
+    }
+
+    function getCategories() {
+        if (config !== undefined) {
+            return config.categories;
+        }
+        return [];
+    }
+
+    function getCategoryById(id) {
+        for(var i = 0; i < categories.length; i++){
+            var cat = categories[i];
+            if (cat.id.toString() === id.toString()){
+                return cat;
+            }
+            for (var j = 0; j < categories[i].subCategories.length; j++) {
+                var subcat = categories[i].subCategories[j];
+                if (subcat.id.toString() === id.toString()){
+                    return subcat;
+                }
+            }
+        }
+    }
+
+    return {
+        Init: init,
+        GetCategoryById: getCategoryById,
+        GetCategories: getCategories
+    };
+};
+var BW = BW || {};
+BW.MapModel = BW.MapModel || {};
+
 BW.MapModel.CustomCrsLoader = function(){
     function loadCustomCrs(){
         // proj4 is on the global scope
@@ -1731,7 +1796,7 @@ BW.MapModel.Layers = function(mapInstance){
 var BW = BW || {};
 BW.MapModel = BW.MapModel || {};
 
-BW.MapModel.Map = function(mapInstance, eventHandler, featureInfo, layerHandler) {
+BW.MapModel.Map = function(mapInstance, eventHandler, featureInfo, layerHandler, categoryHandler) {
 
     /*
         Start up functions Start
@@ -1740,6 +1805,7 @@ BW.MapModel.Map = function(mapInstance, eventHandler, featureInfo, layerHandler)
     function init(targetId, mapConfig){
         mapInstance.InitMap(targetId, mapConfig);
         layerHandler.Init(mapConfig);
+        categoryHandler.Init(mapConfig);
 
         _loadCustomCrs();
 
@@ -1814,6 +1880,22 @@ BW.MapModel.Map = function(mapInstance, eventHandler, featureInfo, layerHandler)
 
     /*
         Layer functions End
+     */
+
+    /*
+     Categories functions Start
+     */
+
+    function getCategoryById(id) {
+        return categoryHandler.GetCategoryById(id);
+    }
+
+    function getCategories() {
+        return categoryHandler.GetCategories();
+    }
+
+    /*
+     Categories functions End
      */
 
     /*
@@ -2009,6 +2091,13 @@ BW.MapModel.Map = function(mapInstance, eventHandler, featureInfo, layerHandler)
         MoveLayerToIndex: moveLayerToIndex,
         MoveLayerAbove: moveLayerAbove,
         // Layer end
+
+        /***********************************/
+
+        // Category start
+        GetCategoryById: getCategoryById,
+        GetCategories: getCategories,
+        // Category end
 
         /***********************************/
 

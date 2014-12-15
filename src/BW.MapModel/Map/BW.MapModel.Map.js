@@ -1,7 +1,7 @@
 var BW = BW || {};
 BW.MapModel = BW.MapModel || {};
 
-BW.MapModel.Map = function(mapInstance, eventHandler, featureInfo, layerHandler) {
+BW.MapModel.Map = function(mapInstance, eventHandler, featureInfo, layerHandler, categoryHandler) {
 
     /*
         Start up functions Start
@@ -10,6 +10,7 @@ BW.MapModel.Map = function(mapInstance, eventHandler, featureInfo, layerHandler)
     function init(targetId, mapConfig){
         mapInstance.InitMap(targetId, mapConfig);
         layerHandler.Init(mapConfig);
+        categoryHandler.Init(mapConfig);
 
         _loadCustomCrs();
 
@@ -84,6 +85,22 @@ BW.MapModel.Map = function(mapInstance, eventHandler, featureInfo, layerHandler)
 
     /*
         Layer functions End
+     */
+
+    /*
+     Categories functions Start
+     */
+
+    function getCategoryById(id) {
+        return categoryHandler.GetCategoryById(id);
+    }
+
+    function getCategories() {
+        return categoryHandler.GetCategories();
+    }
+
+    /*
+     Categories functions End
      */
 
     /*
@@ -279,6 +296,13 @@ BW.MapModel.Map = function(mapInstance, eventHandler, featureInfo, layerHandler)
         MoveLayerToIndex: moveLayerToIndex,
         MoveLayerAbove: moveLayerAbove,
         // Layer end
+
+        /***********************************/
+
+        // Category start
+        GetCategoryById: getCategoryById,
+        GetCategories: getCategories,
+        // Category end
 
         /***********************************/
 

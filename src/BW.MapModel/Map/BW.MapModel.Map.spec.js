@@ -43,6 +43,7 @@ describe('BW.MapModel.Map.Init', function() {
         eventHandler,
         featureInfo,
         layerHandler,
+        categoryHandler,
         subLayersToShow,
         subLayersToHide,
         mapConf,
@@ -99,8 +100,9 @@ describe('BW.MapModel.Map.Init', function() {
         eventHandler = new BW.Events.EventHandler();
         featureInfo = new BW.MapModel.FeatureInfo(map, httpHelper, eventHandler);
         layerHandler = new BW.MapModel.Layers(map);
+        categoryHandler = new BW.MapModel.Categories();
 
-        mapModel = new BW.MapModel.Map(map, eventHandler, featureInfo, layerHandler);
+        mapModel = new BW.MapModel.Map(map, eventHandler, featureInfo, layerHandler, categoryHandler);
 
         tools = new BW.MapModel.Tools.Tools(mapModel);
         toolFactory = new BW.MapModel.Tools.ToolFactory(tools);
