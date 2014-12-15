@@ -1,5 +1,5 @@
 /**
- * maplib - v0.0.1 - 2014-12-10
+ * maplib - v0.0.1 - 2014-12-12
  * http://localhost
  *
  * Copyright (c) 2014 
@@ -62,6 +62,17 @@ BW.Domain.Layer = function(config){
     layerInstance.subLayers = subLayers;
 
     return layerInstance;
+};
+var BW = BW || {};
+BW.Domain = BW.Domain || {};
+
+BW.Domain.LayerResponse = function(){
+    return{
+        id: -1,
+        isLoading: false,
+        exception: '',
+        features: []
+    };
 };
 var BW = BW || {};
 BW.Domain = BW.Domain || {};
@@ -545,10 +556,10 @@ BW.Map.OL3.Map = function(repository, eventHandler, httpHelper, measure, feature
             overlays: []
         });
 
-        registerMapCallbacks();
+        _registerMapCallbacks();
     }
 
-    function registerMapCallbacks(){
+    function _registerMapCallbacks(){
         var view = map.getView();
 
         var changeCenter = function(){
@@ -1011,7 +1022,6 @@ BW.Map.OL3.Map = function(repository, eventHandler, httpHelper, measure, feature
     return {
         // Start up start
         InitMap: initMap,
-        RegisterMapCallbacks: registerMapCallbacks,
         ChangeView: changeView,
         // Start up end
 
@@ -2222,41 +2232,7 @@ BW.MapModel.Parsers = BW.MapModel.Parsers || {};
 BW.MapModel.Parsers.GML = function() {
     function parse(result) {
         console.log(result);
-        //console.log(utility);
-        //var jsonFeatures = map.ConvertGmlToGeoJson(result);
-        //return jsonFeatures;
-        //result = result.replace(/:/g, ''); // Remove colon to prevent xml errors
-        //var jsonFeatures = xml2json.parser(result);
-        //return jsonFeatures;
-        /*var responseFeatureCollection = [];
-
-        var crs;
-        if(result.crs){
-            crs = result.crs.type + ':' + result.crs.properties.code;
-        }
-
-        var features = result.features;
-        for(var i = 0; i < features.length; i++){
-            var feature = features[i];
-
-            var responseFeature = new BW.FeatureParser.FeatureResponse();
-            responseFeature.crs = crs;
-            responseFeature.geometryObject = feature;
-            responseFeature.attributes = _getAttributesArray(feature.properties);
-
-            responseFeatureCollection.push(responseFeature);
-        }
-
-        return responseFeatureCollection;*/
     }
-
-    /*function _getAttributesArray(properties){
-        var attributes = [];
-        for(var i in properties){
-            attributes.push([i, properties[i]]);
-        }
-        return attributes;
-    }*/
 
     return {
         Parse: parse
@@ -2351,17 +2327,6 @@ BW.MapModel.Parsers.KartKlifNo = function() {
 
     return {
       Parse: parse
-    };
-};
-var BW = BW || {};
-BW.Domain = BW.Domain || {};
-
-BW.Domain.LayerResponse = function(){
-    return{
-        id: -1,
-        isLoading: false,
-        exception: '',
-        features: []
     };
 };
 var BW = BW || {};
@@ -2618,6 +2583,7 @@ BW.Repository.StaticRepository = function() {
         coordinate_system: "EPSG:32633",
         extent: [-2500000.0, 3500000.0, 3045984.0, 9045984.0],
         extentunits: 'm',
+        proxyHost: '',
         layers:[
             new BW.Domain.Layer({
                 name: 'Hovedkart Sjø',

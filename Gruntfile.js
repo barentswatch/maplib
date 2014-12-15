@@ -13,7 +13,6 @@ module.exports = function ( grunt ) {
   grunt.loadNpmTasks('grunt-conventional-changelog');
   grunt.loadNpmTasks('grunt-bump');
   grunt.loadNpmTasks('grunt-karma');
-  grunt.loadNpmTasks('grunt-ngmin');
 
   /**
    * Load in our build configuration file.
@@ -164,23 +163,12 @@ module.exports = function ( grunt ) {
           'module.suffix'
         ],
         dest: '<%= compile_dir %>/<%= pkg.name %>.js'
-      }
-    },
-
-    /**
-     * `ng-min` annotates the sources before minifying. That is, it allows us
-     * to code without the array syntax.
-     */
-    ngmin: {
-      compile: {
-        files: [
-          {
-            src: [ '<%= app_files.js %>' ],
-            cwd: '<%= build_dir %>',
-            dest: '<%= build_dir %>',
-            expand: true
-          }
-        ]
+      },
+      create_minified: {
+        src: [
+          '<%= compile_dir %>/<%= pkg.name %>.js'
+        ],
+        dest: '<%= compile_dir %>/<%= pkg.name %>-min.js'
       }
     },
 
@@ -194,6 +182,11 @@ module.exports = function ( grunt ) {
         },
         files: {
           '<%= concat.compile_js.dest %>': '<%= concat.compile_js.dest %>'
+        }
+      },
+      minified:{
+        files: {
+          '<%= concat.create_minified.dest %>': '<%= concat.create_minified.dest %>'
         }
       }
     },
@@ -414,17 +407,12 @@ module.exports = function ( grunt ) {
     'copy:build_appjs', 'copy:build_vendorjs', 'karmaconfig', 'karma:continuous'
   ]);
 
-  grunt.registerTask( 'build-ci', [
-      'clean', 'jshint', /*'concat:build_css',*/ 'copy:build_vendor_assets',
-      'copy:build_appjs', 'copy:build_vendorjs', 'karmaconfig'
-  ]);
-
   /**
    * The `compile` task gets your app ready for deployment by concatenating and
    * minifying your code.
    */
   grunt.registerTask( 'compile', [
-    'copy:compile_assets', /*'ngmin',*/ 'concat:compile_js'/*, 'uglify'*/
+    'copy:compile_assets', 'concat:compile_js', 'concat:create_minified', 'uglify:minified'
   ]);
 
   /**
