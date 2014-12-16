@@ -2684,6 +2684,22 @@ BW.Repository.MapConfig = function(config){
 var BW = BW || {};
 BW.Repository = BW.Repository || {};
 
+BW.Repository.MapConfig.SubCategory = function(config){
+    var defaults = {
+    };
+    return $.extend({}, defaults, config); // mapConfigInstance
+};
+var BW = BW || {};
+BW.Repository = BW.Repository || {};
+
+BW.Repository.MapConfig.Category = function(config){
+    var defaults = {
+    };
+    return $.extend({}, defaults, config); // mapConfigInstance
+};
+var BW = BW || {};
+BW.Repository = BW.Repository || {};
+
 BW.Repository.StaticRepository = function() {
     var mapConfig = new BW.Repository.MapConfig({
         numZoomLevels: 18,
