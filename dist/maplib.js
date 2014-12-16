@@ -1,5 +1,5 @@
 /**
- * maplib - v0.0.1 - 2014-12-15
+ * maplib - v0.0.1 - 2014-12-16
  * http://localhost
  *
  * Copyright (c) 2014 
