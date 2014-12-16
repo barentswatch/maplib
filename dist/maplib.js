@@ -1,5 +1,5 @@
 /**
- * maplib - v0.0.1 - 2014-12-15
+ * maplib - v0.0.1 - 2014-12-16
  * http://localhost
  *
  * Copyright (c) 2014 
@@ -2658,6 +2658,19 @@ BW.Repository.ConfigRepository = function (configFacade, eventHandler) {
     return {
         GetMapConfig: getMapConfig
     };
+};
+var BW = BW || {};
+BW.Repository = BW.Repository || {};
+
+BW.Repository.Category = function(config){
+    var defaults = {
+        "catId": "",
+        "name": "",
+        "parentId": "",
+        "subCategories": [],
+        "isOpen": false
+    };
+    return $.extend({}, defaults, config);
 };
 var BW = BW || {};
 BW.Repository = BW.Repository || {};

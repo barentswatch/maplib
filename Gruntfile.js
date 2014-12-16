@@ -132,6 +132,16 @@ module.exports = function ( grunt ) {
             expand: true
           }
         ]
+      },
+      deployToLocal: {
+        files: [
+          {
+            src: [ '<%= compile_dir %>/**' ],
+            dest: '<%= localDeployDir %>',
+            cwd: '.',
+            expand: true
+          }
+        ]
       }
     },
 
@@ -414,6 +424,8 @@ module.exports = function ( grunt ) {
   grunt.registerTask( 'compile', [
     'copy:compile_assets', 'concat:compile_js', 'concat:create_minified', 'uglify:minified'
   ]);
+
+  grunt.registerTask( 'deployToLocal', ['default', 'copy:deployToLocal']);
 
   /**
    * A utility function to get all app JavaScript sources.
