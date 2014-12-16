@@ -1353,8 +1353,16 @@ BW.MapModel = BW.MapModel || {};
 BW.MapModel.Map = BW.MapModel.Map || {};
 
 BW.MapModel.FeatureInfo = function(mapInstance, httpHelper, eventHandler, featureParser){
+
+    /*
+        The reference to document in this class is necessary due to offset.
+        When the marker is placed onto the map for the first time offset does not work unless the image is already present in the DOM.
+        A possible fix to this is to not use an image and instead use an icon.
+
+     */
+
     var infoMarker;
-    var infoMarkerPath = "assets/img/pin-md-orange.png";
+    var infoMarkerPath = "assets/img/pin-md-orange.png"; // This path is possible to change by API call.
     var useInfoMarker = false;
     var pixelTolerance = 5;
 
@@ -1410,6 +1418,7 @@ BW.MapModel.FeatureInfo = function(mapInstance, httpHelper, eventHandler, featur
             callback(jsonCapabilities);
         };
 
+        // TODO: This replace is too specific
         var wmsUrl = bwSubLayer.url.replace('proxy/wms', 'proxy/');
         var getCapabilitiesUrl;
         var questionMark = '?';
@@ -1512,11 +1521,12 @@ BW.MapModel.FeatureInfo = function(mapInstance, httpHelper, eventHandler, featur
         url = url.substring(url.lastIndexOf('?'), url.length);
         url = url.replace('?', '');
         url = encodeURIComponent(url);
+        // TODO: This replace is too specific
         return bwSubLayer.url.replace('proxy/wms', 'proxy/') + url;
     }
 
     function getSupportedGetFeatureFormats(bwSubLayer, callback){
-        //TODO: Handle namespace behaviour....Meanwhile, do not use
+        //TODO: Handle namespace behaviour, when colon is present the parser fails....Meanwhile, do not use
         var service = 'WFS';
         var getFormatCallback = function(jsonCapabilities){
             var formats = jsonCapabilities.Capability.Request.GetFeature.Format;
@@ -2623,6 +2633,19 @@ BW.MapModel.Tools.Tools = function(mapApi){
 var BW = BW || {};
 BW.Repository = BW.Repository || {};
 
+BW.Repository.Category = function(config){
+    var defaults = {
+        "catId": "",
+        "name": "",
+        "parentId": "",
+        "subCategories": [],
+        "isOpen": false
+    };
+    return $.extend({}, defaults, config);
+};
+var BW = BW || {};
+BW.Repository = BW.Repository || {};
+
 BW.Repository.ConfigRepository = function (configFacade, eventHandler) {
 
     function _createConfig(config) {
@@ -2658,19 +2681,6 @@ BW.Repository.ConfigRepository = function (configFacade, eventHandler) {
     return {
         GetMapConfig: getMapConfig
     };
-};
-var BW = BW || {};
-BW.Repository = BW.Repository || {};
-
-BW.Repository.Category = function(config){
-    var defaults = {
-        "catId": "",
-        "name": "",
-        "parentId": "",
-        "subCategories": [],
-        "isOpen": false
-    };
-    return $.extend({}, defaults, config);
 };
 var BW = BW || {};
 BW.Repository = BW.Repository || {};
