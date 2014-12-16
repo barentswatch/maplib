@@ -10,6 +10,10 @@ module.exports = {
   build_dir: 'build',
   compile_dir: 'dist',
 
+  /**
+   * localDeployDir is the directory to which the localDeployDir copy task copies the dist directory.
+   * It is useful for testing out changes made to maplib before pushing it to the repository
+   */
   localDeployDir: '../areamanagement/build/vendor/maplib',
 
   /**
