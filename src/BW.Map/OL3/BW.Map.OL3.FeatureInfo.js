@@ -7,6 +7,7 @@ BW.Map.OL3.FeatureInfo = function(){
     var highlightStyle = null;
     var infoKey = "";
     var boundingBox;
+    var infoMarkerOverlay;
 
     function showHighlightedFeatures(features, map){
         _ensureHighlightLayer(map);
@@ -29,23 +30,17 @@ BW.Map.OL3.FeatureInfo = function(){
         var $element = $(element);
         var height = $element.height();
         var width = $element.width();
-        var popup = new ol.Overlay({
+        var infoMarkerOverlay = new ol.Overlay({
             element: element,
             stopEvent: false,
             offset: [-width / 2, -height]
         });
-        popup.setPosition(coordinate);
-        map.addOverlay(popup);
+        infoMarkerOverlay.setPosition(coordinate);
+        map.addOverlay(infoMarkerOverlay);
     }
 
     function removeInfoMarker(element, map){
-        var overlays = map.getOverlays().getArray();
-        for(var i = 0; i < overlays.length; i++){
-            var overlay = overlays[i];
-            if(overlay.getElement() == element){
-                map.removeOverlay(overlay);
-            }
-        }
+        map.removeOverlay(infoMarkerOverlay);
     }
 
     function getFeatureInfoUrl(bwSubLayer, mapLayer, coordinate, view){

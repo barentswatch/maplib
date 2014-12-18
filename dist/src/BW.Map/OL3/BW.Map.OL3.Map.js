@@ -435,6 +435,8 @@ BW.Map.OL3.Map = function(repository, eventHandler, httpHelper, measure, feature
 
     function activateMeasure(callback){
         measure.Activate(map, callback);
+        //var vector = measure.Activate(map, callback);
+
     }
 
     function deactivateMeasure(){

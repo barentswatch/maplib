@@ -8,7 +8,10 @@ BW.Map.OL3.Sources.Vector = function(bwSubLayer, mapProjection){
     switch (bwSubLayer.format){
         case BW.Domain.SubLayer.FORMATS.geoJson:
             source = new ol.source.GeoJSON({
-                projection: mapProjection
+                projection: mapProjection,
+                strategy: ol.loadingstrategy.createTile(new ol.tilegrid.XYZ({
+                    maxZoom: 19
+                }))
             });
             source.parser = new ol.format.GeoJSON();
             break;
