@@ -1,7 +1,7 @@
 var BW = BW || {};
-BW.MapModel = BW.MapModel || {};
+BW.MapAPI = BW.MapAPI || {};
 
-BW.MapModel.Categories = function(){
+BW.MapAPI.Categories = function(){
     var categories = [];
 
     function init(mapConfig) {

@@ -1,7 +1,7 @@
 var BW = BW || {};
-BW.MapModel = BW.MapModel || {};
+BW.MapAPI = BW.MapAPI || {};
 
-BW.MapModel.Map = function(mapInstance, eventHandler, featureInfo, layerHandler, categoryHandler) {
+BW.MapAPI.Map = function(mapInstance, eventHandler, featureInfo, layerHandler, categoryHandler) {
 
     /*
         Start up functions Start
@@ -18,7 +18,7 @@ BW.MapModel.Map = function(mapInstance, eventHandler, featureInfo, layerHandler,
     }
 
     function _loadCustomCrs(){
-        var customCrsLoader = new BW.MapModel.CustomCrsLoader();
+        var customCrsLoader = new BW.MapAPI.CustomCrsLoader();
         customCrsLoader.LoadCustomCrs();
     }
 

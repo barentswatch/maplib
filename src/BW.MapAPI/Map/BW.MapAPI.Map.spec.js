@@ -1,5 +1,5 @@
 
-describe('new BW.MapModel.Map', function() {
+describe('new BW.MapAPI.Map', function() {
     var mapModel;
     var map;
     var repository;
@@ -10,7 +10,7 @@ describe('new BW.MapModel.Map', function() {
 
         map = new BW.Map.OL3.Map(repository, new BW.Events.EventHandler());
 
-        mapModel = new BW.MapModel.Map(map);
+        mapModel = new BW.MapAPI.Map(map);
     });
 
     it('should return its public methods',  function() {
@@ -24,7 +24,7 @@ describe('new BW.MapModel.Map', function() {
     });
 });
 
-describe('BW.MapModel.Map.Init', function() {
+describe('BW.MapAPI.Map.Init', function() {
     var dummyDivId = 'mapDiv',
         mapModel,
         map,
@@ -87,14 +87,14 @@ describe('BW.MapModel.Map.Init', function() {
         spyOn(map, 'ShowLayer');
 
         eventHandler = new BW.Events.EventHandler();
-        featureInfo = new BW.MapModel.FeatureInfo(map, httpHelper, eventHandler);
-        layerHandler = new BW.MapModel.Layers(map);
-        categoryHandler = new BW.MapModel.Categories();
+        featureInfo = new BW.MapAPI.FeatureInfo(map, httpHelper, eventHandler);
+        layerHandler = new BW.MapAPI.Layers(map);
+        categoryHandler = new BW.MapAPI.Categories();
 
-        mapModel = new BW.MapModel.Map(map, eventHandler, featureInfo, layerHandler, categoryHandler);
+        mapModel = new BW.MapAPI.Map(map, eventHandler, featureInfo, layerHandler, categoryHandler);
 
-        tools = new BW.MapModel.Tools.Tools(mapModel);
-        toolFactory = new BW.MapModel.Tools.ToolFactory(tools);
+        tools = new BW.MapAPI.Tools.Tools(mapModel);
+        toolFactory = new BW.MapAPI.Tools.ToolFactory(tools);
 
         mapModel.Init(dummyDivId, mapConf);
 
@@ -119,7 +119,7 @@ describe('BW.MapModel.Map.Init', function() {
     });
 
     it('hides the layers which should not be shown', function() {
-        // BW.MapModel.Map._showLayer first hides each layer
+        // BW.MapAPI.Map._showLayer first hides each layer
         expect(map.HideLayer.calls.count()).toEqual(5);
 
         for(var i = 0; i < subLayersToHide; i++){

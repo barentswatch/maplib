@@ -1,9 +1,9 @@
 
-describe('new BW.MapModel.Categories', function() {
+describe('new BW.MapAPI.Categories', function() {
     var categories;
 
     beforeEach(function () {
-        categories = new BW.MapModel.Categories();
+        categories = new BW.MapAPI.Categories();
     });
 
     it('should return its public methods', function () {

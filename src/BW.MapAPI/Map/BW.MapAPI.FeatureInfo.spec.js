@@ -1,11 +1,11 @@
 
-describe('new BW.MapModel.FeatureInfo', function() {
+describe('new BW.MapAPI.FeatureInfo', function() {
     var featureInfo;
 
     beforeEach(function () {
         var mapInstance, httpHelper, featureParser;
         var eventHandler = new BW.Events.EventHandler();
-        featureInfo = new BW.MapModel.FeatureInfo(mapInstance, httpHelper, eventHandler, featureParser);
+        featureInfo = new BW.MapAPI.FeatureInfo(mapInstance, httpHelper, eventHandler, featureParser);
     });
 
     it('should return its public methods', function () {

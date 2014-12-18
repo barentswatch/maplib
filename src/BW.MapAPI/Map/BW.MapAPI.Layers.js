@@ -1,7 +1,7 @@
 var BW = BW || {};
-BW.MapModel = BW.MapModel || {};
+BW.MapAPI = BW.MapAPI || {};
 
-BW.MapModel.Layers = function(mapInstance){
+BW.MapAPI.Layers = function(mapInstance){
     var config;
     var layers;
 

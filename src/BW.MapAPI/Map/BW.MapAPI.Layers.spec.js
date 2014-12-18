@@ -1,4 +1,4 @@
-describe('BW.MapModel.Layers', function(){
+describe('BW.MapAPI.Layers', function(){
     var dummyDivId = 'mapDiv',
         map,
         repository,
@@ -34,7 +34,7 @@ describe('BW.MapModel.Layers', function(){
         map = new BW.Map.OL3.Map(repository, eventHandler, httpHelper, measure, featureInfo, mapExport);
         map.InitMap(dummyDivId, mapConfig);
 
-        layers = new BW.MapModel.Layers(map);
+        layers = new BW.MapAPI.Layers(map);
 
         //spyOn(layers, 'Init').and.callThrough();
         //spyOn(layers, 'GetBaseLayers');

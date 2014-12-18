@@ -1,8 +1,8 @@
 var BW = BW || {};
-BW.MapModel = BW.MapModel || {};
-BW.MapModel.Tools = BW.MapModel.Tools || {};
+BW.MapAPI = BW.MapAPI || {};
+BW.MapAPI.Tools = BW.MapAPI.Tools || {};
 
-BW.MapModel.Tools.Tools = function(mapApi){
+BW.MapAPI.Tools.Tools = function(mapApi){
     var tools = [];
 
     var getFeatureInfoConfig = {
@@ -17,7 +17,7 @@ BW.MapModel.Tools.Tools = function(mapApi){
         },
         messageObject: []
     };
-    var getFeatureInfo = new BW.MapModel.Tools.Tool(getFeatureInfoConfig);
+    var getFeatureInfo = new BW.MapAPI.Tools.Tool(getFeatureInfoConfig);
     tools.push(getFeatureInfo);
 
     var zoomAndPanConfig = {
@@ -31,7 +31,7 @@ BW.MapModel.Tools.Tools = function(mapApi){
         },
         messageObject: []
     };
-    var zoomAndPan = new BW.MapModel.Tools.Tool(zoomAndPanConfig);
+    var zoomAndPan = new BW.MapAPI.Tools.Tool(zoomAndPanConfig);
     tools.push(zoomAndPan);
 
     var boxSelectConfig = {
@@ -45,7 +45,7 @@ BW.MapModel.Tools.Tools = function(mapApi){
          },
         messageObject: []
     };
-    var boxSelect = new BW.MapModel.Tools.Tool(boxSelectConfig);
+    var boxSelect = new BW.MapAPI.Tools.Tool(boxSelectConfig);
     tools.push(boxSelect);
 
     /*var exportCommandConfig = {
@@ -70,7 +70,7 @@ BW.MapModel.Tools.Tools = function(mapApi){
         },
         messageObject: []
     };
-    var measure = new BW.MapModel.Tools.Tool(measureConfig);
+    var measure = new BW.MapAPI.Tools.Tool(measureConfig);
     tools.push(measure);
 
     function getTools(){

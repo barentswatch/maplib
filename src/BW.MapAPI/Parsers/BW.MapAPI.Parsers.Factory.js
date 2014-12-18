@@ -1,8 +1,8 @@
 var BW = BW || {};
-BW.MapModel = BW.MapModel || {};
-BW.MapModel.Parsers = BW.MapModel.Parsers || {};
+BW.MapAPI = BW.MapAPI || {};
+BW.MapAPI.Parsers = BW.MapAPI.Parsers || {};
 
-BW.MapModel.Parsers.Factory = function(geoJson, gml, kartKlifNo, fiskeriDir){
+BW.MapAPI.Parsers.Factory = function(geoJson, gml, kartKlifNo, fiskeriDir){
     function createParser(parserName){
         var parser;
         switch (parserName){

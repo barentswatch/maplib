@@ -1,8 +1,8 @@
 var BW = BW || {};
-BW.MapModel = BW.MapModel || {};
-BW.MapModel.Parsers = BW.MapModel.Parsers || {};
+BW.MapAPI = BW.MapAPI || {};
+BW.MapAPI.Parsers = BW.MapAPI.Parsers || {};
 
-BW.MapModel.Parsers.FiskeriDir = function(mapApi){
+BW.MapAPI.Parsers.FiskeriDir = function(mapApi){
     var insteadOfGml = 'insteadofgml';
     var x, y;
     var gmlObject;

@@ -1,8 +1,8 @@
 var BW = BW || {};
-BW.MapModel = BW.MapModel || {};
-BW.MapModel.Map = BW.MapModel.Map || {};
+BW.MapAPI = BW.MapAPI || {};
+BW.MapAPI.Map = BW.MapAPI.Map || {};
 
-BW.MapModel.FeatureInfo = function(mapInstance, httpHelper, eventHandler, featureParser){
+BW.MapAPI.FeatureInfo = function(mapInstance, httpHelper, eventHandler, featureParser){
 
     /*
         The reference to document in this class is necessary due to offset.

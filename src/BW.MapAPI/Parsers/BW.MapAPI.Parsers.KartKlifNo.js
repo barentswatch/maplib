@@ -1,9 +1,9 @@
 // This part covers the ArcGIS Server at http://kart.klif.no/
 var BW = BW || {};
-BW.MapModel = BW.MapModel || {};
-BW.MapModel.Parsers = BW.MapModel.Parsers || {};
+BW.MapAPI = BW.MapAPI || {};
+BW.MapAPI.Parsers = BW.MapAPI.Parsers || {};
 
-BW.MapModel.Parsers.KartKlifNo = function() {
+BW.MapAPI.Parsers.KartKlifNo = function() {
     function parse(result) {
         var jsonResult = [];
         result = result.replace(/:/g, ''); // Remove colon to prevent xml errors

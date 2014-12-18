@@ -1,8 +1,8 @@
 var BW = BW || {};
-BW.MapModel = BW.MapModel || {};
-BW.MapModel.Tools = BW.MapModel.Tools || {};
+BW.MapAPI = BW.MapAPI || {};
+BW.MapAPI.Tools = BW.MapAPI.Tools || {};
 
-BW.MapModel.Tools.Tool = function(config){
+BW.MapAPI.Tools.Tool = function(config){
     var defaults = {
         id: '',
         activate: function(){ console.log('Not implemented');},

@@ -1,8 +1,8 @@
 var BW = BW || {};
-BW.MapModel = BW.MapModel || {};
-BW.MapModel.Tools = BW.MapModel.Tools || {};
+BW.MapAPI = BW.MapAPI || {};
+BW.MapAPI.Tools = BW.MapAPI.Tools || {};
 
-BW.MapModel.Tools.ToolFactory = function(tools){
+BW.MapAPI.Tools.ToolFactory = function(tools){
     var internalTools = [];
     var externalTools = [];
 

@@ -1,8 +1,8 @@
 var BW = BW || {};
-BW.MapModel = BW.MapModel || {};
-BW.MapModel.Parsers = BW.MapModel.Parsers || {};
+BW.MapAPI = BW.MapAPI || {};
+BW.MapAPI.Parsers = BW.MapAPI.Parsers || {};
 
-BW.MapModel.Parsers.Base = function(factory) {
+BW.MapAPI.Parsers.Base = function(factory) {
     function parse(result){
         var exception = "exception";
         var xml = "<?xml";
@@ -37,7 +37,7 @@ BW.MapModel.Parsers.Base = function(factory) {
     }
 
     function parseAsException(exception){
-        var exceptionParser = new BW.MapModel.Parsers.Exception();
+        var exceptionParser = new BW.MapAPI.Parsers.Exception();
         exceptionParser.Parse(exception);
     }
 
