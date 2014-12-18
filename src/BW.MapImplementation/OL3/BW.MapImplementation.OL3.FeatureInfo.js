@@ -1,8 +1,8 @@
 var BW = BW || {};
-BW.Map = BW.Map || {};
-BW.Map.OL3 = BW.Map.OL3 || {};
+BW.MapImplementation = BW.MapImplementation || {};
+BW.MapImplementation.OL3 = BW.MapImplementation.OL3 || {};
 
-BW.Map.OL3.FeatureInfo = function(){
+BW.MapImplementation.OL3.FeatureInfo = function(){
     var highLightLayer = null;
     var highlightStyle = null;
     var infoKey = "";
@@ -183,7 +183,7 @@ BW.Map.OL3.FeatureInfo = function(){
     }
 
     function _setDefaultHighlightStyle(){
-        var defaultStyle = new BW.Map.OL3.Styles.Default();
+        var defaultStyle = new BW.MapImplementation.OL3.Styles.Default();
         highlightStyle = defaultStyle.Styles;
     }
 

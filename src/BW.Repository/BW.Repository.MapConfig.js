@@ -9,7 +9,7 @@ BW.Repository.MapConfig = function(config){
         categories: [],
         numZoomLevels: 10,
         newMaxRes: 20000,
-        renderer: BW.Map.OL3.Map.RENDERERS.canvas,
+        renderer: BW.MapImplementation.OL3.Map.RENDERERS.canvas,
         center: [-1, 1],
         zoom: 5,
         layers:[],

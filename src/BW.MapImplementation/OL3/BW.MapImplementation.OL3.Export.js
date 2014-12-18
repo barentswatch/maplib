@@ -1,8 +1,8 @@
 var BW = BW || {};
-BW.Map = BW.Map || {};
-BW.Map.OL3 = BW.Map.OL3 || {};
+BW.MapImplementation = BW.MapImplementation || {};
+BW.MapImplementation.OL3 = BW.MapImplementation.OL3 || {};
 
-BW.Map.OL3.Export = function(){
+BW.MapImplementation.OL3.Export = function(){
     var layout = "";
     var mapExportEvents;
     var printRectangle;

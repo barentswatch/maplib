@@ -1,9 +1,9 @@
 var BW = BW || {};
-BW.Map = BW.Map || {};
-BW.Map.OL3 = BW.Map.OL3 || {};
-BW.Map.OL3.Sources = BW.Map.OL3.Sources || {};
+BW.MapImplementation = BW.MapImplementation || {};
+BW.MapImplementation.OL3 = BW.MapImplementation.OL3 || {};
+BW.MapImplementation.OL3.Sources = BW.MapImplementation.OL3.Sources || {};
 
-BW.Map.OL3.Sources.Wmts = function(bwSubLayer){
+BW.MapImplementation.OL3.Sources.Wmts = function(bwSubLayer){
     var projection = new ol.proj.Projection({
         code: bwSubLayer.coordinate_system,
         extent: bwSubLayer.extent,

@@ -1,8 +1,8 @@
 var BW = BW || {};
-BW.Map = BW.Map || {};
-BW.Map.OL3 = BW.Map.OL3 || {};
+BW.MapImplementation = BW.MapImplementation || {};
+BW.MapImplementation.OL3 = BW.MapImplementation.OL3 || {};
 
-BW.Map.OL3.Measure = function(eventHandler){
+BW.MapImplementation.OL3.Measure = function(eventHandler){
     var measureKey = ""; // Key for map event pointermove
     var currentFeature; // The current draw object
     var circleRadius; // Distance for the initial circle

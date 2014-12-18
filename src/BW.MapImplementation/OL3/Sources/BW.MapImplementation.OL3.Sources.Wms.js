@@ -1,9 +1,9 @@
 var BW = BW || {};
-BW.Map = BW.Map || {};
-BW.Map.OL3 = BW.Map.OL3 || {};
-BW.Map.OL3.Sources = BW.Map.OL3.Sources || {};
+BW.MapImplementation = BW.MapImplementation || {};
+BW.MapImplementation.OL3 = BW.MapImplementation.OL3 || {};
+BW.MapImplementation.OL3.Sources = BW.MapImplementation.OL3.Sources || {};
 
-BW.Map.OL3.Sources.Wms = function(bwSubLayer){
+BW.MapImplementation.OL3.Sources.Wms = function(bwSubLayer){
     if (bwSubLayer.tiled) {
         return new ol.source.TileWMS({
             params: {

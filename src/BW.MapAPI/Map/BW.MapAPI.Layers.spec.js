@@ -15,7 +15,7 @@ describe('BW.MapAPI.Layers', function(){
         spyOn(repository, 'GetMapConfig').and.callThrough();
         mapConfig = repository.GetMapConfig();
 
-        measure = new BW.Map.OL3.Measure();
+        measure = new BW.MapImplementation.OL3.Measure();
         eventHandler = new BW.Events.EventHandler();
         httpHelper = function(){
             function getResult(url, callback){
@@ -28,10 +28,10 @@ describe('BW.MapAPI.Layers', function(){
                 get: getResult
             };
         };
-        featureInfo = new BW.Map.OL3.FeatureInfo();
-        mapExport = new BW.Map.OL3.Export();
+        featureInfo = new BW.MapImplementation.OL3.FeatureInfo();
+        mapExport = new BW.MapImplementation.OL3.Export();
 
-        map = new BW.Map.OL3.Map(repository, eventHandler, httpHelper, measure, featureInfo, mapExport);
+        map = new BW.MapImplementation.OL3.Map(repository, eventHandler, httpHelper, measure, featureInfo, mapExport);
         map.InitMap(dummyDivId, mapConfig);
 
         layers = new BW.MapAPI.Layers(map);

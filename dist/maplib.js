@@ -255,1246 +255,9 @@ BW.Facade.ServerConfigFacade = function () {
     };
 };
 var BW = BW || {};
-BW.Map = BW.Map || {};
-BW.Map.OL3 = BW.Map.OL3 || {};
+BW.MapAPI = BW.MapAPI || {};
 
-BW.Map.OL3.Export = function(){
-    var layout = "";
-    var mapExportEvents;
-    var printRectangle;
-    var exportActive = false;
-
-    function activate(options, map, redrawFunction) {
-        layout = options.layout;
-        exportActive = true;
-        printRectangle = _getScreenRectangle(map);
-        mapExportEvents = [
-            map.on('precompose', _handlePreCompose),
-            map.on('postcompose', _handlePostCompose)
-        ];
-        redrawFunction();
-    }
-
-    function deactivate(redrawFunction) {
-        exportActive = false;
-        if (mapExportEvents) {
-            for (var i = 0; i < mapExportEvents.length; i++) {
-                mapExportEvents[i].src.unByKey(mapExportEvents[i]);
-            }
-            redrawFunction();
-        }
-    }
-
-    function exportMap(callback, map){
-        map.once('postcompose', function (event) {
-         var canvas = event.context.canvas;
-         callback(canvas, printRectangle);
-         });
-    }
-
-    function windowResized(map){
-        if (exportActive){
-            printRectangle = _getScreenRectangle(map);
-            map.render();
-        }
-    }
-
-    function _getScreenRectangle(map) {
-        var A4_RATIO = 210/297;
-        var mapSize = map.getSize();
-        var h,w;
-        if (layout.value === "a4portrait") {
-            w = mapSize[1] * A4_RATIO;
-            if (w>mapSize[0]){
-                w = mapSize[0];
-                h = mapSize[0] / A4_RATIO;
-            } else {
-                h = mapSize[1];
-            }
-        } else {
-            h = mapSize[0] * A4_RATIO;
-            if (h>mapSize[1]){
-                h = mapSize[1];
-                w = mapSize[1] / A4_RATIO;
-            } else {
-                w = mapSize[0];
-            }
-        }
-
-        var center = [mapSize[0] * ol.has.DEVICE_PIXEL_RATIO / 2 ,
-            mapSize[1] * ol.has.DEVICE_PIXEL_RATIO / 2];
-
-        return {
-            minx: center[0] - (w / 2),
-            miny: center[1] - (h / 2),
-            maxx: center[0] + (w / 2),
-            maxy: center[1] + (h / 2)
-        };
-    }
-
-    var _handlePreCompose = function(evt) {
-        var ctx = evt.context;
-        ctx.save();
-    };
-
-    var _handlePostCompose = function(evt) {
-        var ctx = evt.context;
-        var mapSize = _getMapSize(evt.target);
-
-        // Create polygon-overlay for export-area
-        ctx.beginPath();
-        // Outside polygon (clockwise)
-        ctx.moveTo(0, 0);
-        ctx.lineTo(mapSize.width, 0);
-        ctx.lineTo(mapSize.width, mapSize.height);
-        ctx.lineTo(0, mapSize.height);
-        ctx.lineTo(0, 0);
-        ctx.closePath();
-
-        // Inner polygon (counter-clockwise)
-        ctx.moveTo(printRectangle.minx, printRectangle.miny);
-        ctx.lineTo(printRectangle.minx, printRectangle.maxy);
-        ctx.lineTo(printRectangle.maxx, printRectangle.maxy);
-        ctx.lineTo(printRectangle.maxx, printRectangle.miny);
-        ctx.lineTo(printRectangle.minx, printRectangle.miny);
-        ctx.closePath();
-
-        ctx.fillStyle = 'rgba(25, 25, 25, 0.75)';
-        ctx.fill();
-
-        ctx.restore();
-    };
-
-    function _getMapSize(map) {
-        var mapSize = map.getSize();
-        return {
-            height: mapSize[1] * ol.has.DEVICE_PIXEL_RATIO,
-            width: mapSize[0] * ol.has.DEVICE_PIXEL_RATIO
-        };
-    }
-
-    return {
-        Activate: activate,
-        Deactivate: deactivate,
-        ExportMap: exportMap,
-        WindowResized: windowResized
-    };
-};
-var BW = BW || {};
-BW.Map = BW.Map || {};
-BW.Map.OL3 = BW.Map.OL3 || {};
-
-BW.Map.OL3.FeatureInfo = function(){
-    var highLightLayer = null;
-    var highlightStyle = null;
-    var infoKey = "";
-    var boundingBox;
-    var infoMarkerOverlay;
-
-    function showHighlightedFeatures(features, map){
-        _ensureHighlightLayer(map);
-        clearHighlightedFeatures();
-        var geoJsonParser = new ol.format.GeoJSON();
-        for(var i = 0; i < features.length; i++){
-            var feature = features[i];
-            var mapFeature = geoJsonParser.readFeature(feature.geometryObject);
-            mapFeature.getGeometry().transform(ol.proj.get(feature.crs), ol.proj.get(map.getView().getProjection().getCode()));
-            highLightLayer.getSource().addFeature(mapFeature);
-        }
-    }
-
-    function clearHighlightedFeatures(){
-        var vectorSource = highLightLayer.getSource();
-        vectorSource.clear();
-    }
-
-    function showInfoMarker(coordinate, element, map){
-        var $element = $(element);
-        var height = $element.height();
-        var width = $element.width();
-        var infoMarkerOverlay = new ol.Overlay({
-            element: element,
-            stopEvent: false,
-            offset: [-width / 2, -height]
-        });
-        infoMarkerOverlay.setPosition(coordinate);
-        map.addOverlay(infoMarkerOverlay);
-    }
-
-    function removeInfoMarker(element, map){
-        map.removeOverlay(infoMarkerOverlay);
-    }
-
-    function getFeatureInfoUrl(bwSubLayer, mapLayer, coordinate, view){
-        var viewResolution = view.getResolution();
-
-        var layerSource = mapLayer.getSource();
-        var projection = view.getProjection();
-
-        var url = layerSource.getGetFeatureInfoUrl(coordinate, viewResolution, projection, {'INFO_FORMAT': bwSubLayer.featureInfo.getFeatureInfoFormat, 'feature_count': 10});
-        var decodedUrl = decodeURIComponent(url);
-        var queryString = decodedUrl.substring(decodedUrl.lastIndexOf('?'), decodedUrl.length).replace('?', '');
-        var queryStringEncoded = encodeURIComponent(queryString);
-        return bwSubLayer.url.replace('proxy/wms', 'proxy/') + queryStringEncoded;
-    }
-
-    function activateInfoClick(callback, map){
-        infoKey = map.on('singleclick', function(evt) {
-            callback(evt.coordinate);
-        });
-    }
-
-    function deactivateInfoClick(map){
-        map.unByKey(infoKey);
-        infoKey = "";
-    }
-
-    function activateBoxSelect(callback, map){
-        boundingBox = new ol.interaction.DragBox({
-            condition: ol.events.condition.always,
-            style: new ol.style.Style({
-                stroke: new ol.style.Stroke({
-                    color: [0,0,255,1]
-                }),
-                fill: new ol.style.Fill({
-                    color: 'rgba(255,255,255,0.8)'
-                })
-            })
-        });
-
-        map.addInteraction(boundingBox);
-
-        boundingBox.on('boxend', function(){
-            callback(boundingBox.getGeometry().getExtent());
-        });
-    }
-
-    function deactivateBoxSelect(map){
-        map.removeInteraction(boundingBox);
-    }
-
-    function getFeaturesInExtent(bwSubLayer, extent, mapLayer){
-        var source = mapLayer.getSource();
-        var features = [];
-        source.forEachFeatureInExtent(extent, function(feature){
-            features.push(feature);
-        });
-        var geoJson = new ol.format.GeoJSON();
-        var featureCollection = geoJson.writeFeatures(features);
-        featureCollection.crs = _createCrsObjectForGeoJson(source.getProjection().getCode());
-        return featureCollection;
-    }
-
-    function _createCrsObjectForGeoJson(crsCode){
-        return new CrsObject(crsCode.split(':'));
-    }
-
-    function CrsObject(codes){
-        this.type = codes[0];
-        this.properties = new CrsProperties(codes[1]);
-    }
-
-    function CrsProperties(code){
-        this.code = code;
-    }
-
-    function getExtentForCoordinate(coordinate, pixelTolerance, resolution){
-        var toleranceInMapUnits = pixelTolerance * resolution;
-        var n = coordinate[0];
-        var e = coordinate[1];
-        var minN = n - toleranceInMapUnits;
-        var minE = e - toleranceInMapUnits;
-        var maxN = n + toleranceInMapUnits;
-        var maxE = e + toleranceInMapUnits;
-        return [minN, minE, maxN, maxE];
-    }
-
-    function _ensureHighlightLayer(map){
-        if(highLightLayer == null){
-
-            if(highlightStyle == null){
-                _setDefaultHighlightStyle();
-            }
-
-            var vectorSource = new ol.source.GeoJSON({
-                projection: 'EPSG:4326',
-                // this is bogus, just to get the source initialized, can for sure be done a lot more appropriate.
-                object: {
-                    "type":"FeatureCollection",
-                    "totalFeatures":1,
-                    "features":[
-                        {
-                            "type":"Feature",
-                            "id":"thc.1",
-                            "geometry":
-                            {
-                                "type":"Point",
-                                "coordinates":[21.7495,71.721]},
-                            "geometry_name":"the_geom",
-                            "properties":
-                            {
-                                "Year":2003
-                            }
-                        }
-                    ],
-                    "crs":
-                    {
-                        "type":"EPSG",
-                        "properties":
-                        {
-                            "code":"4326"
-                        }
-                    }
-                }
-            });
-            highLightLayer = new ol.layer.Vector({
-                source: vectorSource,
-                style: highlightStyle
-            });
-            map.addLayer(highLightLayer);
-        }
-        else {
-            map.removeLayer(highLightLayer);
-            map.addLayer(highLightLayer);
-        }
-    }
-
-    function setHighlightStyle(style){
-        highlightStyle = style;
-        highLightLayer.setStyle(highlightStyle);
-    }
-
-    function _setDefaultHighlightStyle(){
-        var defaultStyle = new BW.Map.OL3.Styles.Default();
-        highlightStyle = defaultStyle.Styles;
-    }
-
-    return {
-        ShowHighlightedFeatures: showHighlightedFeatures,
-        ClearHighlightedFeatures: clearHighlightedFeatures,
-        SetHighlightStyle: setHighlightStyle,
-        ShowInfoMarker: showInfoMarker,
-        RemoveInfoMarker: removeInfoMarker,
-        GetFeatureInfoUrl: getFeatureInfoUrl,
-        ActivateInfoClick: activateInfoClick,
-        DeactivateInfoClick: deactivateInfoClick,
-        ActivateBoxSelect: activateBoxSelect,
-        DeactivateBoxSelect: deactivateBoxSelect,
-        GetFeaturesInExtent: getFeaturesInExtent,
-        GetExtentForCoordinate: getExtentForCoordinate
-    };
-};
-var BW = BW || {};
-BW.Map = BW.Map || {};
-BW.Map.OL3 = BW.Map.OL3 || {};
-
-BW.Map.OL3.Map = function(repository, eventHandler, httpHelper, measure, featureInfo, mapExport){
-    var map;
-    var layerPool = [];
-
-    var proxyHost = "";
-
-    /*
-        Start up functions Start
-     */
-
-    function initMap(targetId, mapConfig){
-        proxyHost = mapConfig.proxyHost;
-        var numZoomLevels = mapConfig.numZoomLevels;
-        var newMapRes = [];
-        newMapRes[0]= mapConfig.newMaxRes;
-        for (var t = 1; t < numZoomLevels; t++) {
-            newMapRes[t] = newMapRes[t - 1] / 2;
-        }
-        var sm = new ol.proj.Projection({
-            code: mapConfig.coordinate_system,
-            extent: mapConfig.extent,
-            units: mapConfig.extentUnits
-        });
-
-        map = new ol.Map({
-            target: targetId,
-            renderer: mapConfig.renderer,
-            layers: [],
-            view: new ol.View({
-                projection: sm,
-                center: mapConfig.center,
-                zoom: mapConfig.zoom,
-                resolutions: newMapRes,
-                maxResolution: mapConfig.newMaxRes,
-                numZoomLevels: numZoomLevels
-            }),
-            controls: [],
-            overlays: []
-        });
-
-        _registerMapCallbacks();
-    }
-
-    function _registerMapCallbacks(){
-        var view = map.getView();
-
-        var changeCenter = function(){
-            var mapViewChangedObj = _getUrlObject();
-            eventHandler.TriggerEvent(BW.Events.EventTypes.ChangeCenter, mapViewChangedObj);
-        };
-
-        var changeResolution = function(){
-            var mapViewChangedObj = _getUrlObject();
-            eventHandler.TriggerEvent(BW.Events.EventTypes.ChangeResolution, mapViewChangedObj);
-        };
-
-        view.on('change:center', changeCenter);
-        view.on('change:resolution', changeResolution);
-    }
-
-    function changeView(viewPropertyObject){
-        var view = map.getView();
-        var x, y, zoom;
-        if(viewPropertyObject.x){
-            x = viewPropertyObject.x;
-        }
-        if(viewPropertyObject.y){
-            y = viewPropertyObject.y;
-        }
-        if(viewPropertyObject.zoom){
-            zoom = viewPropertyObject.zoom;
-        }
-
-        if(x !== undefined && y !== undefined){
-            var eastings = parseFloat(y.replace(/,/g, '.'));
-            var northings = parseFloat(x.replace(/,/g, '.'));
-            if (isFinite(eastings) && isFinite(northings)) {
-                view.setCenter([eastings, northings]);
-            }
-        }
-
-        if(zoom !== undefined){
-            view.setZoom(zoom);
-        }
-    }
-
-    /*
-        Start up functions End
-     */
-
-    /*
-        Layer functions Start
-        Functionality to be moved to BW.Map.OL3.Layers
-     */
-
-    function showLayer(bwSubLayer){
-        var layer = _createLayer(bwSubLayer);
-        map.addLayer(layer);
-
-        _trigLayersChanged();
-    }
-
-    function showBaseLayer(bwSubLayer){
-        var layer = _createLayer(bwSubLayer);
-        map.getLayers().insertAt(0, layer);
-
-        _trigLayersChanged();
-    }
-
-    function hideLayer(bwSubLayer){
-        var layer = _getLayerByGuid(bwSubLayer.id);
-        if(layer){
-            map.removeLayer(layer);
-            _trigLayersChanged();
-        }
-    }
-
-    function _createLayer(bwSubLayer){
-        var layer;
-        var source;
-        var layerFromPool = _getLayerFromPool(bwSubLayer);
-
-        if(layerFromPool != null){
-            layer = layerFromPool;
-        }
-        else{
-            switch(bwSubLayer.source){
-                case BW.Domain.SubLayer.SOURCES.wmts:
-                    source = new BW.Map.OL3.Sources.Wmts(bwSubLayer);
-                    break;
-
-                case BW.Domain.SubLayer.SOURCES.proxyWmts:
-                    bwSubLayer.url = proxyHost + bwSubLayer.url;
-                    source = new BW.Map.OL3.Sources.Wmts(bwSubLayer);
-                    break;
-
-                case BW.Domain.SubLayer.SOURCES.wms:
-                    source = new BW.Map.OL3.Sources.Wms(bwSubLayer);
-                    break;
-                /**
-                 Bruker proxy mot disse):
-                 Image from origin
-                 'http://maps.imr.no' 'http://kart.fiskeridir.no' 'http://wms2.nve.no'
-                 'http://wms3.nve.no' 'http://bw-wms.met.no' 'http://wms.dirnat.no'
-                 'http://kart.klif.no' 'http://wms.miljodirektoratet.no' 'http://npdwms.npd.no'
-                 'http://kart.kystverket.no'
-                 has been blocked from loading by Cross-Origin Resource Sharing policy:
-                 No 'Access-Control-Allow-Origin' header is present on the requested resource.
-                 **/
-                case BW.Domain.SubLayer.SOURCES.proxyWms:
-                    bwSubLayer.url = proxyHost + bwSubLayer.url;
-                    source = new BW.Map.OL3.Sources.Wms(bwSubLayer);
-                    break;
-                case BW.Domain.SubLayer.SOURCES.vector:
-                    source = new BW.Map.OL3.Sources.Vector(bwSubLayer, map.getView().getProjection());
-                    _loadVectorLayer(bwSubLayer, source);
-                    break;
-                default:
-                    throw "Unsupported source: BW.Domain.SubLayer.SOURCES.'" +
-                            bwSubLayer.source +
-                            "'. For SubLayer with url " + bwSubLayer.url +
-                            " and name " + bwSubLayer.name + ".";
-            }
-
-            if(bwSubLayer.source === BW.Domain.SubLayer.SOURCES.vector){
-                layer = new ol.layer.Vector({
-                    source: source
-                });
-            }
-            else if (bwSubLayer.tiled) {
-                layer = new ol.layer.Tile({
-                    extent: bwSubLayer.extent,
-                    opacity: bwSubLayer.opacity,
-                    source: source
-                });
-            } else {
-                layer = new ol.layer.Image({
-                    extent: bwSubLayer.extent,
-                    opacity: bwSubLayer.opacity,
-                    source: source
-                });
-            }
-
-            layer.layerIndex = bwSubLayer.layerIndex;
-            layer.guid = bwSubLayer.id;
-
-            layerPool.push(layer);
-        }
-
-        return layer;
-    }
-
-    function _loadVectorLayer(bwSubLayer, source){
-        var callback = function(data){
-            var fromProj = ol.proj.get(bwSubLayer.coordinate_system);
-            var toProj = ol.proj.get(source.getProjection().getCode());
-            var features = source.parser.readFeatures(data);
-            for(var i = 0; i < features.length; i++) {
-                var feature = features[i];
-                feature.getGeometry().transform(fromProj, toProj);
-            }
-            source.addFeatures(features);
-        };
-        httpHelper.get(bwSubLayer.url).success(callback);
-    }
-
-    function _getLayerFromPool(bwSubLayer){
-        for(var i = 0; i < layerPool.length; i++){
-            var layerInPool = layerPool[i];
-            if(layerInPool.guid == bwSubLayer.id){
-                return layerInPool;
-            }
-        }
-        return null;
-    }
-
-    function setLayerBrightness(bwSubLayer, value){
-        // Require WebGL-rendering of map
-        var layer = _getLayerByGuid(bwSubLayer.id);
-        if(layer && !isNaN(value)){
-            layer.setBrightness(Math.min(value,1));
-        }
-    }
-    function setLayerContrast(bwSubLayer, value){
-        // Require WebGL-rendering of map
-        var layer = _getLayerByGuid(bwSubLayer.id);
-        if(layer && !isNaN(value)){
-            layer.setContrast(Math.min(value,1));
-        }
-    }
-    function setLayerOpacity(bwSubLayer, value){
-        var layer = _getLayerByGuid(bwSubLayer.id);
-        if(layer && !isNaN(value)){
-            layer.setOpacity(Math.min(value,1));
-        }
-    }
-    function setLayerSaturation(bwSubLayer, value){
-        // Require WebGL-rendering of map
-        var layer = _getLayerByGuid(bwSubLayer.id);
-        if(layer && !isNaN(value)){
-            layer.setSaturation(Math.min(value,1));
-        }
-    }
-    function setLayerHue(bwSubLayer, value){
-        // Require WebGL-rendering of map
-        var layer = _getLayerByGuid(bwSubLayer.id);
-        if(layer && !isNaN(value)){
-            layer.setHue(Math.min(value,1));
-        }
-    }
-
-    function _getLayersWithGuid(){
-        return map.getLayers().getArray().filter(function(elem){
-            return elem.guid !== undefined;
-        });
-    }
-
-    function _getLayerByGuid(guid){
-        var layers = _getLayersWithGuid();
-        for(var i = 0; i < layers.length; i++){
-            var layer = layers[i];
-            if(layer.guid == guid){
-                return layer;
-            }
-        }
-        return null;
-    }
-
-    function getLayerIndex(bwSubLayer){
-        var layers = _getLayersWithGuid();
-        for(var i = 0; i < layers.length; i++){
-            var layer = layers[i];
-            if(layer.guid == bwSubLayer.id){
-                return i;
-            }
-        }
-        return null;
-    }
-
-    function getLayerByName(layerTitle) {
-        var layers = _getLayersWithGuid();
-        for (var i = 0; i < layers.length; i++) {
-            if (layers[i].get('title') == layerTitle) {
-                return layers[i];
-            }
-        }
-        return null;
-    }
-
-    function moveLayerToIndex(bwSubLayer, index){
-        var subLayerIndex = getLayerIndex(bwSubLayer);
-        var layersArray = map.getLayers().getArray();
-        layersArray.splice(index, 0, layersArray.splice(subLayerIndex, 1)[0]);
-
-        _trigLayersChanged();
-    }
-
-    function _trigLayersChanged(){
-        var eventObject = _getUrlObject();
-        eventHandler.TriggerEvent(BW.Events.EventTypes.ChangeLayers, eventObject);
-    }
-
-    function _getGuidsForVisibleLayers() {
-        var visibleLayers = [];
-        var layers = _getLayersWithGuid();
-        for (var i = 0; i < layers.length; i++) {
-            var layer = layers[i];
-            if (layer.getVisible() === true) {
-                visibleLayers.push(layers[i]);
-            }
-        }
-
-        visibleLayers.sort(_compareMapLayerIndex);
-        var result = [];
-        for(var j = 0; j < visibleLayers.length; j++){
-            result.push(visibleLayers[j].guid);
-        }
-        return result.join(",");
-    }
-
-    function _compareMapLayerIndex(a, b) {
-        if (a.mapLayerIndex < b.mapLayerIndex){
-            return -1;
-        }
-        if (a.mapLayerIndex > b.mapLayerIndex){
-            return 1;
-        }
-        return 0;
-    }
-
-    /*
-        Layer functions End
-     */
-
-    /*
-        Map Export Start
-        Functionality in BW.;ap.OL3.Export
-     */
-
-    var _resizeEvent = function(){
-        mapExport.WindowResized(map);
-    };
-
-    function activateExport(options) {
-        mapExport.Activate(options, map, redrawMap);
-        window.addEventListener('resize', _resizeEvent, false);
-    }
-
-    function deactivateExport() {
-        window.removeEventListener('resize', _resizeEvent, false);
-        mapExport.Deactivate(redrawMap);
-    }
-
-    function exportMap(callback){
-        mapExport.ExportMap(callback, map);
-    }
-
-    function redrawMap(){
-        map.updateSize();
-    }
-
-    function renderSync(){
-        map.renderSync();
-    }
-
-    /*
-        Map Export End
-     */
-
-    /*
-        Feature Info Start
-        Functionality in BW.Map.OL3.FeatureInfo
-     */
-
-    function activateInfoClick(callback){
-        featureInfo.ActivateInfoClick(callback, map);
-    }
-
-    function deactivateInfoClick(){
-        featureInfo.DeactivateInfoClick(map);
-    }
-
-    function getFeatureInfoUrl(bwSubLayer, coordinate){
-        return featureInfo.GetFeatureInfoUrl(bwSubLayer, _getLayerFromPool(bwSubLayer), coordinate, map.getView());
-    }
-
-    function showHighlightedFeatures(features){
-        featureInfo.ShowHighlightedFeatures(features, map);
-    }
-
-    function clearHighlightedFeatures(){
-        featureInfo.ClearHighlightedFeatures();
-    }
-
-    function showInfoMarker(coordinate, element){
-        featureInfo.ShowInfoMarker(coordinate, element, map);
-    }
-
-    function removeInfoMarker(element){
-        featureInfo.RemoveInfoMarker(element, map);
-    }
-
-    function setHighlightStyle(style){
-        featureInfo.SetHighlightStyle(style);
-    }
-
-    function activateBoxSelect(callback){
-        featureInfo.ActivateBoxSelect(callback, map);
-    }
-
-    function deactivateBoxSelect(){
-        featureInfo.DeactivateBoxSelect(map);
-    }
-
-    function getExtentForCoordinate(coordinate, pixelTolerance){
-        return featureInfo.GetExtentForCoordinate(coordinate, pixelTolerance, map.getView().getResolution());
-    }
-
-    function getFeaturesInExtent(bwSubLayer, extent){
-        return featureInfo.GetFeaturesInExtent(bwSubLayer, extent, _getLayerFromPool(bwSubLayer));
-    }
-
-    /*
-        Feature Info End
-     */
-
-    /*
-        Measure Start
-        Functionality in BW.Map.OL3.Measure
-     */
-
-    function activateMeasure(callback){
-        measure.Activate(map, callback);
-        //var vector = measure.Activate(map, callback);
-
-    }
-
-    function deactivateMeasure(){
-        measure.Deactivate(map);
-    }
-
-    /*
-        Measure End
-     */
-
-    /*
-        Utility functions start
-     */
-
-    var _getUrlObject = function(){
-        var retVal = {
-            layers: _getGuidsForVisibleLayers()
-        };
-
-        var view = map.getView();
-        var center = view.getCenter();
-        var zoom = view.getZoom().toString();
-        if(zoom){
-            retVal.zoom = zoom;
-        }
-        if(center){
-            retVal.x = center[1].toFixed(2);
-            retVal.y = center[0].toFixed(2);
-        }
-        return retVal;
-    };
-
-    function transformBox(fromCrs, toCrs, boxExtent){
-        var returnExtent = boxExtent;
-
-        if(fromCrs !== "" && toCrs !== ""){
-            var fromProj = ol.proj.get(fromCrs);
-            var toProj = ol.proj.get(toCrs);
-            var transformedExtent = ol.proj.transformExtent(boxExtent, fromProj, toProj);
-
-            returnExtent = transformedExtent;
-            if(toCrs === "EPSG:4326"){
-                returnExtent = transformedExtent[1] + "," + transformedExtent[0] + "," + transformedExtent[3] + "," + transformedExtent[2];
-            }
-        }
-
-        return returnExtent;
-    }
-
-    function convertGmlToGeoJson(gml){
-        var xmlParser = new ol.format.WMSCapabilities();
-        var xmlFeatures = xmlParser.read(gml);
-        var gmlParser = new ol.format.GML();
-        var features = gmlParser.readFeatures(xmlFeatures);
-        var jsonParser = new ol.format.GeoJSON();
-        return jsonParser.writeFeatures(features);
-    }
-
-    function extentToGeoJson(x, y){
-        var point = new ol.geom.Point([x, y]);
-        var feature = new ol.Feature();
-        feature.setGeometry(point);
-        var geoJson = new ol.format.GeoJSON();
-        return geoJson.writeFeature(feature);
-    }
-
-    /*
-        Utility functions End
-     */
-
-    return {
-        // Start up start
-        InitMap: initMap,
-        ChangeView: changeView,
-        // Start up end
-
-        /***********************************/
-
-        // Layer start
-        ShowLayer: showLayer,
-        ShowBaseLayer: showBaseLayer,
-        HideLayer: hideLayer,
-        GetLayerByName: getLayerByName,
-        SetLayerOpacity: setLayerOpacity,
-        SetLayerSaturation: setLayerSaturation,
-        SetLayerHue: setLayerHue,
-        SetLayerBrightness: setLayerBrightness,
-        SetLayerContrast: setLayerContrast,
-        MoveLayerToIndex: moveLayerToIndex,
-        GetLayerIndex: getLayerIndex,
-        // Layer end
-
-        /***********************************/
-
-        // Export start
-        RedrawMap: redrawMap,
-        RenderSync: renderSync,
-        ExportMap: exportMap,
-        ActivateExport: activateExport,
-        DeactivateExport: deactivateExport,
-        // Export end
-
-        /***********************************/
-
-        // Feature Info start
-        ActivateInfoClick: activateInfoClick,
-        DeactivateInfoClick: deactivateInfoClick,
-        GetInfoUrl: getFeatureInfoUrl,
-        ShowHighlightedFeatures: showHighlightedFeatures,
-        ClearHighlightedFeatures: clearHighlightedFeatures,
-        ShowInfoMarker: showInfoMarker,
-        SetHighlightStyle: setHighlightStyle,
-        RemoveInfoMarker: removeInfoMarker,
-        ActivateBoxSelect: activateBoxSelect,
-        DeactivateBoxSelect: deactivateBoxSelect,
-        GetFeaturesInExtent: getFeaturesInExtent,
-        GetExtentForCoordinate: getExtentForCoordinate,
-        // Feature Info end
-
-        /***********************************/
-
-        // Measure start
-        ActivateMeasure: activateMeasure,
-        DeactivateMeasure: deactivateMeasure,
-        // Measure end
-
-        /***********************************/
-
-        // Utility start
-        TransformBox: transformBox,
-        ConvertGmlToGeoJson: convertGmlToGeoJson,
-        ExtentToGeoJson: extentToGeoJson
-        // Utility end
-    };
-};
-
-BW.Map.OL3.Map.RENDERERS = {
-    canvas: 'canvas',
-    webgl: 'webgl'
-};
-var BW = BW || {};
-BW.Map = BW.Map || {};
-BW.Map.OL3 = BW.Map.OL3 || {};
-
-BW.Map.OL3.Measure = function(eventHandler){
-    var measureKey = ""; // Key for map event pointermove
-    var currentFeature; // The current draw object
-    var circleRadius; // Distance for the initial circle
-    var circleFeature; // The circle feature
-    var circleOverlay; // Overlay for the circle
-
-    var drawInteraction; // global so we can remove it later
-    var drawLayer; // Where the measure features are drawn. If this is not added to the map it still works, but the objects are removed after double click
-
-    function activate(map){
-        measureKey = map.on('pointermove', _mouseMoveHandler);
-        _addInteraction(map);
-        map.addLayer(drawLayer);
-    }
-
-    function deactivate(map){
-        map.removeLayer(drawLayer);
-        map.unByKey(measureKey);
-        measureKey = "";
-        map.removeInteraction(drawInteraction);
-        map.removeOverlay(circleOverlay);
-    }
-
-    function _mouseMoveHandler () { // evt
-        if (currentFeature) {
-            var output;
-            var geom = (currentFeature.getGeometry());
-            if (geom instanceof ol.geom.Polygon) {
-                //output =
-                var polygonArea = _formatArea(geom);
-                var lineLength = _formatPolygonLength(geom);
-                var circleArea = _drawCircle(geom);
-                output = new BW.Domain.MeasureResult(polygonArea, lineLength, circleArea);
-            }
-            eventHandler.TriggerEvent(BW.Events.EventTypes.MeasureMouseMove, output);
-        }
-    }
-
-    function _drawCircle(geom){
-        var circleCoordinates = geom.getCoordinates()[0];
-        if (circleCoordinates.length == 2) {
-            circleFeature.getGeometry().setRadius(circleRadius);
-            return Math.PI * Math.pow(circleRadius, 2);
-        }
-        else{
-            circleFeature.getGeometry().setRadius(0);
-            return null;
-        }
-    }
-
-    function _addInteraction(map) {
-        circleOverlay = new ol.FeatureOverlay();
-        map.addOverlay(circleOverlay);
-
-        var source = new ol.source.Vector();
-
-        drawLayer = new ol.layer.Vector({
-            source: source,
-            style: new ol.style.Style({
-                fill: new ol.style.Fill({
-                    color: 'rgba(255, 255, 255, 0.2)'
-                }),
-                stroke: new ol.style.Stroke({
-                    color: '#ffcc33',
-                    width: 2
-                }),
-                image: new ol.style.Circle({
-                    radius: 7,
-                    fill: new ol.style.Fill({
-                        color: '#ffcc33'
-                    })
-                })
-            })
-        });
-
-        var type = 'Polygon';// (typeSelect.value == 'area' ? 'Polygon' : 'LineString');
-        drawInteraction = new ol.interaction.Draw({
-            source: source,
-            type: type
-        });
-        map.addInteraction(drawInteraction);
-
-        drawInteraction.on('drawstart',
-            function(evt) {
-                currentFeature = evt.feature;
-
-                // Start circle drawing
-                var firstPoint = currentFeature.getGeometry().getCoordinates()[0][0];
-                circleFeature = new ol.Feature(new ol.geom.Circle(firstPoint, 0));
-                circleOverlay.addFeature(circleFeature);
-            }, this);
-
-        drawInteraction.on('drawend',
-            function() { // evt
-                currentFeature = null;
-            }, this);
-
-
-    }
-    function _formatLength (coordinates) {
-        var length = _getLength(coordinates);
-        circleRadius = length;
-        length = Math.round(length*100)/100;
-        var output;
-        if (length > 100) {
-            output = (Math.round(length / 1000 * 100) / 100) +
-            ' ' + 'km';
-        } else {
-            output = (Math.round(length * 100) / 100) +
-            ' ' + 'm';
-        }
-        return output;
-    }
-
-    /*var formatLineLength = function(line){
-        return formatLength(line.getCoordinates());
-    };*/
-
-    function _formatPolygonLength(polygon){
-        return _formatLength(polygon.getCoordinates()[0]);
-    }
-
-    function _formatArea(polygon) {
-        var area = polygon.getArea();
-        var output;
-        if (area > 10000) {
-            output = (Math.round(area / 1000000 * 100) / 100) +
-            ' ' + 'km<sup>2</sup>';
-        } else {
-            output = (Math.round(area * 100) / 100) +
-            ' ' + 'm<sup>2</sup>';
-        }
-        return output;
-    }
-
-    function _getLength(coordinates){
-        var length;
-        // Assume at least one coodinate
-        if(coordinates.length > 0){
-            var stride = coordinates[0].length; // 2D or 3D
-            var flatCoordinates = _flatternCoordinates(coordinates);
-            length = _getFlatLength(flatCoordinates, 0, flatCoordinates.length, stride);
-        }
-        return length;
-    }
-
-    function _flatternCoordinates(coordinates){
-        var flatCoordinates = [];
-        for(var i = 0; i < coordinates.length; i++){
-            var thisCoordinate = coordinates[i];
-            for(var j = 0; j < thisCoordinate.length; j++){
-                flatCoordinates.push(thisCoordinate[j]);
-            }
-        }
-        return flatCoordinates;
-    }
-
-    function _getFlatLength(flatCoordinates, offset, end, stride) {
-        var x1 = flatCoordinates[offset];
-        var y1 = flatCoordinates[offset + 1];
-        var length = 0;
-        var i;
-        for (i = offset + stride; i < end; i += stride) {
-            var x2 = flatCoordinates[i];
-            var y2 = flatCoordinates[i + 1];
-            length += Math.sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1));
-            x1 = x2;
-            y1 = y2;
-        }
-        return length;
-    }
-
-    return {
-        Activate: activate,
-        Deactivate: deactivate
-    };
-};
-var BW = BW || {};
-BW.Map = BW.Map || {};
-BW.Map.OL3 = BW.Map.OL3 || {};
-
-BW.Map.OL3.Utilities = function(){
-    function convertGmlToGeoJson(gml){
-        var xmlParser = new ol.format.WMSCapabilities();
-        var xmlFeatures = xmlParser.read(gml);
-        var gmlParser = new ol.format.GML();
-        var features = gmlParser.readFeatures(xmlFeatures);
-        var jsonParser = new ol.format.GeoJSON();
-        return jsonParser.writeFeatures(features);
-    }
-
-    function extentToGeoJson(x, y){
-        var point = new ol.geom.Point([x, y]);
-        var feature = new ol.Feature();
-        feature.setGeometry(point);
-        var geoJson = new ol.format.GeoJSON();
-        return geoJson.writeFeature(feature);
-    }
-
-    return {
-        ConvertGmlToGeoJson: convertGmlToGeoJson,
-        ExtentToGeoJson: extentToGeoJson
-    };
-};
-var BW = BW || {};
-BW.Map = BW.Map || {};
-BW.Map.OL3 = BW.Map.OL3 || {};
-BW.Map.OL3.Sources = BW.Map.OL3.Sources || {};
-
-BW.Map.OL3.Sources.Vector = function(bwSubLayer, mapProjection){
-    var source;
-    switch (bwSubLayer.format){
-        case BW.Domain.SubLayer.FORMATS.geoJson:
-            source = new ol.source.GeoJSON({
-                projection: mapProjection,
-                strategy: ol.loadingstrategy.createTile(new ol.tilegrid.XYZ({
-                    maxZoom: 19
-                }))
-            });
-            source.parser = new ol.format.GeoJSON();
-            break;
-    }
-    return source;
-};
-var BW = BW || {};
-BW.Map = BW.Map || {};
-BW.Map.OL3 = BW.Map.OL3 || {};
-BW.Map.OL3.Sources = BW.Map.OL3.Sources || {};
-
-BW.Map.OL3.Sources.Wms = function(bwSubLayer){
-    if (bwSubLayer.tiled) {
-        return new ol.source.TileWMS({
-            params: {
-                LAYERS: bwSubLayer.name,
-                VERSION: "1.1.1"
-            },
-            url: bwSubLayer.url,
-            format: bwSubLayer.format,
-            crossOrigin: 'anonymous',
-            transparent: bwSubLayer.transparent
-        });
-    } else {
-        return new ol.source.ImageWMS({
-            params: {
-                LAYERS: bwSubLayer.name,
-                VERSION: "1.1.1"
-            },
-            url: bwSubLayer.url,
-            format: bwSubLayer.format,
-            crossOrigin: 'anonymous',
-            transparent: bwSubLayer.transparent
-        });
-    }
-};
-
-var BW = BW || {};
-BW.Map = BW.Map || {};
-BW.Map.OL3 = BW.Map.OL3 || {};
-BW.Map.OL3.Sources = BW.Map.OL3.Sources || {};
-
-BW.Map.OL3.Sources.Wmts = function(bwSubLayer){
-    var projection = new ol.proj.Projection({
-        code: bwSubLayer.coordinate_system,
-        extent: bwSubLayer.extent,
-        units: bwSubLayer.extentUnits
-    });
-
-    var projectionExtent = projection.getExtent();
-    var size = ol.extent.getWidth(projectionExtent) / 256;
-    var resolutions = new Array(14);
-    var matrixIds = new Array(14);
-    var numZoomLevels = 18;
-    for (var z = 0; z < numZoomLevels; ++z) {
-        resolutions[z] = size / Math.pow(2, z);
-        matrixIds[z] = projection.getCode() + ":" + z;
-    }
-
-    return new ol.source.WMTS({
-        url: bwSubLayer.url,
-        layer: bwSubLayer.name,
-        format: bwSubLayer.format,
-        projection: projection,
-        matrixSet: bwSubLayer.coordinate_system,
-        crossOrigin: 'anonymous',
-        tileGrid: new ol.tilegrid.WMTS({
-            origin: ol.extent.getTopLeft(projectionExtent),
-            resolutions: resolutions,
-            matrixIds: matrixIds
-        })
-    });
-};
-var BW = BW || {};
-BW.Map = BW.Map || {};
-BW.Map.OL3 = BW.Map.OL3 || {};
-BW.Map.OL3.Styles = BW.Map.OL3.Styles || {};
-
-BW.Map.OL3.Styles.Default = function () {
-    var styles = function() {
-        var fill = new ol.style.Fill({
-            color: 'rgba(255,0,0,0.8)'
-        });
-        var stroke = new ol.style.Stroke({
-            color: '#3399CC',
-            width: 2.25
-        });
-        var styles = [
-            new ol.style.Style({
-                image: new ol.style.Circle({
-                    fill: fill,
-                    stroke: stroke,
-                    radius: 8
-                }),
-                fill: fill,
-                stroke: stroke
-            })
-        ];
-        return styles;
-    };
-
-    return {
-        Styles: styles
-    };
-};
-var BW = BW || {};
-BW.MapModel = BW.MapModel || {};
-
-BW.MapModel.Categories = function(){
+BW.MapAPI.Categories = function(){
     var categories = [];
 
     function init(mapConfig) {
@@ -1527,9 +290,9 @@ BW.MapModel.Categories = function(){
     };
 };
 var BW = BW || {};
-BW.MapModel = BW.MapModel || {};
+BW.MapAPI = BW.MapAPI || {};
 
-BW.MapModel.CustomCrsLoader = function(){
+BW.MapAPI.CustomCrsLoader = function(){
     function loadCustomCrs(){
         // proj4 is on the global scope
         proj4.defs("EPSG:32633", '+proj=utm +zone=33 +ellps=WGS84 +datum=WGS84 +units=m +no_defs');
@@ -1540,10 +303,10 @@ BW.MapModel.CustomCrsLoader = function(){
     };
 };
 var BW = BW || {};
-BW.MapModel = BW.MapModel || {};
-BW.MapModel.Map = BW.MapModel.Map || {};
+BW.MapAPI = BW.MapAPI || {};
+BW.MapAPI.Map = BW.MapAPI.Map || {};
 
-BW.MapModel.FeatureInfo = function(mapInstance, httpHelper, eventHandler, featureParser){
+BW.MapAPI.FeatureInfo = function(mapInstance, httpHelper, eventHandler, featureParser){
 
     /*
         The reference to document in this class is necessary due to offset.
@@ -1782,9 +545,9 @@ BW.MapModel.FeatureInfo = function(mapInstance, httpHelper, eventHandler, featur
     };
 };
 var BW = BW || {};
-BW.MapModel = BW.MapModel || {};
+BW.MapAPI = BW.MapAPI || {};
 
-BW.MapModel.Layers = function(mapInstance){
+BW.MapAPI.Layers = function(mapInstance){
     var config;
     var layers;
 
@@ -2010,9 +773,9 @@ BW.MapModel.Layers = function(mapInstance){
 
 };
 var BW = BW || {};
-BW.MapModel = BW.MapModel || {};
+BW.MapAPI = BW.MapAPI || {};
 
-BW.MapModel.Map = function(mapInstance, eventHandler, featureInfo, layerHandler, categoryHandler) {
+BW.MapAPI.Map = function(mapInstance, eventHandler, featureInfo, layerHandler, categoryHandler) {
 
     /*
         Start up functions Start
@@ -2029,7 +792,7 @@ BW.MapModel.Map = function(mapInstance, eventHandler, featureInfo, layerHandler,
     }
 
     function _loadCustomCrs(){
-        var customCrsLoader = new BW.MapModel.CustomCrsLoader();
+        var customCrsLoader = new BW.MapAPI.CustomCrsLoader();
         customCrsLoader.LoadCustomCrs();
     }
 
@@ -2359,10 +1122,10 @@ BW.MapModel.Map = function(mapInstance, eventHandler, featureInfo, layerHandler,
     };
 };
 var BW = BW || {};
-BW.MapModel = BW.MapModel || {};
-BW.MapModel.Parsers = BW.MapModel.Parsers || {};
+BW.MapAPI = BW.MapAPI || {};
+BW.MapAPI.Parsers = BW.MapAPI.Parsers || {};
 
-BW.MapModel.Parsers.Base = function(factory) {
+BW.MapAPI.Parsers.Base = function(factory) {
     function parse(result){
         var exception = "exception";
         var xml = "<?xml";
@@ -2397,7 +1160,7 @@ BW.MapModel.Parsers.Base = function(factory) {
     }
 
     function parseAsException(exception){
-        var exceptionParser = new BW.MapModel.Parsers.Exception();
+        var exceptionParser = new BW.MapAPI.Parsers.Exception();
         exceptionParser.Parse(exception);
     }
 
@@ -2419,10 +1182,10 @@ BW.MapModel.Parsers.Base = function(factory) {
     };
 };
 var BW = BW || {};
-BW.MapModel = BW.MapModel || {};
-BW.MapModel.Parsers = BW.MapModel.Parsers || {};
+BW.MapAPI = BW.MapAPI || {};
+BW.MapAPI.Parsers = BW.MapAPI.Parsers || {};
 
-BW.MapModel.Parsers.Exception = function() {
+BW.MapAPI.Parsers.Exception = function() {
     function parse(exception){
         var message = exception.replace(/(<([^>]+)>)/ig, '');
         throw message;
@@ -2433,10 +1196,10 @@ BW.MapModel.Parsers.Exception = function() {
     };
 };
 var BW = BW || {};
-BW.MapModel = BW.MapModel || {};
-BW.MapModel.Parsers = BW.MapModel.Parsers || {};
+BW.MapAPI = BW.MapAPI || {};
+BW.MapAPI.Parsers = BW.MapAPI.Parsers || {};
 
-BW.MapModel.Parsers.Factory = function(geoJson, gml, kartKlifNo, fiskeriDir){
+BW.MapAPI.Parsers.Factory = function(geoJson, gml, kartKlifNo, fiskeriDir){
     function createParser(parserName){
         var parser;
         switch (parserName){
@@ -2461,10 +1224,10 @@ BW.MapModel.Parsers.Factory = function(geoJson, gml, kartKlifNo, fiskeriDir){
     };
 };
 var BW = BW || {};
-BW.MapModel = BW.MapModel || {};
-BW.MapModel.Parsers = BW.MapModel.Parsers || {};
+BW.MapAPI = BW.MapAPI || {};
+BW.MapAPI.Parsers = BW.MapAPI.Parsers || {};
 
-BW.MapModel.Parsers.FiskeriDir = function(mapApi){
+BW.MapAPI.Parsers.FiskeriDir = function(mapApi){
     var insteadOfGml = 'insteadofgml';
     var x, y;
     var gmlObject;
@@ -2531,10 +1294,10 @@ BW.MapModel.Parsers.FiskeriDir = function(mapApi){
     };
 };
 var BW = BW || {};
-BW.MapModel = BW.MapModel || {};
-BW.MapModel.Parsers = BW.MapModel.Parsers || {};
+BW.MapAPI = BW.MapAPI || {};
+BW.MapAPI.Parsers = BW.MapAPI.Parsers || {};
 
-BW.MapModel.Parsers.GML = function() {
+BW.MapAPI.Parsers.GML = function() {
     function parse(result) {
         console.log(result);
     }
@@ -2544,10 +1307,10 @@ BW.MapModel.Parsers.GML = function() {
     };
 };
 var BW = BW || {};
-BW.MapModel = BW.MapModel || {};
-BW.MapModel.Parsers = BW.MapModel.Parsers || {};
+BW.MapAPI = BW.MapAPI || {};
+BW.MapAPI.Parsers = BW.MapAPI.Parsers || {};
 
-BW.MapModel.Parsers.GeoJSON = function() {
+BW.MapAPI.Parsers.GeoJSON = function() {
     function parse(result) {
         var responseFeatureCollection = [];
 
@@ -2593,10 +1356,10 @@ BW.MapModel.Parsers.GeoJSON = function() {
 
 // This part covers the ArcGIS Server at http://kart.klif.no/
 var BW = BW || {};
-BW.MapModel = BW.MapModel || {};
-BW.MapModel.Parsers = BW.MapModel.Parsers || {};
+BW.MapAPI = BW.MapAPI || {};
+BW.MapAPI.Parsers = BW.MapAPI.Parsers || {};
 
-BW.MapModel.Parsers.KartKlifNo = function() {
+BW.MapAPI.Parsers.KartKlifNo = function() {
     function parse(result) {
         var jsonResult = [];
         result = result.replace(/:/g, ''); // Remove colon to prevent xml errors
@@ -2642,10 +1405,10 @@ BW.MapModel.Parsers.KartKlifNo = function() {
     };
 };
 var BW = BW || {};
-BW.MapModel = BW.MapModel || {};
-BW.MapModel.Tools = BW.MapModel.Tools || {};
+BW.MapAPI = BW.MapAPI || {};
+BW.MapAPI.Tools = BW.MapAPI.Tools || {};
 
-BW.MapModel.Tools.Tool = function(config){
+BW.MapAPI.Tools.Tool = function(config){
     var defaults = {
         id: '',
         activate: function(){ console.log('Not implemented');},
@@ -2665,10 +1428,10 @@ BW.MapModel.Tools.Tool = function(config){
     return instance;
 };
 var BW = BW || {};
-BW.MapModel = BW.MapModel || {};
-BW.MapModel.Tools = BW.MapModel.Tools || {};
+BW.MapAPI = BW.MapAPI || {};
+BW.MapAPI.Tools = BW.MapAPI.Tools || {};
 
-BW.MapModel.Tools.ToolFactory = function(tools){
+BW.MapAPI.Tools.ToolFactory = function(tools){
     var internalTools = [];
     var externalTools = [];
 
@@ -2739,10 +1502,10 @@ BW.MapModel.Tools.ToolFactory = function(tools){
     };
 };
 var BW = BW || {};
-BW.MapModel = BW.MapModel || {};
-BW.MapModel.Tools = BW.MapModel.Tools || {};
+BW.MapAPI = BW.MapAPI || {};
+BW.MapAPI.Tools = BW.MapAPI.Tools || {};
 
-BW.MapModel.Tools.Tools = function(mapApi){
+BW.MapAPI.Tools.Tools = function(mapApi){
     var tools = [];
 
     var getFeatureInfoConfig = {
@@ -2757,7 +1520,7 @@ BW.MapModel.Tools.Tools = function(mapApi){
         },
         messageObject: []
     };
-    var getFeatureInfo = new BW.MapModel.Tools.Tool(getFeatureInfoConfig);
+    var getFeatureInfo = new BW.MapAPI.Tools.Tool(getFeatureInfoConfig);
     tools.push(getFeatureInfo);
 
     var zoomAndPanConfig = {
@@ -2771,7 +1534,7 @@ BW.MapModel.Tools.Tools = function(mapApi){
         },
         messageObject: []
     };
-    var zoomAndPan = new BW.MapModel.Tools.Tool(zoomAndPanConfig);
+    var zoomAndPan = new BW.MapAPI.Tools.Tool(zoomAndPanConfig);
     tools.push(zoomAndPan);
 
     var boxSelectConfig = {
@@ -2785,7 +1548,7 @@ BW.MapModel.Tools.Tools = function(mapApi){
          },
         messageObject: []
     };
-    var boxSelect = new BW.MapModel.Tools.Tool(boxSelectConfig);
+    var boxSelect = new BW.MapAPI.Tools.Tool(boxSelectConfig);
     tools.push(boxSelect);
 
     /*var exportCommandConfig = {
@@ -2810,7 +1573,7 @@ BW.MapModel.Tools.Tools = function(mapApi){
         },
         messageObject: []
     };
-    var measure = new BW.MapModel.Tools.Tool(measureConfig);
+    var measure = new BW.MapAPI.Tools.Tool(measureConfig);
     tools.push(measure);
 
     function getTools(){
@@ -2819,6 +1582,1243 @@ BW.MapModel.Tools.Tools = function(mapApi){
 
     return {
         GetTools: getTools
+    };
+};
+var BW = BW || {};
+BW.MapImplementation = BW.MapImplementation || {};
+BW.MapImplementation.OL3 = BW.MapImplementation.OL3 || {};
+
+BW.MapImplementation.OL3.Export = function(){
+    var layout = "";
+    var mapExportEvents;
+    var printRectangle;
+    var exportActive = false;
+
+    function activate(options, map, redrawFunction) {
+        layout = options.layout;
+        exportActive = true;
+        printRectangle = _getScreenRectangle(map);
+        mapExportEvents = [
+            map.on('precompose', _handlePreCompose),
+            map.on('postcompose', _handlePostCompose)
+        ];
+        redrawFunction();
+    }
+
+    function deactivate(redrawFunction) {
+        exportActive = false;
+        if (mapExportEvents) {
+            for (var i = 0; i < mapExportEvents.length; i++) {
+                mapExportEvents[i].src.unByKey(mapExportEvents[i]);
+            }
+            redrawFunction();
+        }
+    }
+
+    function exportMap(callback, map){
+        map.once('postcompose', function (event) {
+         var canvas = event.context.canvas;
+         callback(canvas, printRectangle);
+         });
+    }
+
+    function windowResized(map){
+        if (exportActive){
+            printRectangle = _getScreenRectangle(map);
+            map.render();
+        }
+    }
+
+    function _getScreenRectangle(map) {
+        var A4_RATIO = 210/297;
+        var mapSize = map.getSize();
+        var h,w;
+        if (layout.value === "a4portrait") {
+            w = mapSize[1] * A4_RATIO;
+            if (w>mapSize[0]){
+                w = mapSize[0];
+                h = mapSize[0] / A4_RATIO;
+            } else {
+                h = mapSize[1];
+            }
+        } else {
+            h = mapSize[0] * A4_RATIO;
+            if (h>mapSize[1]){
+                h = mapSize[1];
+                w = mapSize[1] / A4_RATIO;
+            } else {
+                w = mapSize[0];
+            }
+        }
+
+        var center = [mapSize[0] * ol.has.DEVICE_PIXEL_RATIO / 2 ,
+            mapSize[1] * ol.has.DEVICE_PIXEL_RATIO / 2];
+
+        return {
+            minx: center[0] - (w / 2),
+            miny: center[1] - (h / 2),
+            maxx: center[0] + (w / 2),
+            maxy: center[1] + (h / 2)
+        };
+    }
+
+    var _handlePreCompose = function(evt) {
+        var ctx = evt.context;
+        ctx.save();
+    };
+
+    var _handlePostCompose = function(evt) {
+        var ctx = evt.context;
+        var mapSize = _getMapSize(evt.target);
+
+        // Create polygon-overlay for export-area
+        ctx.beginPath();
+        // Outside polygon (clockwise)
+        ctx.moveTo(0, 0);
+        ctx.lineTo(mapSize.width, 0);
+        ctx.lineTo(mapSize.width, mapSize.height);
+        ctx.lineTo(0, mapSize.height);
+        ctx.lineTo(0, 0);
+        ctx.closePath();
+
+        // Inner polygon (counter-clockwise)
+        ctx.moveTo(printRectangle.minx, printRectangle.miny);
+        ctx.lineTo(printRectangle.minx, printRectangle.maxy);
+        ctx.lineTo(printRectangle.maxx, printRectangle.maxy);
+        ctx.lineTo(printRectangle.maxx, printRectangle.miny);
+        ctx.lineTo(printRectangle.minx, printRectangle.miny);
+        ctx.closePath();
+
+        ctx.fillStyle = 'rgba(25, 25, 25, 0.75)';
+        ctx.fill();
+
+        ctx.restore();
+    };
+
+    function _getMapSize(map) {
+        var mapSize = map.getSize();
+        return {
+            height: mapSize[1] * ol.has.DEVICE_PIXEL_RATIO,
+            width: mapSize[0] * ol.has.DEVICE_PIXEL_RATIO
+        };
+    }
+
+    return {
+        Activate: activate,
+        Deactivate: deactivate,
+        ExportMap: exportMap,
+        WindowResized: windowResized
+    };
+};
+var BW = BW || {};
+BW.MapImplementation = BW.MapImplementation || {};
+BW.MapImplementation.OL3 = BW.MapImplementation.OL3 || {};
+
+BW.MapImplementation.OL3.FeatureInfo = function(){
+    var highLightLayer = null;
+    var highlightStyle = null;
+    var infoKey = "";
+    var boundingBox;
+    var infoMarkerOverlay;
+
+    function showHighlightedFeatures(features, map){
+        _ensureHighlightLayer(map);
+        clearHighlightedFeatures();
+        var geoJsonParser = new ol.format.GeoJSON();
+        for(var i = 0; i < features.length; i++){
+            var feature = features[i];
+            var mapFeature = geoJsonParser.readFeature(feature.geometryObject);
+            mapFeature.getGeometry().transform(ol.proj.get(feature.crs), ol.proj.get(map.getView().getProjection().getCode()));
+            highLightLayer.getSource().addFeature(mapFeature);
+        }
+    }
+
+    function clearHighlightedFeatures(){
+        var vectorSource = highLightLayer.getSource();
+        vectorSource.clear();
+    }
+
+    function showInfoMarker(coordinate, element, map){
+        var $element = $(element);
+        var height = $element.height();
+        var width = $element.width();
+        var infoMarkerOverlay = new ol.Overlay({
+            element: element,
+            stopEvent: false,
+            offset: [-width / 2, -height]
+        });
+        infoMarkerOverlay.setPosition(coordinate);
+        map.addOverlay(infoMarkerOverlay);
+    }
+
+    function removeInfoMarker(element, map){
+        map.removeOverlay(infoMarkerOverlay);
+    }
+
+    function getFeatureInfoUrl(bwSubLayer, mapLayer, coordinate, view){
+        var viewResolution = view.getResolution();
+
+        var layerSource = mapLayer.getSource();
+        var projection = view.getProjection();
+
+        var url = layerSource.getGetFeatureInfoUrl(coordinate, viewResolution, projection, {'INFO_FORMAT': bwSubLayer.featureInfo.getFeatureInfoFormat, 'feature_count': 10});
+        var decodedUrl = decodeURIComponent(url);
+        var queryString = decodedUrl.substring(decodedUrl.lastIndexOf('?'), decodedUrl.length).replace('?', '');
+        var queryStringEncoded = encodeURIComponent(queryString);
+        return bwSubLayer.url.replace('proxy/wms', 'proxy/') + queryStringEncoded;
+    }
+
+    function activateInfoClick(callback, map){
+        infoKey = map.on('singleclick', function(evt) {
+            callback(evt.coordinate);
+        });
+    }
+
+    function deactivateInfoClick(map){
+        map.unByKey(infoKey);
+        infoKey = "";
+    }
+
+    function activateBoxSelect(callback, map){
+        boundingBox = new ol.interaction.DragBox({
+            condition: ol.events.condition.always,
+            style: new ol.style.Style({
+                stroke: new ol.style.Stroke({
+                    color: [0,0,255,1]
+                }),
+                fill: new ol.style.Fill({
+                    color: 'rgba(255,255,255,0.8)'
+                })
+            })
+        });
+
+        map.addInteraction(boundingBox);
+
+        boundingBox.on('boxend', function(){
+            callback(boundingBox.getGeometry().getExtent());
+        });
+    }
+
+    function deactivateBoxSelect(map){
+        map.removeInteraction(boundingBox);
+    }
+
+    function getFeaturesInExtent(bwSubLayer, extent, mapLayer){
+        var source = mapLayer.getSource();
+        var features = [];
+        source.forEachFeatureInExtent(extent, function(feature){
+            features.push(feature);
+        });
+        var geoJson = new ol.format.GeoJSON();
+        var featureCollection = geoJson.writeFeatures(features);
+        featureCollection.crs = _createCrsObjectForGeoJson(source.getProjection().getCode());
+        return featureCollection;
+    }
+
+    function _createCrsObjectForGeoJson(crsCode){
+        return new CrsObject(crsCode.split(':'));
+    }
+
+    function CrsObject(codes){
+        this.type = codes[0];
+        this.properties = new CrsProperties(codes[1]);
+    }
+
+    function CrsProperties(code){
+        this.code = code;
+    }
+
+    function getExtentForCoordinate(coordinate, pixelTolerance, resolution){
+        var toleranceInMapUnits = pixelTolerance * resolution;
+        var n = coordinate[0];
+        var e = coordinate[1];
+        var minN = n - toleranceInMapUnits;
+        var minE = e - toleranceInMapUnits;
+        var maxN = n + toleranceInMapUnits;
+        var maxE = e + toleranceInMapUnits;
+        return [minN, minE, maxN, maxE];
+    }
+
+    function _ensureHighlightLayer(map){
+        if(highLightLayer == null){
+
+            if(highlightStyle == null){
+                _setDefaultHighlightStyle();
+            }
+
+            var vectorSource = new ol.source.GeoJSON({
+                projection: 'EPSG:4326',
+                // this is bogus, just to get the source initialized, can for sure be done a lot more appropriate.
+                object: {
+                    "type":"FeatureCollection",
+                    "totalFeatures":1,
+                    "features":[
+                        {
+                            "type":"Feature",
+                            "id":"thc.1",
+                            "geometry":
+                            {
+                                "type":"Point",
+                                "coordinates":[21.7495,71.721]},
+                            "geometry_name":"the_geom",
+                            "properties":
+                            {
+                                "Year":2003
+                            }
+                        }
+                    ],
+                    "crs":
+                    {
+                        "type":"EPSG",
+                        "properties":
+                        {
+                            "code":"4326"
+                        }
+                    }
+                }
+            });
+            highLightLayer = new ol.layer.Vector({
+                source: vectorSource,
+                style: highlightStyle
+            });
+            map.addLayer(highLightLayer);
+        }
+        else {
+            map.removeLayer(highLightLayer);
+            map.addLayer(highLightLayer);
+        }
+    }
+
+    function setHighlightStyle(style){
+        highlightStyle = style;
+        highLightLayer.setStyle(highlightStyle);
+    }
+
+    function _setDefaultHighlightStyle(){
+        var defaultStyle = new BW.MapImplementation.OL3.Styles.Default();
+        highlightStyle = defaultStyle.Styles;
+    }
+
+    return {
+        ShowHighlightedFeatures: showHighlightedFeatures,
+        ClearHighlightedFeatures: clearHighlightedFeatures,
+        SetHighlightStyle: setHighlightStyle,
+        ShowInfoMarker: showInfoMarker,
+        RemoveInfoMarker: removeInfoMarker,
+        GetFeatureInfoUrl: getFeatureInfoUrl,
+        ActivateInfoClick: activateInfoClick,
+        DeactivateInfoClick: deactivateInfoClick,
+        ActivateBoxSelect: activateBoxSelect,
+        DeactivateBoxSelect: deactivateBoxSelect,
+        GetFeaturesInExtent: getFeaturesInExtent,
+        GetExtentForCoordinate: getExtentForCoordinate
+    };
+};
+var BW = BW || {};
+BW.MapImplementation = BW.MapImplementation || {};
+BW.MapImplementation.OL3 = BW.MapImplementation.OL3 || {};
+
+BW.MapImplementation.OL3.Map = function(repository, eventHandler, httpHelper, measure, featureInfo, mapExport){
+    var map;
+    var layerPool = [];
+
+    var proxyHost = "";
+
+    /*
+        Start up functions Start
+     */
+
+    function initMap(targetId, mapConfig){
+        proxyHost = mapConfig.proxyHost;
+        var numZoomLevels = mapConfig.numZoomLevels;
+        var newMapRes = [];
+        newMapRes[0]= mapConfig.newMaxRes;
+        for (var t = 1; t < numZoomLevels; t++) {
+            newMapRes[t] = newMapRes[t - 1] / 2;
+        }
+        var sm = new ol.proj.Projection({
+            code: mapConfig.coordinate_system,
+            extent: mapConfig.extent,
+            units: mapConfig.extentUnits
+        });
+
+        map = new ol.Map({
+            target: targetId,
+            renderer: mapConfig.renderer,
+            layers: [],
+            view: new ol.View({
+                projection: sm,
+                center: mapConfig.center,
+                zoom: mapConfig.zoom,
+                resolutions: newMapRes,
+                maxResolution: mapConfig.newMaxRes,
+                numZoomLevels: numZoomLevels
+            }),
+            controls: [],
+            overlays: []
+        });
+
+        _registerMapCallbacks();
+    }
+
+    function _registerMapCallbacks(){
+        var view = map.getView();
+
+        var changeCenter = function(){
+            var mapViewChangedObj = _getUrlObject();
+            eventHandler.TriggerEvent(BW.Events.EventTypes.ChangeCenter, mapViewChangedObj);
+        };
+
+        var changeResolution = function(){
+            var mapViewChangedObj = _getUrlObject();
+            eventHandler.TriggerEvent(BW.Events.EventTypes.ChangeResolution, mapViewChangedObj);
+        };
+
+        view.on('change:center', changeCenter);
+        view.on('change:resolution', changeResolution);
+    }
+
+    function changeView(viewPropertyObject){
+        var view = map.getView();
+        var x, y, zoom;
+        if(viewPropertyObject.x){
+            x = viewPropertyObject.x;
+        }
+        if(viewPropertyObject.y){
+            y = viewPropertyObject.y;
+        }
+        if(viewPropertyObject.zoom){
+            zoom = viewPropertyObject.zoom;
+        }
+
+        if(x !== undefined && y !== undefined){
+            var eastings = parseFloat(y.replace(/,/g, '.'));
+            var northings = parseFloat(x.replace(/,/g, '.'));
+            if (isFinite(eastings) && isFinite(northings)) {
+                view.setCenter([eastings, northings]);
+            }
+        }
+
+        if(zoom !== undefined){
+            view.setZoom(zoom);
+        }
+    }
+
+    /*
+        Start up functions End
+     */
+
+    /*
+        Layer functions Start
+        Functionality to be moved to BW.MapImplementation.OL3.Layers
+     */
+
+    function showLayer(bwSubLayer){
+        var layer = _createLayer(bwSubLayer);
+        map.addLayer(layer);
+
+        _trigLayersChanged();
+    }
+
+    function showBaseLayer(bwSubLayer){
+        var layer = _createLayer(bwSubLayer);
+        map.getLayers().insertAt(0, layer);
+
+        _trigLayersChanged();
+    }
+
+    function hideLayer(bwSubLayer){
+        var layer = _getLayerByGuid(bwSubLayer.id);
+        if(layer){
+            map.removeLayer(layer);
+            _trigLayersChanged();
+        }
+    }
+
+    function _createLayer(bwSubLayer){
+        var layer;
+        var source;
+        var layerFromPool = _getLayerFromPool(bwSubLayer);
+
+        if(layerFromPool != null){
+            layer = layerFromPool;
+        }
+        else{
+            switch(bwSubLayer.source){
+                case BW.Domain.SubLayer.SOURCES.wmts:
+                    source = new BW.MapImplementation.OL3.Sources.Wmts(bwSubLayer);
+                    break;
+
+                case BW.Domain.SubLayer.SOURCES.proxyWmts:
+                    bwSubLayer.url = proxyHost + bwSubLayer.url;
+                    source = new BW.MapImplementation.OL3.Sources.Wmts(bwSubLayer);
+                    break;
+
+                case BW.Domain.SubLayer.SOURCES.wms:
+                    source = new BW.MapImplementation.OL3.Sources.Wms(bwSubLayer);
+                    break;
+                /**
+                 Bruker proxy mot disse):
+                 Image from origin
+                 'http://maps.imr.no' 'http://kart.fiskeridir.no' 'http://wms2.nve.no'
+                 'http://wms3.nve.no' 'http://bw-wms.met.no' 'http://wms.dirnat.no'
+                 'http://kart.klif.no' 'http://wms.miljodirektoratet.no' 'http://npdwms.npd.no'
+                 'http://kart.kystverket.no'
+                 has been blocked from loading by Cross-Origin Resource Sharing policy:
+                 No 'Access-Control-Allow-Origin' header is present on the requested resource.
+                 **/
+                case BW.Domain.SubLayer.SOURCES.proxyWms:
+                    bwSubLayer.url = proxyHost + bwSubLayer.url;
+                    source = new BW.MapImplementation.OL3.Sources.Wms(bwSubLayer);
+                    break;
+                case BW.Domain.SubLayer.SOURCES.vector:
+                    source = new BW.MapImplementation.OL3.Sources.Vector(bwSubLayer, map.getView().getProjection());
+                    _loadVectorLayer(bwSubLayer, source);
+                    break;
+                default:
+                    throw "Unsupported source: BW.Domain.SubLayer.SOURCES.'" +
+                            bwSubLayer.source +
+                            "'. For SubLayer with url " + bwSubLayer.url +
+                            " and name " + bwSubLayer.name + ".";
+            }
+
+            if(bwSubLayer.source === BW.Domain.SubLayer.SOURCES.vector){
+                layer = new ol.layer.Vector({
+                    source: source
+                });
+            }
+            else if (bwSubLayer.tiled) {
+                layer = new ol.layer.Tile({
+                    extent: bwSubLayer.extent,
+                    opacity: bwSubLayer.opacity,
+                    source: source
+                });
+            } else {
+                layer = new ol.layer.Image({
+                    extent: bwSubLayer.extent,
+                    opacity: bwSubLayer.opacity,
+                    source: source
+                });
+            }
+
+            layer.layerIndex = bwSubLayer.layerIndex;
+            layer.guid = bwSubLayer.id;
+
+            layerPool.push(layer);
+        }
+
+        return layer;
+    }
+
+    function _loadVectorLayer(bwSubLayer, source){
+        var callback = function(data){
+            var fromProj = ol.proj.get(bwSubLayer.coordinate_system);
+            var toProj = ol.proj.get(source.getProjection().getCode());
+            var features = source.parser.readFeatures(data);
+            for(var i = 0; i < features.length; i++) {
+                var feature = features[i];
+                feature.getGeometry().transform(fromProj, toProj);
+            }
+            source.addFeatures(features);
+        };
+        httpHelper.get(bwSubLayer.url).success(callback);
+    }
+
+    function _getLayerFromPool(bwSubLayer){
+        for(var i = 0; i < layerPool.length; i++){
+            var layerInPool = layerPool[i];
+            if(layerInPool.guid == bwSubLayer.id){
+                return layerInPool;
+            }
+        }
+        return null;
+    }
+
+    function setLayerBrightness(bwSubLayer, value){
+        // Require WebGL-rendering of map
+        var layer = _getLayerByGuid(bwSubLayer.id);
+        if(layer && !isNaN(value)){
+            layer.setBrightness(Math.min(value,1));
+        }
+    }
+    function setLayerContrast(bwSubLayer, value){
+        // Require WebGL-rendering of map
+        var layer = _getLayerByGuid(bwSubLayer.id);
+        if(layer && !isNaN(value)){
+            layer.setContrast(Math.min(value,1));
+        }
+    }
+    function setLayerOpacity(bwSubLayer, value){
+        var layer = _getLayerByGuid(bwSubLayer.id);
+        if(layer && !isNaN(value)){
+            layer.setOpacity(Math.min(value,1));
+        }
+    }
+    function setLayerSaturation(bwSubLayer, value){
+        // Require WebGL-rendering of map
+        var layer = _getLayerByGuid(bwSubLayer.id);
+        if(layer && !isNaN(value)){
+            layer.setSaturation(Math.min(value,1));
+        }
+    }
+    function setLayerHue(bwSubLayer, value){
+        // Require WebGL-rendering of map
+        var layer = _getLayerByGuid(bwSubLayer.id);
+        if(layer && !isNaN(value)){
+            layer.setHue(Math.min(value,1));
+        }
+    }
+
+    function _getLayersWithGuid(){
+        return map.getLayers().getArray().filter(function(elem){
+            return elem.guid !== undefined;
+        });
+    }
+
+    function _getLayerByGuid(guid){
+        var layers = _getLayersWithGuid();
+        for(var i = 0; i < layers.length; i++){
+            var layer = layers[i];
+            if(layer.guid == guid){
+                return layer;
+            }
+        }
+        return null;
+    }
+
+    function getLayerIndex(bwSubLayer){
+        var layers = _getLayersWithGuid();
+        for(var i = 0; i < layers.length; i++){
+            var layer = layers[i];
+            if(layer.guid == bwSubLayer.id){
+                return i;
+            }
+        }
+        return null;
+    }
+
+    function getLayerByName(layerTitle) {
+        var layers = _getLayersWithGuid();
+        for (var i = 0; i < layers.length; i++) {
+            if (layers[i].get('title') == layerTitle) {
+                return layers[i];
+            }
+        }
+        return null;
+    }
+
+    function moveLayerToIndex(bwSubLayer, index){
+        var subLayerIndex = getLayerIndex(bwSubLayer);
+        var layersArray = map.getLayers().getArray();
+        layersArray.splice(index, 0, layersArray.splice(subLayerIndex, 1)[0]);
+
+        _trigLayersChanged();
+    }
+
+    function _trigLayersChanged(){
+        var eventObject = _getUrlObject();
+        eventHandler.TriggerEvent(BW.Events.EventTypes.ChangeLayers, eventObject);
+    }
+
+    function _getGuidsForVisibleLayers() {
+        var visibleLayers = [];
+        var layers = _getLayersWithGuid();
+        for (var i = 0; i < layers.length; i++) {
+            var layer = layers[i];
+            if (layer.getVisible() === true) {
+                visibleLayers.push(layers[i]);
+            }
+        }
+
+        visibleLayers.sort(_compareMapLayerIndex);
+        var result = [];
+        for(var j = 0; j < visibleLayers.length; j++){
+            result.push(visibleLayers[j].guid);
+        }
+        return result.join(",");
+    }
+
+    function _compareMapLayerIndex(a, b) {
+        if (a.mapLayerIndex < b.mapLayerIndex){
+            return -1;
+        }
+        if (a.mapLayerIndex > b.mapLayerIndex){
+            return 1;
+        }
+        return 0;
+    }
+
+    /*
+        Layer functions End
+     */
+
+    /*
+        Map Export Start
+        Functionality in BW.;ap.OL3.Export
+     */
+
+    var _resizeEvent = function(){
+        mapExport.WindowResized(map);
+    };
+
+    function activateExport(options) {
+        mapExport.Activate(options, map, redrawMap);
+        window.addEventListener('resize', _resizeEvent, false);
+    }
+
+    function deactivateExport() {
+        window.removeEventListener('resize', _resizeEvent, false);
+        mapExport.Deactivate(redrawMap);
+    }
+
+    function exportMap(callback){
+        mapExport.ExportMap(callback, map);
+    }
+
+    function redrawMap(){
+        map.updateSize();
+    }
+
+    function renderSync(){
+        map.renderSync();
+    }
+
+    /*
+        Map Export End
+     */
+
+    /*
+        Feature Info Start
+        Functionality in BW.MapImplementation.OL3.FeatureInfo
+     */
+
+    function activateInfoClick(callback){
+        featureInfo.ActivateInfoClick(callback, map);
+    }
+
+    function deactivateInfoClick(){
+        featureInfo.DeactivateInfoClick(map);
+    }
+
+    function getFeatureInfoUrl(bwSubLayer, coordinate){
+        return featureInfo.GetFeatureInfoUrl(bwSubLayer, _getLayerFromPool(bwSubLayer), coordinate, map.getView());
+    }
+
+    function showHighlightedFeatures(features){
+        featureInfo.ShowHighlightedFeatures(features, map);
+    }
+
+    function clearHighlightedFeatures(){
+        featureInfo.ClearHighlightedFeatures();
+    }
+
+    function showInfoMarker(coordinate, element){
+        featureInfo.ShowInfoMarker(coordinate, element, map);
+    }
+
+    function removeInfoMarker(element){
+        featureInfo.RemoveInfoMarker(element, map);
+    }
+
+    function setHighlightStyle(style){
+        featureInfo.SetHighlightStyle(style);
+    }
+
+    function activateBoxSelect(callback){
+        featureInfo.ActivateBoxSelect(callback, map);
+    }
+
+    function deactivateBoxSelect(){
+        featureInfo.DeactivateBoxSelect(map);
+    }
+
+    function getExtentForCoordinate(coordinate, pixelTolerance){
+        return featureInfo.GetExtentForCoordinate(coordinate, pixelTolerance, map.getView().getResolution());
+    }
+
+    function getFeaturesInExtent(bwSubLayer, extent){
+        return featureInfo.GetFeaturesInExtent(bwSubLayer, extent, _getLayerFromPool(bwSubLayer));
+    }
+
+    /*
+        Feature Info End
+     */
+
+    /*
+        Measure Start
+        Functionality in BW.MapImplementation.OL3.Measure
+     */
+
+    function activateMeasure(callback){
+        measure.Activate(map, callback);
+        //var vector = measure.Activate(map, callback);
+
+    }
+
+    function deactivateMeasure(){
+        measure.Deactivate(map);
+    }
+
+    /*
+        Measure End
+     */
+
+    /*
+        Utility functions start
+     */
+
+    var _getUrlObject = function(){
+        var retVal = {
+            layers: _getGuidsForVisibleLayers()
+        };
+
+        var view = map.getView();
+        var center = view.getCenter();
+        var zoom = view.getZoom().toString();
+        if(zoom){
+            retVal.zoom = zoom;
+        }
+        if(center){
+            retVal.x = center[1].toFixed(2);
+            retVal.y = center[0].toFixed(2);
+        }
+        return retVal;
+    };
+
+    function transformBox(fromCrs, toCrs, boxExtent){
+        var returnExtent = boxExtent;
+
+        if(fromCrs !== "" && toCrs !== ""){
+            var fromProj = ol.proj.get(fromCrs);
+            var toProj = ol.proj.get(toCrs);
+            var transformedExtent = ol.proj.transformExtent(boxExtent, fromProj, toProj);
+
+            returnExtent = transformedExtent;
+            if(toCrs === "EPSG:4326"){
+                returnExtent = transformedExtent[1] + "," + transformedExtent[0] + "," + transformedExtent[3] + "," + transformedExtent[2];
+            }
+        }
+
+        return returnExtent;
+    }
+
+    function convertGmlToGeoJson(gml){
+        var xmlParser = new ol.format.WMSCapabilities();
+        var xmlFeatures = xmlParser.read(gml);
+        var gmlParser = new ol.format.GML();
+        var features = gmlParser.readFeatures(xmlFeatures);
+        var jsonParser = new ol.format.GeoJSON();
+        return jsonParser.writeFeatures(features);
+    }
+
+    function extentToGeoJson(x, y){
+        var point = new ol.geom.Point([x, y]);
+        var feature = new ol.Feature();
+        feature.setGeometry(point);
+        var geoJson = new ol.format.GeoJSON();
+        return geoJson.writeFeature(feature);
+    }
+
+    /*
+        Utility functions End
+     */
+
+    return {
+        // Start up start
+        InitMap: initMap,
+        ChangeView: changeView,
+        // Start up end
+
+        /***********************************/
+
+        // Layer start
+        ShowLayer: showLayer,
+        ShowBaseLayer: showBaseLayer,
+        HideLayer: hideLayer,
+        GetLayerByName: getLayerByName,
+        SetLayerOpacity: setLayerOpacity,
+        SetLayerSaturation: setLayerSaturation,
+        SetLayerHue: setLayerHue,
+        SetLayerBrightness: setLayerBrightness,
+        SetLayerContrast: setLayerContrast,
+        MoveLayerToIndex: moveLayerToIndex,
+        GetLayerIndex: getLayerIndex,
+        // Layer end
+
+        /***********************************/
+
+        // Export start
+        RedrawMap: redrawMap,
+        RenderSync: renderSync,
+        ExportMap: exportMap,
+        ActivateExport: activateExport,
+        DeactivateExport: deactivateExport,
+        // Export end
+
+        /***********************************/
+
+        // Feature Info start
+        ActivateInfoClick: activateInfoClick,
+        DeactivateInfoClick: deactivateInfoClick,
+        GetInfoUrl: getFeatureInfoUrl,
+        ShowHighlightedFeatures: showHighlightedFeatures,
+        ClearHighlightedFeatures: clearHighlightedFeatures,
+        ShowInfoMarker: showInfoMarker,
+        SetHighlightStyle: setHighlightStyle,
+        RemoveInfoMarker: removeInfoMarker,
+        ActivateBoxSelect: activateBoxSelect,
+        DeactivateBoxSelect: deactivateBoxSelect,
+        GetFeaturesInExtent: getFeaturesInExtent,
+        GetExtentForCoordinate: getExtentForCoordinate,
+        // Feature Info end
+
+        /***********************************/
+
+        // Measure start
+        ActivateMeasure: activateMeasure,
+        DeactivateMeasure: deactivateMeasure,
+        // Measure end
+
+        /***********************************/
+
+        // Utility start
+        TransformBox: transformBox,
+        ConvertGmlToGeoJson: convertGmlToGeoJson,
+        ExtentToGeoJson: extentToGeoJson
+        // Utility end
+    };
+};
+
+BW.MapImplementation.OL3.Map.RENDERERS = {
+    canvas: 'canvas',
+    webgl: 'webgl'
+};
+var BW = BW || {};
+BW.MapImplementation = BW.MapImplementation || {};
+BW.MapImplementation.OL3 = BW.MapImplementation.OL3 || {};
+
+BW.MapImplementation.OL3.Measure = function(eventHandler){
+    var measureKey = ""; // Key for map event pointermove
+    var currentFeature; // The current draw object
+    var circleRadius; // Distance for the initial circle
+    var circleFeature; // The circle feature
+    var circleOverlay; // Overlay for the circle
+
+    var drawInteraction; // global so we can remove it later
+    var drawLayer; // Where the measure features are drawn. If this is not added to the map it still works, but the objects are removed after double click
+
+    function activate(map){
+        measureKey = map.on('pointermove', _mouseMoveHandler);
+        _addInteraction(map);
+        map.addLayer(drawLayer);
+    }
+
+    function deactivate(map){
+        map.removeLayer(drawLayer);
+        map.unByKey(measureKey);
+        measureKey = "";
+        map.removeInteraction(drawInteraction);
+        map.removeOverlay(circleOverlay);
+    }
+
+    function _mouseMoveHandler () { // evt
+        if (currentFeature) {
+            var output;
+            var geom = (currentFeature.getGeometry());
+            if (geom instanceof ol.geom.Polygon) {
+                //output =
+                var polygonArea = _formatArea(geom);
+                var lineLength = _formatPolygonLength(geom);
+                var circleArea = _drawCircle(geom);
+                output = new BW.Domain.MeasureResult(polygonArea, lineLength, circleArea);
+            }
+            eventHandler.TriggerEvent(BW.Events.EventTypes.MeasureMouseMove, output);
+        }
+    }
+
+    function _drawCircle(geom){
+        var circleCoordinates = geom.getCoordinates()[0];
+        if (circleCoordinates.length == 2) {
+            circleFeature.getGeometry().setRadius(circleRadius);
+            return Math.PI * Math.pow(circleRadius, 2);
+        }
+        else{
+            circleFeature.getGeometry().setRadius(0);
+            return null;
+        }
+    }
+
+    function _addInteraction(map) {
+        circleOverlay = new ol.FeatureOverlay();
+        map.addOverlay(circleOverlay);
+
+        var source = new ol.source.Vector();
+
+        drawLayer = new ol.layer.Vector({
+            source: source,
+            style: new ol.style.Style({
+                fill: new ol.style.Fill({
+                    color: 'rgba(255, 255, 255, 0.2)'
+                }),
+                stroke: new ol.style.Stroke({
+                    color: '#ffcc33',
+                    width: 2
+                }),
+                image: new ol.style.Circle({
+                    radius: 7,
+                    fill: new ol.style.Fill({
+                        color: '#ffcc33'
+                    })
+                })
+            })
+        });
+
+        var type = 'Polygon';// (typeSelect.value == 'area' ? 'Polygon' : 'LineString');
+        drawInteraction = new ol.interaction.Draw({
+            source: source,
+            type: type
+        });
+        map.addInteraction(drawInteraction);
+
+        drawInteraction.on('drawstart',
+            function(evt) {
+                currentFeature = evt.feature;
+
+                // Start circle drawing
+                var firstPoint = currentFeature.getGeometry().getCoordinates()[0][0];
+                circleFeature = new ol.Feature(new ol.geom.Circle(firstPoint, 0));
+                circleOverlay.addFeature(circleFeature);
+            }, this);
+
+        drawInteraction.on('drawend',
+            function() { // evt
+                currentFeature = null;
+            }, this);
+
+
+    }
+    function _formatLength (coordinates) {
+        var length = _getLength(coordinates);
+        circleRadius = length;
+        length = Math.round(length*100)/100;
+        var output;
+        if (length > 100) {
+            output = (Math.round(length / 1000 * 100) / 100) +
+            ' ' + 'km';
+        } else {
+            output = (Math.round(length * 100) / 100) +
+            ' ' + 'm';
+        }
+        return output;
+    }
+
+    /*var formatLineLength = function(line){
+        return formatLength(line.getCoordinates());
+    };*/
+
+    function _formatPolygonLength(polygon){
+        return _formatLength(polygon.getCoordinates()[0]);
+    }
+
+    function _formatArea(polygon) {
+        var area = polygon.getArea();
+        var output;
+        if (area > 10000) {
+            output = (Math.round(area / 1000000 * 100) / 100) +
+            ' ' + 'km<sup>2</sup>';
+        } else {
+            output = (Math.round(area * 100) / 100) +
+            ' ' + 'm<sup>2</sup>';
+        }
+        return output;
+    }
+
+    function _getLength(coordinates){
+        var length;
+        // Assume at least one coodinate
+        if(coordinates.length > 0){
+            var stride = coordinates[0].length; // 2D or 3D
+            var flatCoordinates = _flatternCoordinates(coordinates);
+            length = _getFlatLength(flatCoordinates, 0, flatCoordinates.length, stride);
+        }
+        return length;
+    }
+
+    function _flatternCoordinates(coordinates){
+        var flatCoordinates = [];
+        for(var i = 0; i < coordinates.length; i++){
+            var thisCoordinate = coordinates[i];
+            for(var j = 0; j < thisCoordinate.length; j++){
+                flatCoordinates.push(thisCoordinate[j]);
+            }
+        }
+        return flatCoordinates;
+    }
+
+    function _getFlatLength(flatCoordinates, offset, end, stride) {
+        var x1 = flatCoordinates[offset];
+        var y1 = flatCoordinates[offset + 1];
+        var length = 0;
+        var i;
+        for (i = offset + stride; i < end; i += stride) {
+            var x2 = flatCoordinates[i];
+            var y2 = flatCoordinates[i + 1];
+            length += Math.sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1));
+            x1 = x2;
+            y1 = y2;
+        }
+        return length;
+    }
+
+    return {
+        Activate: activate,
+        Deactivate: deactivate
+    };
+};
+var BW = BW || {};
+BW.MapImplementation = BW.MapImplementation || {};
+BW.MapImplementation.OL3 = BW.MapImplementation.OL3 || {};
+
+BW.MapImplementation.OL3.Utilities = function(){
+    function convertGmlToGeoJson(gml){
+        var xmlParser = new ol.format.WMSCapabilities();
+        var xmlFeatures = xmlParser.read(gml);
+        var gmlParser = new ol.format.GML();
+        var features = gmlParser.readFeatures(xmlFeatures);
+        var jsonParser = new ol.format.GeoJSON();
+        return jsonParser.writeFeatures(features);
+    }
+
+    function extentToGeoJson(x, y){
+        var point = new ol.geom.Point([x, y]);
+        var feature = new ol.Feature();
+        feature.setGeometry(point);
+        var geoJson = new ol.format.GeoJSON();
+        return geoJson.writeFeature(feature);
+    }
+
+    return {
+        ConvertGmlToGeoJson: convertGmlToGeoJson,
+        ExtentToGeoJson: extentToGeoJson
+    };
+};
+var BW = BW || {};
+BW.MapImplementation = BW.MapImplementation || {};
+BW.MapImplementation.OL3 = BW.MapImplementation.OL3 || {};
+BW.MapImplementation.OL3.Sources = BW.MapImplementation.OL3.Sources || {};
+
+BW.MapImplementation.OL3.Sources.Vector = function(bwSubLayer, mapProjection){
+    var source;
+    switch (bwSubLayer.format){
+        case BW.Domain.SubLayer.FORMATS.geoJson:
+            source = new ol.source.GeoJSON({
+                projection: mapProjection,
+                strategy: ol.loadingstrategy.createTile(new ol.tilegrid.XYZ({
+                    maxZoom: 19
+                }))
+            });
+            source.parser = new ol.format.GeoJSON();
+            break;
+    }
+    return source;
+};
+var BW = BW || {};
+BW.MapImplementation = BW.MapImplementation || {};
+BW.MapImplementation.OL3 = BW.MapImplementation.OL3 || {};
+BW.MapImplementation.OL3.Sources = BW.MapImplementation.OL3.Sources || {};
+
+BW.MapImplementation.OL3.Sources.Wms = function(bwSubLayer){
+    if (bwSubLayer.tiled) {
+        return new ol.source.TileWMS({
+            params: {
+                LAYERS: bwSubLayer.name,
+                VERSION: "1.1.1"
+            },
+            url: bwSubLayer.url,
+            format: bwSubLayer.format,
+            crossOrigin: 'anonymous',
+            transparent: bwSubLayer.transparent
+        });
+    } else {
+        return new ol.source.ImageWMS({
+            params: {
+                LAYERS: bwSubLayer.name,
+                VERSION: "1.1.1"
+            },
+            url: bwSubLayer.url,
+            format: bwSubLayer.format,
+            crossOrigin: 'anonymous',
+            transparent: bwSubLayer.transparent
+        });
+    }
+};
+
+var BW = BW || {};
+BW.MapImplementation = BW.MapImplementation || {};
+BW.MapImplementation.OL3 = BW.MapImplementation.OL3 || {};
+BW.MapImplementation.OL3.Sources = BW.MapImplementation.OL3.Sources || {};
+
+BW.MapImplementation.OL3.Sources.Wmts = function(bwSubLayer){
+    var projection = new ol.proj.Projection({
+        code: bwSubLayer.coordinate_system,
+        extent: bwSubLayer.extent,
+        units: bwSubLayer.extentUnits
+    });
+
+    var projectionExtent = projection.getExtent();
+    var size = ol.extent.getWidth(projectionExtent) / 256;
+    var resolutions = new Array(14);
+    var matrixIds = new Array(14);
+    var numZoomLevels = 18;
+    for (var z = 0; z < numZoomLevels; ++z) {
+        resolutions[z] = size / Math.pow(2, z);
+        matrixIds[z] = projection.getCode() + ":" + z;
+    }
+
+    return new ol.source.WMTS({
+        url: bwSubLayer.url,
+        layer: bwSubLayer.name,
+        format: bwSubLayer.format,
+        projection: projection,
+        matrixSet: bwSubLayer.coordinate_system,
+        crossOrigin: 'anonymous',
+        tileGrid: new ol.tilegrid.WMTS({
+            origin: ol.extent.getTopLeft(projectionExtent),
+            resolutions: resolutions,
+            matrixIds: matrixIds
+        })
+    });
+};
+var BW = BW || {};
+BW.MapImplementation = BW.MapImplementation || {};
+BW.MapImplementation.OL3 = BW.MapImplementation.OL3 || {};
+BW.MapImplementation.OL3.Styles = BW.MapImplementation.OL3.Styles || {};
+
+BW.MapImplementation.OL3.Styles.Default = function () {
+    var styles = function() {
+        var fill = new ol.style.Fill({
+            color: 'rgba(255,0,0,0.8)'
+        });
+        var stroke = new ol.style.Stroke({
+            color: '#3399CC',
+            width: 2.25
+        });
+        var styles = [
+            new ol.style.Style({
+                image: new ol.style.Circle({
+                    fill: fill,
+                    stroke: stroke,
+                    radius: 8
+                }),
+                fill: fill,
+                stroke: stroke
+            })
+        ];
+        return styles;
+    };
+
+    return {
+        Styles: styles
     };
 };
 var BW = BW || {};
@@ -2884,7 +2884,7 @@ BW.Repository.MapConfig = function(config){
         categories: [],
         numZoomLevels: 10,
         newMaxRes: 20000,
-        renderer: BW.Map.OL3.Map.RENDERERS.canvas,
+        renderer: BW.MapImplementation.OL3.Map.RENDERERS.canvas,
         center: [-1, 1],
         zoom: 5,
         layers:[],
@@ -2902,7 +2902,7 @@ BW.Repository.StaticRepository = function() {
     var mapConfig = new BW.Repository.MapConfig({
         numZoomLevels: 18,
         newMaxRes: 21664.0,
-        renderer: BW.Map.OL3.Map.RENDERERS.canvas,
+        renderer: BW.MapImplementation.OL3.Map.RENDERERS.canvas,
         center: [-20617, 7661666],
         zoom: 4,
         coordinate_system: "EPSG:32633",

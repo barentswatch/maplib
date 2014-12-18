@@ -1,5 +1,5 @@
-describe('BW.Map.OL3.Export', function() {
-    var mapExport = new BW.Map.OL3.Export();
+describe('BW.MapImplementation.OL3.Export', function() {
+    var mapExport = new BW.MapImplementation.OL3.Export();
 
     it('Expect public methods to be set for Export', function(){
         expect(mapExport.Activate).not.toBeUndefined();

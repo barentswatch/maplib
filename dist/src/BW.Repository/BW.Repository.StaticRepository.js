@@ -5,7 +5,7 @@ BW.Repository.StaticRepository = function() {
     var mapConfig = new BW.Repository.MapConfig({
         numZoomLevels: 18,
         newMaxRes: 21664.0,
-        renderer: BW.Map.OL3.Map.RENDERERS.canvas,
+        renderer: BW.MapImplementation.OL3.Map.RENDERERS.canvas,
         center: [-20617, 7661666],
         zoom: 4,
         coordinate_system: "EPSG:32633",

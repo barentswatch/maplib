@@ -1,8 +1,8 @@
 var BW = BW || {};
-BW.Map = BW.Map || {};
-BW.Map.OL3 = BW.Map.OL3 || {};
+BW.MapImplementation = BW.MapImplementation || {};
+BW.MapImplementation.OL3 = BW.MapImplementation.OL3 || {};
 
-BW.Map.OL3.Utilities = function(){
+BW.MapImplementation.OL3.Utilities = function(){
     function convertGmlToGeoJson(gml){
         var xmlParser = new ol.format.WMSCapabilities();
         var xmlFeatures = xmlParser.read(gml);

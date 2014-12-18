@@ -8,7 +8,7 @@ describe('new BW.MapAPI.Map', function() {
         repository = new BW.Repository.StaticRepository();
         spyOn(repository, 'GetMapConfig').and.callThrough();
 
-        map = new BW.Map.OL3.Map(repository, new BW.Events.EventHandler());
+        map = new BW.MapImplementation.OL3.Map(repository, new BW.Events.EventHandler());
 
         mapModel = new BW.MapAPI.Map(map);
     });
@@ -81,7 +81,7 @@ describe('BW.MapAPI.Map.Init', function() {
             ]
         });
 
-        map = new BW.Map.OL3.Map(repository, new BW.Events.EventHandler());
+        map = new BW.MapImplementation.OL3.Map(repository, new BW.Events.EventHandler());
         spyOn(map, 'InitMap').and.callThrough();
         spyOn(map, 'HideLayer');
         spyOn(map, 'ShowLayer');

@@ -1,8 +1,8 @@
 var BW = BW || {};
-BW.Map = BW.Map || {};
-BW.Map.OL3 = BW.Map.OL3 || {};
+BW.MapImplementation = BW.MapImplementation || {};
+BW.MapImplementation.OL3 = BW.MapImplementation.OL3 || {};
 
-BW.Map.OL3.Map = function(repository, eventHandler, httpHelper, measure, featureInfo, mapExport){
+BW.MapImplementation.OL3.Map = function(repository, eventHandler, httpHelper, measure, featureInfo, mapExport){
     var map;
     var layerPool = [];
 
@@ -94,7 +94,7 @@ BW.Map.OL3.Map = function(repository, eventHandler, httpHelper, measure, feature
 
     /*
         Layer functions Start
-        Functionality to be moved to BW.Map.OL3.Layers
+        Functionality to be moved to BW.MapImplementation.OL3.Layers
      */
 
     function showLayer(bwSubLayer){
@@ -130,16 +130,16 @@ BW.Map.OL3.Map = function(repository, eventHandler, httpHelper, measure, feature
         else{
             switch(bwSubLayer.source){
                 case BW.Domain.SubLayer.SOURCES.wmts:
-                    source = new BW.Map.OL3.Sources.Wmts(bwSubLayer);
+                    source = new BW.MapImplementation.OL3.Sources.Wmts(bwSubLayer);
                     break;
 
                 case BW.Domain.SubLayer.SOURCES.proxyWmts:
                     bwSubLayer.url = proxyHost + bwSubLayer.url;
-                    source = new BW.Map.OL3.Sources.Wmts(bwSubLayer);
+                    source = new BW.MapImplementation.OL3.Sources.Wmts(bwSubLayer);
                     break;
 
                 case BW.Domain.SubLayer.SOURCES.wms:
-                    source = new BW.Map.OL3.Sources.Wms(bwSubLayer);
+                    source = new BW.MapImplementation.OL3.Sources.Wms(bwSubLayer);
                     break;
                 /**
                  Bruker proxy mot disse):
@@ -153,10 +153,10 @@ BW.Map.OL3.Map = function(repository, eventHandler, httpHelper, measure, feature
                  **/
                 case BW.Domain.SubLayer.SOURCES.proxyWms:
                     bwSubLayer.url = proxyHost + bwSubLayer.url;
-                    source = new BW.Map.OL3.Sources.Wms(bwSubLayer);
+                    source = new BW.MapImplementation.OL3.Sources.Wms(bwSubLayer);
                     break;
                 case BW.Domain.SubLayer.SOURCES.vector:
-                    source = new BW.Map.OL3.Sources.Vector(bwSubLayer, map.getView().getProjection());
+                    source = new BW.MapImplementation.OL3.Sources.Vector(bwSubLayer, map.getView().getProjection());
                     _loadVectorLayer(bwSubLayer, source);
                     break;
                 default:
@@ -373,7 +373,7 @@ BW.Map.OL3.Map = function(repository, eventHandler, httpHelper, measure, feature
 
     /*
         Feature Info Start
-        Functionality in BW.Map.OL3.FeatureInfo
+        Functionality in BW.MapImplementation.OL3.FeatureInfo
      */
 
     function activateInfoClick(callback){
@@ -430,7 +430,7 @@ BW.Map.OL3.Map = function(repository, eventHandler, httpHelper, measure, feature
 
     /*
         Measure Start
-        Functionality in BW.Map.OL3.Measure
+        Functionality in BW.MapImplementation.OL3.Measure
      */
 
     function activateMeasure(callback){
@@ -573,7 +573,7 @@ BW.Map.OL3.Map = function(repository, eventHandler, httpHelper, measure, feature
     };
 };
 
-BW.Map.OL3.Map.RENDERERS = {
+BW.MapImplementation.OL3.Map.RENDERERS = {
     canvas: 'canvas',
     webgl: 'webgl'
 };
