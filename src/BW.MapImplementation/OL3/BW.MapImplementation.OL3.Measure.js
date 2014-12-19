@@ -10,11 +10,17 @@ BW.MapImplementation.OL3.Measure = function(eventHandler){
     var circleOverlay; // Overlay for the circle
 
     var drawInteraction; // global so we can remove it later
-    var drawLayer; // Where the measure features are drawn. If this is not added to the map it still works, but the objects are removed after double click
+    /*
+        Where the measure features are drawn.
+        If this is not added to the map it still works,
+        but the objects are removed after double click.
+     */
+    var drawLayer;
 
     function activate(map){
         measureKey = map.on('pointermove', _mouseMoveHandler);
         _addInteraction(map);
+        // Add layer to preserve measured objects. Should this be optional?
         map.addLayer(drawLayer);
     }
 
@@ -28,16 +34,16 @@ BW.MapImplementation.OL3.Measure = function(eventHandler){
 
     function _mouseMoveHandler () { // evt
         if (currentFeature) {
-            var output;
-            var geom = (currentFeature.getGeometry());
+            var measureResult;
+            var geom = currentFeature.getGeometry();
             if (geom instanceof ol.geom.Polygon) {
-                //output =
                 var polygonArea = _calculateArea(geom);
                 var lineLength = _formatPolygonLength(geom);
                 var circleArea = _formatArea(_drawCircle(geom));
-                output = new BW.Domain.MeasureResult(polygonArea, lineLength, circleArea);
+                measureResult = new BW.Domain.MeasureResult(polygonArea, lineLength, circleArea);
             }
-            eventHandler.TriggerEvent(BW.Events.EventTypes.MeasureMouseMove, output);
+
+            eventHandler.TriggerEvent(BW.Events.EventTypes.MeasureMouseMove, measureResult);
         }
     }
 
@@ -58,50 +64,41 @@ BW.MapImplementation.OL3.Measure = function(eventHandler){
         map.addOverlay(circleOverlay);
 
         var source = new ol.source.Vector();
+        var measureStyle = new BW.MapImplementation.OL3.Styles.Measure();
 
         drawLayer = new ol.layer.Vector({
             source: source,
-            style: new ol.style.Style({
-                fill: new ol.style.Fill({
-                    color: 'rgba(255, 255, 255, 0.2)'
-                }),
-                stroke: new ol.style.Stroke({
-                    color: '#ffcc33',
-                    width: 2
-                }),
-                image: new ol.style.Circle({
-                    radius: 7,
-                    fill: new ol.style.Fill({
-                        color: '#ffcc33'
-                    })
-                })
-            })
+            style: measureStyle.Styles()
         });
 
-        var type = 'Polygon';// (typeSelect.value == 'area' ? 'Polygon' : 'LineString');
         drawInteraction = new ol.interaction.Draw({
             source: source,
-            type: type
+            type: 'Polygon'
         });
+
         map.addInteraction(drawInteraction);
 
-        drawInteraction.on('drawstart',
+        drawInteraction.on(
+            'drawstart',
             function(evt) {
                 currentFeature = evt.feature;
-
                 // Start circle drawing
                 var firstPoint = currentFeature.getGeometry().getCoordinates()[0][0];
                 circleFeature = new ol.Feature(new ol.geom.Circle(firstPoint, 0));
                 circleOverlay.addFeature(circleFeature);
-            }, this);
+            },
+            this
+        );
 
-        drawInteraction.on('drawend',
+        drawInteraction.on(
+            'drawend',
             function() { // evt
                 currentFeature = null;
-            }, this);
-
-
+            },
+            this
+        );
     }
+
     function _formatLength (coordinates) {
         var length = _getLength(coordinates);
         circleRadius = length;
@@ -144,7 +141,6 @@ BW.MapImplementation.OL3.Measure = function(eventHandler){
 
     function _getLength(coordinates){
         var length;
-        // Assume at least one coodinate
         if(coordinates.length > 0){
             var stride = coordinates[0].length; // 2D or 3D
             var flatCoordinates = _flatternCoordinates(coordinates);
