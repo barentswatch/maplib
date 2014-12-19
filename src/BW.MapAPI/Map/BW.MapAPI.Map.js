@@ -215,11 +215,11 @@ BW.MapAPI.Map = function(mapImplementation, eventHandler, featureInfo, layerHand
      */
 
     function activateMeasure(){
-        //mapImplementation.ActivateMeasure();
+        mapImplementation.ActivateMeasure();
     }
 
     function deactivateMeasure(){
-        //mapImplementation.DeactivateMeasure();
+        mapImplementation.DeactivateMeasure();
     }
 
     /*

@@ -1,5 +1,5 @@
 /**
- * maplib - v0.0.1 - 2014-12-18
+ * maplib - v0.0.1 - 2014-12-19
  * http://localhost
  *
  * Copyright (c) 2014 
@@ -989,11 +989,11 @@ BW.MapAPI.Map = function(mapInstance, eventHandler, featureInfo, layerHandler, c
      */
 
     function activateMeasure(){
-        //mapInstance.ActivateMeasure();
+        mapInstance.ActivateMeasure();
     }
 
     function deactivateMeasure(){
-        //mapInstance.DeactivateMeasure();
+        mapInstance.DeactivateMeasure();
     }
 
     /*
