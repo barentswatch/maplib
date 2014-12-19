@@ -2,7 +2,7 @@ var BW = BW || {};
 BW.MapAPI = BW.MapAPI || {};
 BW.MapAPI.Map = BW.MapAPI.Map || {};
 
-BW.MapAPI.FeatureInfo = function(mapInstance, httpHelper, eventHandler, featureParser){
+BW.MapAPI.FeatureInfo = function(mapImplementation, httpHelper, eventHandler, featureParser){
 
     /*
         The reference to document in this class is necessary due to offset.
@@ -112,7 +112,7 @@ BW.MapAPI.FeatureInfo = function(mapInstance, httpHelper, eventHandler, featureP
                     _sendGetFeatureInfoRequest(subLayer, coordinate);
                     break;
                 case BW.Domain.SubLayer.SOURCES.vector:
-                    var features = mapInstance.GetFeaturesInExtent(subLayer, mapInstance.GetExtentForCoordinate(coordinate, pixelTolerance));
+                    var features = mapImplementation.GetFeaturesInExtent(subLayer, mapImplementation.GetExtentForCoordinate(coordinate, pixelTolerance));
                     _handleGetInfoResponse(subLayer, features);
                     break;
             }
@@ -120,7 +120,7 @@ BW.MapAPI.FeatureInfo = function(mapInstance, httpHelper, eventHandler, featureP
     }
 
     function _sendGetFeatureInfoRequest(subLayer, coordinate){
-        var infoUrl = mapInstance.GetInfoUrl(subLayer, coordinate);
+        var infoUrl = mapImplementation.GetInfoUrl(subLayer, coordinate);
         _handleGetInfoRequest(infoUrl, subLayer);
     }
 
@@ -150,7 +150,7 @@ BW.MapAPI.FeatureInfo = function(mapInstance, httpHelper, eventHandler, featureP
                     _sendBoxSelectRequest(subLayer, boxExtent);
                     break;
                 case BW.Domain.SubLayer.SOURCES.vector:
-                    var features = mapInstance.GetFeaturesInExtent(subLayer, boxExtent);
+                    var features = mapImplementation.GetFeaturesInExtent(subLayer, boxExtent);
                     _handleGetInfoResponse(subLayer, features);
                     break;
             }
@@ -164,7 +164,7 @@ BW.MapAPI.FeatureInfo = function(mapInstance, httpHelper, eventHandler, featureP
 
     function _getFeatureUrl(bwSubLayer, boxExtent){
         var crs = bwSubLayer.featureInfo.getFeatureCrs;
-        var adaptedExtent = mapInstance.TransformBox(bwSubLayer.coordinate_system, bwSubLayer.featureInfo.getFeatureCrs, boxExtent);
+        var adaptedExtent = mapImplementation.TransformBox(bwSubLayer.coordinate_system, bwSubLayer.featureInfo.getFeatureCrs, boxExtent);
 
         var url = "service=WFS&request=GetFeature&typeName=" + bwSubLayer.name + "&srsName=" + crs + "&outputFormat=" + bwSubLayer.featureInfo.getFeatureFormat + "&bbox=" + adaptedExtent;
         url = decodeURIComponent(url);
@@ -199,13 +199,13 @@ BW.MapAPI.FeatureInfo = function(mapInstance, httpHelper, eventHandler, featureP
     function _showInfoMarker(coordinate){
         setInfoMarker(infoMarker, true);
         infoMarker.style.visibility = "visible";
-        mapInstance.ShowInfoMarker(coordinate, infoMarker);
+        mapImplementation.ShowInfoMarker(coordinate, infoMarker);
     }
 
     function setInfoMarker(element, removeCurrent){
         if(useInfoMarker === true) {
             if (removeCurrent === true) {
-                mapInstance.RemoveInfoMarker(infoMarker);
+                mapImplementation.RemoveInfoMarker(infoMarker);
                 _hideInfoMarker();
             }
             infoMarker = element;
