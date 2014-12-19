@@ -19,7 +19,7 @@ BW.Domain.MeasureResult = function(polygonArea, edgeLength, circleArea){
     }
 
     function getParsedResult(){
-        return 'Polygon area: ' + getPolygonArea() + '<br>Length: ' + getEdgeLength() + '<br>Circle area: ' + getCircleArea();
+        return 'Polygon area: ' + getPolygonArea() + ' Length: ' + getEdgeLength() + ' Circle area: ' + getCircleArea();
     }
 
     return {

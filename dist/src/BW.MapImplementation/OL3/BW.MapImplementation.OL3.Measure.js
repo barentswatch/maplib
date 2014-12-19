@@ -32,9 +32,9 @@ BW.MapImplementation.OL3.Measure = function(eventHandler){
             var geom = (currentFeature.getGeometry());
             if (geom instanceof ol.geom.Polygon) {
                 //output =
-                var polygonArea = _formatArea(geom);
+                var polygonArea = _calculateArea(geom);
                 var lineLength = _formatPolygonLength(geom);
-                var circleArea = _drawCircle(geom);
+                var circleArea = _formatArea(_drawCircle(geom));
                 output = new BW.Domain.MeasureResult(polygonArea, lineLength, circleArea);
             }
             eventHandler.TriggerEvent(BW.Events.EventTypes.MeasureMouseMove, output);
@@ -125,15 +125,19 @@ BW.MapImplementation.OL3.Measure = function(eventHandler){
         return _formatLength(polygon.getCoordinates()[0]);
     }
 
-    function _formatArea(polygon) {
+    function _calculateArea(polygon) {
         var area = polygon.getArea();
+        return _formatArea(area);
+    }
+
+    function _formatArea(area){
         var output;
         if (area > 10000) {
             output = (Math.round(area / 1000000 * 100) / 100) +
-            ' ' + 'km<sup>2</sup>';
+            ' ' + 'km';
         } else {
             output = (Math.round(area * 100) / 100) +
-            ' ' + 'm<sup>2</sup>';
+            ' ' + 'm';
         }
         return output;
     }
