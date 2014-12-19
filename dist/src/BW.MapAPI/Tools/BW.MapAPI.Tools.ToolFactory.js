@@ -59,7 +59,7 @@ BW.MapAPI.Tools.ToolFactory = function(tools){
      var tool = tools[i];
 
      if(tool.id == toolId){
-     tool.deactivate(mapInstance);
+     tool.deactivate(mapImplementation);
      }
      }
      }*/

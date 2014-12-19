@@ -1,7 +1,7 @@
 var BW = BW || {};
 BW.MapAPI = BW.MapAPI || {};
 
-BW.MapAPI.Layers = function(mapInstance){
+BW.MapAPI.Layers = function(mapImplementation){
     var config;
     var layers;
 
@@ -85,9 +85,9 @@ BW.MapAPI.Layers = function(mapInstance){
         var subLayers = bwLayer.subLayers;
         for(var j = 0; j < subLayers.length; j++){
             var bwSubLayer = subLayers[j];
-            mapInstance.HideLayer(bwSubLayer);
+            mapImplementation.HideLayer(bwSubLayer);
             if(shouldBeVisible(bwSubLayer)){
-                mapInstance.ShowLayer(bwSubLayer);
+                mapImplementation.ShowLayer(bwSubLayer);
             }
         }
 
@@ -99,7 +99,7 @@ BW.MapAPI.Layers = function(mapInstance){
         var subLayers = bwLayer.subLayers;
         for(var j = 0; j < subLayers.length; j++){
             var bwSubLayer = subLayers[j];
-            mapInstance.HideLayer(bwSubLayer);
+            mapImplementation.HideLayer(bwSubLayer);
         }
 
         bwLayer.isVisible = false;
@@ -142,12 +142,12 @@ BW.MapAPI.Layers = function(mapInstance){
         for(var i = 0; i < subLayers.length; i++){
             var subLayer = subLayers[i];
             if(shouldBeVisible(subLayer)){
-                mapInstance.MoveLayerToIndex(subLayer, index);
+                mapImplementation.MoveLayerToIndex(subLayer, index);
             }
         }
 
         _recalculateMapLayerIndexes();
-        mapInstance.RedrawMap();
+        mapImplementation.RedrawMap();
     }
 
     function moveLayerAbove(bwSourceLayer, bwTargetLayer){
@@ -156,7 +156,7 @@ BW.MapAPI.Layers = function(mapInstance){
         for(var i = 0; i < subLayers.length; i++){
             var subLayer = subLayers[i];
             if(shouldBeVisible(subLayer)){
-                mapInstance.MoveLayerToIndex(subLayer, targetLayerIndex);
+                mapImplementation.MoveLayerToIndex(subLayer, targetLayerIndex);
             }
         }
     }
@@ -165,9 +165,9 @@ BW.MapAPI.Layers = function(mapInstance){
         var subLayers = bwLayer.subLayers;
         for(var j = 0; j < subLayers.length; j++){
             var bwSubLayer = subLayers[j];
-            mapInstance.HideLayer(bwSubLayer);
+            mapImplementation.HideLayer(bwSubLayer);
             if(shouldBeVisible(bwSubLayer)){
-                mapInstance.ShowBaseLayer(bwSubLayer);
+                mapImplementation.ShowBaseLayer(bwSubLayer);
             }
         }
 
@@ -192,7 +192,7 @@ BW.MapAPI.Layers = function(mapInstance){
     function shouldBeVisible(/*bwSubLayer*/){
         // todo johben: Logic could include zoom levels in case of a layer with both wms and wfs.
         // I.E.
-        // var currentZoomLevel = mapInstance.getCurrentZoomLevel();
+        // var currentZoomLevel = mapImplementation.getCurrentZoomLevel();
         // return subLayer.StartZoomLevel < currentZoomLevel && subLayer.EndZoomLevel > currentZoomLevel
         return true;
     }
@@ -202,7 +202,7 @@ BW.MapAPI.Layers = function(mapInstance){
         var indexes = [];
         for(var i = 0; i < subLayers.length; i++){
             var subLayer = subLayers[i];
-            var thisIndex = mapInstance.GetLayerIndex(subLayer);
+            var thisIndex = mapImplementation.GetLayerIndex(subLayer);
             if(thisIndex != null){
                 indexes.push(thisIndex);
             }

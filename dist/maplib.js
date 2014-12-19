@@ -306,7 +306,7 @@ var BW = BW || {};
 BW.MapAPI = BW.MapAPI || {};
 BW.MapAPI.Map = BW.MapAPI.Map || {};
 
-BW.MapAPI.FeatureInfo = function(mapInstance, httpHelper, eventHandler, featureParser){
+BW.MapAPI.FeatureInfo = function(mapImplementation, httpHelper, eventHandler, featureParser){
 
     /*
         The reference to document in this class is necessary due to offset.
@@ -416,7 +416,7 @@ BW.MapAPI.FeatureInfo = function(mapInstance, httpHelper, eventHandler, featureP
                     _sendGetFeatureInfoRequest(subLayer, coordinate);
                     break;
                 case BW.Domain.SubLayer.SOURCES.vector:
-                    var features = mapInstance.GetFeaturesInExtent(subLayer, mapInstance.GetExtentForCoordinate(coordinate, pixelTolerance));
+                    var features = mapImplementation.GetFeaturesInExtent(subLayer, mapImplementation.GetExtentForCoordinate(coordinate, pixelTolerance));
                     _handleGetInfoResponse(subLayer, features);
                     break;
             }
@@ -424,7 +424,7 @@ BW.MapAPI.FeatureInfo = function(mapInstance, httpHelper, eventHandler, featureP
     }
 
     function _sendGetFeatureInfoRequest(subLayer, coordinate){
-        var infoUrl = mapInstance.GetInfoUrl(subLayer, coordinate);
+        var infoUrl = mapImplementation.GetInfoUrl(subLayer, coordinate);
         _handleGetInfoRequest(infoUrl, subLayer);
     }
 
@@ -454,7 +454,7 @@ BW.MapAPI.FeatureInfo = function(mapInstance, httpHelper, eventHandler, featureP
                     _sendBoxSelectRequest(subLayer, boxExtent);
                     break;
                 case BW.Domain.SubLayer.SOURCES.vector:
-                    var features = mapInstance.GetFeaturesInExtent(subLayer, boxExtent);
+                    var features = mapImplementation.GetFeaturesInExtent(subLayer, boxExtent);
                     _handleGetInfoResponse(subLayer, features);
                     break;
             }
@@ -468,7 +468,7 @@ BW.MapAPI.FeatureInfo = function(mapInstance, httpHelper, eventHandler, featureP
 
     function _getFeatureUrl(bwSubLayer, boxExtent){
         var crs = bwSubLayer.featureInfo.getFeatureCrs;
-        var adaptedExtent = mapInstance.TransformBox(bwSubLayer.coordinate_system, bwSubLayer.featureInfo.getFeatureCrs, boxExtent);
+        var adaptedExtent = mapImplementation.TransformBox(bwSubLayer.coordinate_system, bwSubLayer.featureInfo.getFeatureCrs, boxExtent);
 
         var url = "service=WFS&request=GetFeature&typeName=" + bwSubLayer.name + "&srsName=" + crs + "&outputFormat=" + bwSubLayer.featureInfo.getFeatureFormat + "&bbox=" + adaptedExtent;
         url = decodeURIComponent(url);
@@ -503,13 +503,13 @@ BW.MapAPI.FeatureInfo = function(mapInstance, httpHelper, eventHandler, featureP
     function _showInfoMarker(coordinate){
         setInfoMarker(infoMarker, true);
         infoMarker.style.visibility = "visible";
-        mapInstance.ShowInfoMarker(coordinate, infoMarker);
+        mapImplementation.ShowInfoMarker(coordinate, infoMarker);
     }
 
     function setInfoMarker(element, removeCurrent){
         if(useInfoMarker === true) {
             if (removeCurrent === true) {
-                mapInstance.RemoveInfoMarker(infoMarker);
+                mapImplementation.RemoveInfoMarker(infoMarker);
                 _hideInfoMarker();
             }
             infoMarker = element;
@@ -547,7 +547,7 @@ BW.MapAPI.FeatureInfo = function(mapInstance, httpHelper, eventHandler, featureP
 var BW = BW || {};
 BW.MapAPI = BW.MapAPI || {};
 
-BW.MapAPI.Layers = function(mapInstance){
+BW.MapAPI.Layers = function(mapImplementation){
     var config;
     var layers;
 
@@ -631,9 +631,9 @@ BW.MapAPI.Layers = function(mapInstance){
         var subLayers = bwLayer.subLayers;
         for(var j = 0; j < subLayers.length; j++){
             var bwSubLayer = subLayers[j];
-            mapInstance.HideLayer(bwSubLayer);
+            mapImplementation.HideLayer(bwSubLayer);
             if(shouldBeVisible(bwSubLayer)){
-                mapInstance.ShowLayer(bwSubLayer);
+                mapImplementation.ShowLayer(bwSubLayer);
             }
         }
 
@@ -645,7 +645,7 @@ BW.MapAPI.Layers = function(mapInstance){
         var subLayers = bwLayer.subLayers;
         for(var j = 0; j < subLayers.length; j++){
             var bwSubLayer = subLayers[j];
-            mapInstance.HideLayer(bwSubLayer);
+            mapImplementation.HideLayer(bwSubLayer);
         }
 
         bwLayer.isVisible = false;
@@ -688,12 +688,12 @@ BW.MapAPI.Layers = function(mapInstance){
         for(var i = 0; i < subLayers.length; i++){
             var subLayer = subLayers[i];
             if(shouldBeVisible(subLayer)){
-                mapInstance.MoveLayerToIndex(subLayer, index);
+                mapImplementation.MoveLayerToIndex(subLayer, index);
             }
         }
 
         _recalculateMapLayerIndexes();
-        mapInstance.RedrawMap();
+        mapImplementation.RedrawMap();
     }
 
     function moveLayerAbove(bwSourceLayer, bwTargetLayer){
@@ -702,7 +702,7 @@ BW.MapAPI.Layers = function(mapInstance){
         for(var i = 0; i < subLayers.length; i++){
             var subLayer = subLayers[i];
             if(shouldBeVisible(subLayer)){
-                mapInstance.MoveLayerToIndex(subLayer, targetLayerIndex);
+                mapImplementation.MoveLayerToIndex(subLayer, targetLayerIndex);
             }
         }
     }
@@ -711,9 +711,9 @@ BW.MapAPI.Layers = function(mapInstance){
         var subLayers = bwLayer.subLayers;
         for(var j = 0; j < subLayers.length; j++){
             var bwSubLayer = subLayers[j];
-            mapInstance.HideLayer(bwSubLayer);
+            mapImplementation.HideLayer(bwSubLayer);
             if(shouldBeVisible(bwSubLayer)){
-                mapInstance.ShowBaseLayer(bwSubLayer);
+                mapImplementation.ShowBaseLayer(bwSubLayer);
             }
         }
 
@@ -738,7 +738,7 @@ BW.MapAPI.Layers = function(mapInstance){
     function shouldBeVisible(/*bwSubLayer*/){
         // todo johben: Logic could include zoom levels in case of a layer with both wms and wfs.
         // I.E.
-        // var currentZoomLevel = mapInstance.getCurrentZoomLevel();
+        // var currentZoomLevel = mapImplementation.getCurrentZoomLevel();
         // return subLayer.StartZoomLevel < currentZoomLevel && subLayer.EndZoomLevel > currentZoomLevel
         return true;
     }
@@ -748,7 +748,7 @@ BW.MapAPI.Layers = function(mapInstance){
         var indexes = [];
         for(var i = 0; i < subLayers.length; i++){
             var subLayer = subLayers[i];
-            var thisIndex = mapInstance.GetLayerIndex(subLayer);
+            var thisIndex = mapImplementation.GetLayerIndex(subLayer);
             if(thisIndex != null){
                 indexes.push(thisIndex);
             }
@@ -775,14 +775,14 @@ BW.MapAPI.Layers = function(mapInstance){
 var BW = BW || {};
 BW.MapAPI = BW.MapAPI || {};
 
-BW.MapAPI.Map = function(mapInstance, eventHandler, featureInfo, layerHandler, categoryHandler) {
+BW.MapAPI.Map = function(mapImplementation, eventHandler, featureInfo, layerHandler, categoryHandler) {
 
     /*
         Start up functions Start
      */
 
     function init(targetId, mapConfig){
-        mapInstance.InitMap(targetId, mapConfig);
+        mapImplementation.InitMap(targetId, mapConfig);
         layerHandler.Init(mapConfig);
         categoryHandler.Init(mapConfig);
 
@@ -816,9 +816,9 @@ BW.MapAPI.Map = function(mapInstance, eventHandler, featureInfo, layerHandler, c
         var subLayers = bwLayer.subLayers;
         for(var j = 0; j < subLayers.length; j++){
             var bwSubLayer = subLayers[j];
-            mapInstance.SetLayerOpacity(bwSubLayer, value);
+            mapImplementation.SetLayerOpacity(bwSubLayer, value);
         }
-        mapInstance.RedrawMap();
+        mapImplementation.RedrawMap();
     }
 
     function setBaseLayer(bwLayer){
@@ -882,19 +882,19 @@ BW.MapAPI.Map = function(mapInstance, eventHandler, featureInfo, layerHandler, c
      */
 
     function exportMap(callback){
-        mapInstance.ExportMap(callback);
+        mapImplementation.ExportMap(callback);
     }
 
     function activateExport(options) {
-        mapInstance.ActivateExport(options);
+        mapImplementation.ActivateExport(options);
     }
 
     function deactivateExport() {
-        mapInstance.DeactivateExport();
+        mapImplementation.DeactivateExport();
     }
 
     function renderSync(){
-        return mapInstance.RenderSync();
+        return mapImplementation.RenderSync();
     }
 
     /*
@@ -919,31 +919,31 @@ BW.MapAPI.Map = function(mapInstance, eventHandler, featureInfo, layerHandler, c
     }
 
     function showHighlightedFeatures(features){
-        mapInstance.ShowHighlightedFeatures(features);
+        mapImplementation.ShowHighlightedFeatures(features);
     }
 
     function clearHighlightedFeatures(){
-        mapInstance.ClearHighlightedFeatures();
+        mapImplementation.ClearHighlightedFeatures();
     }
 
     function setHighlightStyle(style) {
-        mapInstance.SetHighlightStyle(style);
+        mapImplementation.SetHighlightStyle(style);
     }
 
     function activateInfoClick(){
-        mapInstance.ActivateInfoClick(_handlePointSelect);
+        mapImplementation.ActivateInfoClick(_handlePointSelect);
     }
 
     function deactivateInfoClick(){
-        mapInstance.DeactivateInfoClick();
+        mapImplementation.DeactivateInfoClick();
     }
 
     function activateBoxSelect(){
-        mapInstance.ActivateBoxSelect(_handleBoxSelect);
+        mapImplementation.ActivateBoxSelect(_handleBoxSelect);
     }
 
     function deactivateBoxSelect(){
-        mapInstance.DeactivateBoxSelect();
+        mapImplementation.DeactivateBoxSelect();
     }
 
     function getSupportedGetFeatureInfoFormats(bwSubLayer, callback){
@@ -955,7 +955,7 @@ BW.MapAPI.Map = function(mapInstance, eventHandler, featureInfo, layerHandler, c
     }
 
     function convertGmlToGeoJson(gml){
-        return mapInstance.ConvertGmlToGeoJson(gml);
+        return mapImplementation.ConvertGmlToGeoJson(gml);
     }
 
     function _handlePointSelect(coordinate){
@@ -989,11 +989,11 @@ BW.MapAPI.Map = function(mapInstance, eventHandler, featureInfo, layerHandler, c
      */
 
     function activateMeasure(){
-        mapInstance.ActivateMeasure();
+        mapImplementation.ActivateMeasure();
     }
 
     function deactivateMeasure(){
-        mapInstance.DeactivateMeasure();
+        mapImplementation.DeactivateMeasure();
     }
 
     /*
@@ -1005,11 +1005,11 @@ BW.MapAPI.Map = function(mapInstance, eventHandler, featureInfo, layerHandler, c
      */
 
     function extentToGeoJson(x, y){
-        mapInstance.ExtentToGeoJson(x, y);
+        mapImplementation.ExtentToGeoJson(x, y);
     }
 
     function setStateFromUrlParams(viewPropertyObject){
-        mapInstance.ChangeView(viewPropertyObject);
+        mapImplementation.ChangeView(viewPropertyObject);
 
         if(viewPropertyObject.layers){
             var layerGuids = viewPropertyObject.layers;
@@ -1488,7 +1488,7 @@ BW.MapAPI.Tools.ToolFactory = function(tools){
      var tool = tools[i];
 
      if(tool.id == toolId){
-     tool.deactivate(mapInstance);
+     tool.deactivate(mapImplementation);
      }
      }
      }*/

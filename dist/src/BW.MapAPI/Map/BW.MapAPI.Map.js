@@ -1,14 +1,14 @@
 var BW = BW || {};
 BW.MapAPI = BW.MapAPI || {};
 
-BW.MapAPI.Map = function(mapInstance, eventHandler, featureInfo, layerHandler, categoryHandler) {
+BW.MapAPI.Map = function(mapImplementation, eventHandler, featureInfo, layerHandler, categoryHandler) {
 
     /*
         Start up functions Start
      */
 
     function init(targetId, mapConfig){
-        mapInstance.InitMap(targetId, mapConfig);
+        mapImplementation.InitMap(targetId, mapConfig);
         layerHandler.Init(mapConfig);
         categoryHandler.Init(mapConfig);
 
@@ -42,9 +42,9 @@ BW.MapAPI.Map = function(mapInstance, eventHandler, featureInfo, layerHandler, c
         var subLayers = bwLayer.subLayers;
         for(var j = 0; j < subLayers.length; j++){
             var bwSubLayer = subLayers[j];
-            mapInstance.SetLayerOpacity(bwSubLayer, value);
+            mapImplementation.SetLayerOpacity(bwSubLayer, value);
         }
-        mapInstance.RedrawMap();
+        mapImplementation.RedrawMap();
     }
 
     function setBaseLayer(bwLayer){
@@ -108,19 +108,19 @@ BW.MapAPI.Map = function(mapInstance, eventHandler, featureInfo, layerHandler, c
      */
 
     function exportMap(callback){
-        mapInstance.ExportMap(callback);
+        mapImplementation.ExportMap(callback);
     }
 
     function activateExport(options) {
-        mapInstance.ActivateExport(options);
+        mapImplementation.ActivateExport(options);
     }
 
     function deactivateExport() {
-        mapInstance.DeactivateExport();
+        mapImplementation.DeactivateExport();
     }
 
     function renderSync(){
-        return mapInstance.RenderSync();
+        return mapImplementation.RenderSync();
     }
 
     /*
@@ -145,31 +145,31 @@ BW.MapAPI.Map = function(mapInstance, eventHandler, featureInfo, layerHandler, c
     }
 
     function showHighlightedFeatures(features){
-        mapInstance.ShowHighlightedFeatures(features);
+        mapImplementation.ShowHighlightedFeatures(features);
     }
 
     function clearHighlightedFeatures(){
-        mapInstance.ClearHighlightedFeatures();
+        mapImplementation.ClearHighlightedFeatures();
     }
 
     function setHighlightStyle(style) {
-        mapInstance.SetHighlightStyle(style);
+        mapImplementation.SetHighlightStyle(style);
     }
 
     function activateInfoClick(){
-        mapInstance.ActivateInfoClick(_handlePointSelect);
+        mapImplementation.ActivateInfoClick(_handlePointSelect);
     }
 
     function deactivateInfoClick(){
-        mapInstance.DeactivateInfoClick();
+        mapImplementation.DeactivateInfoClick();
     }
 
     function activateBoxSelect(){
-        mapInstance.ActivateBoxSelect(_handleBoxSelect);
+        mapImplementation.ActivateBoxSelect(_handleBoxSelect);
     }
 
     function deactivateBoxSelect(){
-        mapInstance.DeactivateBoxSelect();
+        mapImplementation.DeactivateBoxSelect();
     }
 
     function getSupportedGetFeatureInfoFormats(bwSubLayer, callback){
@@ -181,7 +181,7 @@ BW.MapAPI.Map = function(mapInstance, eventHandler, featureInfo, layerHandler, c
     }
 
     function convertGmlToGeoJson(gml){
-        return mapInstance.ConvertGmlToGeoJson(gml);
+        return mapImplementation.ConvertGmlToGeoJson(gml);
     }
 
     function _handlePointSelect(coordinate){
@@ -215,11 +215,11 @@ BW.MapAPI.Map = function(mapInstance, eventHandler, featureInfo, layerHandler, c
      */
 
     function activateMeasure(){
-        mapInstance.ActivateMeasure();
+        mapImplementation.ActivateMeasure();
     }
 
     function deactivateMeasure(){
-        mapInstance.DeactivateMeasure();
+        mapImplementation.DeactivateMeasure();
     }
 
     /*
@@ -231,11 +231,11 @@ BW.MapAPI.Map = function(mapInstance, eventHandler, featureInfo, layerHandler, c
      */
 
     function extentToGeoJson(x, y){
-        mapInstance.ExtentToGeoJson(x, y);
+        mapImplementation.ExtentToGeoJson(x, y);
     }
 
     function setStateFromUrlParams(viewPropertyObject){
-        mapInstance.ChangeView(viewPropertyObject);
+        mapImplementation.ChangeView(viewPropertyObject);
 
         if(viewPropertyObject.layers){
             var layerGuids = viewPropertyObject.layers;
