@@ -52,6 +52,12 @@ BW.SelectEvents = BW.SelectEvents || {};
         var features = interaction.getFeatures();
         var selectedHere = null;
 
+        function triggerAllDeselect() {
+            if (features.getLength() === 0) {
+                layer.trigger('all' + off);
+            }
+        }
+
         features.on('change:length', function () {
             if (features.getLength() > 0) {
                 var sel = features.getArray()[0];
@@ -63,9 +69,10 @@ BW.SelectEvents = BW.SelectEvents || {};
                 layer.getSource().forEachFeature(function (e) {
                     e.trigger(off, e);
                 });
-                layer.trigger('all' + off);
                 selectedHere = null;
             }
+            //if check length after 100 ms to see if no new ones has been added
+            setTimeout(triggerAllDeselect, 100);
         });
 
         layer.on(off + 'Feature', function () {
