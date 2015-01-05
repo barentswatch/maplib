@@ -145,12 +145,18 @@ var BW = this.BW || {};
             });
         },
 
+        featuresDeselected: function () {
+            this.trigger('allDeselected');
+        },
+
         createLayer: function () {
             this.vectorSource = new ol.source.Vector();
             this.layer = new ol.layer.Vector({
                 source: this.vectorSource,
                 style: this.options.featureStyle
             });
+            _.extend(this.layer, Backbone.Events);
+            this.layer.on('alldeselect', this.featuresDeselected, this);
         },
 
         populateLayer: function () {

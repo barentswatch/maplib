@@ -63,6 +63,7 @@ BW.SelectEvents = BW.SelectEvents || {};
                 layer.getSource().forEachFeature(function (e) {
                     e.trigger(off, e);
                 });
+                layer.trigger('all' + off);
                 selectedHere = null;
             }
         });
