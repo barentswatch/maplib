@@ -264,6 +264,10 @@ BW.MapAPI.Map = function(mapImplementation, eventHandler, featureInfo, layerHand
         }
     }
 
+    function addZoomSlider() {
+        mapImplementation.AddZoomSlider();
+    }
+
     /*function addVectorTestData(){
         var callback = function(data){
             showHighlightedFeatures(featureParser.Parse(data));
@@ -342,7 +346,8 @@ BW.MapAPI.Map = function(mapImplementation, eventHandler, featureInfo, layerHand
         // Utility start
         ConvertGmlToGeoJson: convertGmlToGeoJson,
         SetLegendGraphics: setLegendGraphics,
-        ExtentToGeoJson: extentToGeoJson
+        ExtentToGeoJson: extentToGeoJson,
+        AddZoomSlider: addZoomSlider
         //AddVectorTestData: addVectorTestData
         // Utility end
     };
