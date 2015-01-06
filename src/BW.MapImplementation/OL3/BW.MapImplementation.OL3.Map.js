@@ -503,6 +503,11 @@ BW.MapImplementation.OL3.Map = function(repository, eventHandler, httpHelper, me
         return geoJson.writeFeature(feature);
     }
 
+    function addZoomSlider() {
+        var zoomslider = new ol.control.ZoomSlider();
+        map.addControl(zoomslider);
+    }
+
     /*
         Utility functions End
      */
@@ -568,7 +573,9 @@ BW.MapImplementation.OL3.Map = function(repository, eventHandler, httpHelper, me
         // Utility start
         TransformBox: transformBox,
         ConvertGmlToGeoJson: convertGmlToGeoJson,
-        ExtentToGeoJson: extentToGeoJson
+        ExtentToGeoJson: extentToGeoJson,
+        AddZoomSlider: addZoomSlider
+
         // Utility end
     };
 };
