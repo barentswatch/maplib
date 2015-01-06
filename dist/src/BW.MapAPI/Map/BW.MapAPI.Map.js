@@ -264,6 +264,10 @@ BW.MapAPI.Map = function(mapImplementation, eventHandler, featureInfo, layerHand
         }
     }
 
+    function addZoom() {
+        mapImplementation.AddZoom();
+    }
+
     function addZoomSlider() {
         mapImplementation.AddZoomSlider();
     }
@@ -347,6 +351,7 @@ BW.MapAPI.Map = function(mapImplementation, eventHandler, featureInfo, layerHand
         ConvertGmlToGeoJson: convertGmlToGeoJson,
         SetLegendGraphics: setLegendGraphics,
         ExtentToGeoJson: extentToGeoJson,
+        AddZoom: addZoom,
         AddZoomSlider: addZoomSlider
         //AddVectorTestData: addVectorTestData
         // Utility end

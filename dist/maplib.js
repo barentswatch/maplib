@@ -1038,6 +1038,10 @@ BW.MapAPI.Map = function(mapImplementation, eventHandler, featureInfo, layerHand
         }
     }
 
+    function addZoom() {
+        mapImplementation.AddZoom();
+    }
+
     function addZoomSlider() {
         mapImplementation.AddZoomSlider();
     }
@@ -1121,6 +1125,7 @@ BW.MapAPI.Map = function(mapImplementation, eventHandler, featureInfo, layerHand
         ConvertGmlToGeoJson: convertGmlToGeoJson,
         SetLegendGraphics: setLegendGraphics,
         ExtentToGeoJson: extentToGeoJson,
+        AddZoom: addZoom,
         AddZoomSlider: addZoomSlider
         //AddVectorTestData: addVectorTestData
         // Utility end
@@ -2424,6 +2429,11 @@ BW.MapImplementation.OL3.Map = function(repository, eventHandler, httpHelper, me
         return geoJson.writeFeature(feature);
     }
 
+    function addZoom() {
+        var zoom = new ol.control.Zoom();
+        map.addControl(zoom);
+    }
+
     function addZoomSlider() {
         var zoomslider = new ol.control.ZoomSlider();
         map.addControl(zoomslider);
@@ -2495,6 +2505,7 @@ BW.MapImplementation.OL3.Map = function(repository, eventHandler, httpHelper, me
         TransformBox: transformBox,
         ConvertGmlToGeoJson: convertGmlToGeoJson,
         ExtentToGeoJson: extentToGeoJson,
+        AddZoom: addZoom,
         AddZoomSlider: addZoomSlider
 
         // Utility end
