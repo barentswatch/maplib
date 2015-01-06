@@ -1,8 +1,8 @@
 /**
- * maplib - v0.0.1 - 2014-12-19
+ * maplib - v0.0.1 - 2015-01-06
  * http://localhost
  *
- * Copyright (c) 2014 
+ * Copyright (c) 2015 
  */
 var BW = BW || {};
 BW.Domain = BW.Domain || {};
@@ -1038,6 +1038,10 @@ BW.MapAPI.Map = function(mapImplementation, eventHandler, featureInfo, layerHand
         }
     }
 
+    function addZoomSlider() {
+        mapImplementation.AddZoomSlider();
+    }
+
     /*function addVectorTestData(){
         var callback = function(data){
             showHighlightedFeatures(featureParser.Parse(data));
@@ -1116,7 +1120,8 @@ BW.MapAPI.Map = function(mapImplementation, eventHandler, featureInfo, layerHand
         // Utility start
         ConvertGmlToGeoJson: convertGmlToGeoJson,
         SetLegendGraphics: setLegendGraphics,
-        ExtentToGeoJson: extentToGeoJson
+        ExtentToGeoJson: extentToGeoJson,
+        AddZoomSlider: addZoomSlider
         //AddVectorTestData: addVectorTestData
         // Utility end
     };
@@ -2419,6 +2424,11 @@ BW.MapImplementation.OL3.Map = function(repository, eventHandler, httpHelper, me
         return geoJson.writeFeature(feature);
     }
 
+    function addZoomSlider() {
+        var zoomslider = new ol.control.ZoomSlider();
+        map.addControl(zoomslider);
+    }
+
     /*
         Utility functions End
      */
@@ -2484,7 +2494,9 @@ BW.MapImplementation.OL3.Map = function(repository, eventHandler, httpHelper, me
         // Utility start
         TransformBox: transformBox,
         ConvertGmlToGeoJson: convertGmlToGeoJson,
-        ExtentToGeoJson: extentToGeoJson
+        ExtentToGeoJson: extentToGeoJson,
+        AddZoomSlider: addZoomSlider
+
         // Utility end
     };
 };
