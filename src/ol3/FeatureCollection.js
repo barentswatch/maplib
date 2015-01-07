@@ -83,12 +83,12 @@ var BW = this.BW || {};
 
         selectFeature: function () {
             this.get('feature').select = true;
-            this.collection.getLayer().dispatchEvent('selectFeature');
+            this.collection.getLayer().trigger('selectFeature');
         },
 
         deselectFeature: function () {
             this.get('feature').select = false;
-            this.collection.getLayer().dispatchEvent('deselectFeature');
+            this.collection.getLayer().trigger('deselectFeature');
         },
 
         highlightFeature: function () {
