@@ -2794,6 +2794,11 @@ BW.MapImplementation.OL3.Sources.Wmts = function(bwSubLayer){
     var resolutions = new Array(14);
     var matrixIds = new Array(14);
     var numZoomLevels = 18;
+    var matrixSet = bwSubLayer.matrixSet;
+    if (matrixSet === null || matrixSet === '')
+    {
+           matrixSet=bwSubLayer.coordinate_system;
+    }
     for (var z = 0; z < numZoomLevels; ++z) {
         resolutions[z] = size / Math.pow(2, z);
         matrixIds[z] = projection.getCode() + ":" + z;
@@ -2804,7 +2809,7 @@ BW.MapImplementation.OL3.Sources.Wmts = function(bwSubLayer){
         layer: bwSubLayer.name,
         format: bwSubLayer.format,
         projection: projection,
-        matrixSet: bwSubLayer.matrixSet , //bwSubLayer.coordinate_system,
+        matrixSet: matrixSet,
         crossOrigin: 'anonymous',
         tileGrid: new ol.tilegrid.WMTS({
             origin: ol.extent.getTopLeft(projectionExtent),
