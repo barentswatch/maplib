@@ -1,5 +1,5 @@
 /**
- * maplib - v0.0.1 - 2015-01-06
+ * maplib - v0.0.1 - 2015-01-20
  * http://localhost
  *
  * Copyright (c) 2015 
@@ -166,6 +166,7 @@ BW.Domain.SubLayer = function(config){
         url: '',
         format: BW.Domain.SubLayer.FORMATS.imagepng,
         coordinate_system: '',
+        matrixSet: '',
         extent: [-1, 1, -1, 1],
         extentUnits: 'm',
         id: new BW.Utils.Guid().newGuid(),
@@ -2803,7 +2804,7 @@ BW.MapImplementation.OL3.Sources.Wmts = function(bwSubLayer){
         layer: bwSubLayer.name,
         format: bwSubLayer.format,
         projection: projection,
-        matrixSet: bwSubLayer.coordinate_system,
+        matrixSet: bwSubLayer.matrixSet , //bwSubLayer.coordinate_system,
         crossOrigin: 'anonymous',
         tileGrid: new ol.tilegrid.WMTS({
             origin: ol.extent.getTopLeft(projectionExtent),
@@ -2940,6 +2941,7 @@ BW.Repository.MapConfig = function(config){
         zoom: 5,
         layers:[],
         coordinate_system: "EPSG:32633",
+        matrixSet: "EPSG:32633",
         extent: [-1, -1, -1, -1],
         extentUnits: 'm',
         proxyHost: ""

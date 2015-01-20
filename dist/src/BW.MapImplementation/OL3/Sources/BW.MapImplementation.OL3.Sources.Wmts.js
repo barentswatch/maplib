@@ -25,7 +25,7 @@ BW.MapImplementation.OL3.Sources.Wmts = function(bwSubLayer){
         layer: bwSubLayer.name,
         format: bwSubLayer.format,
         projection: projection,
-        matrixSet: bwSubLayer.coordinate_system,
+        matrixSet: bwSubLayer.matrixSet , //bwSubLayer.coordinate_system,
         crossOrigin: 'anonymous',
         tileGrid: new ol.tilegrid.WMTS({
             origin: ol.extent.getTopLeft(projectionExtent),
