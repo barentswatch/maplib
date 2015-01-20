@@ -2801,7 +2801,7 @@ BW.MapImplementation.OL3.Sources.Wmts = function(bwSubLayer){
     }
     for (var z = 0; z < numZoomLevels; ++z) {
         resolutions[z] = size / Math.pow(2, z);
-        matrixIds[z] = projection.getCode() + ":" + z;
+        matrixIds[z] = matrixSet + ":" + z;
     }
 
     return new ol.source.WMTS({
