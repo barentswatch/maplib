@@ -2797,7 +2797,7 @@ BW.MapImplementation.OL3.Sources.Wmts = function(bwSubLayer){
     var matrixIds = new Array(14);
     var numZoomLevels = 18;
     var matrixSet = bwSubLayer.matrixSet;
-    if (matrixSet === null || matrixSet === '')
+    if (matrixSet === null || matrixSet === '' || matrixSet === undefined)
     {
            matrixSet=bwSubLayer.coordinate_system;
     }
