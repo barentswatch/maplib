@@ -180,60 +180,19 @@ module.exports = function ( grunt ) {
         ],
         dest: '<%= compile_dir %>/<%= pkg.name %>-min.js'
       },
-      ol2core: {
-        src: [
-          'src/ol2/Mapcore.js'
-        ],
-        dest: 'dist/bwmaplib_ol2.js'
-      },
-      circlecontrol: {
-        src: [
-          'src/ol2/CircleDraw.js'
-        ],
-        dest: 'dist/circledraw.js'
-      },
-      wfslayer: {
-        src: [
-          'src/ol2/WfsLayer.js'
-        ],
-        dest: 'dist/wfslayer.js'
-      },
-      clusterstyle: {
-        src: [
-          'src/ol2/ClusterStyle.js'
-        ],
-        dest: 'dist/clusterstyle.js'
-      },
-      wmshttpsproxy: {
-        src: [
-          'src/ol2/WmsHttpsProxy.js'
-        ],
-        dest: 'dist/wmshttpsproxy.js'
-      },
-      ol3listmap: {
-        src: [
-          'src/ol3/FeatureCollection.js',
-          'src/ol3/ListMapView.js'
-        ],
-        dest: 'dist/ol3listmap.js'
-      },
-      ol3markers: {
-        src: [
-          'src/ol3/Markers.js'
-        ],
-        dest: 'dist/ol3markers.js'
-      },
-      ol3selectevents: {
-        src: [
-          'src/ol3/ParserWrapper.js'
-        ],
-        dest: 'dist/ol3selectevents.js'
-      },
-      ol3wrapper: {
-        src: [
-          'src/ol3/SelectEvents.js'
-        ],
-        dest: 'dist/ol3wrapper.js'
+      extras: {
+        files: {
+            'dist/ol2/bwmaplib_ol2.js': ['src/ol2/Mapcore.js'],
+            'dist/ol2/circledraw.js': ['src/ol2/CircleDraw.js'],
+            'dist/ol2/wfslayer.js': ['src/ol2/WfsLayer.js'],
+            'dist/ol2/clusterstyle.js': ['src/ol2/ClusterStyle.js'],
+            'dist/ol2/markers.js': ['src/ol2/Markers.js'],
+            'dist/ol2/wmshttpsproxy.js':['src/ol2/WmsHttpsProxy.js'],
+            'dist/ol3/listmap.js': ['src/ol3/FeatureCollection.js', 'src/ol3/ListMapView.js'],
+            'dist/ol3/markers.js': ['src/ol3/Markers.js'],
+            'dist/ol3/selectevents.js': ['src/ol3/SelectEvents.js'],
+            'dist/ol3/wrapper.js': ['src/ol3/ParserWrapper.js']
+        }
       }
     },
 
@@ -254,49 +213,25 @@ module.exports = function ( grunt ) {
           '<%= concat.create_minified.dest %>': '<%= concat.create_minified.dest %>'
         }
       },
-      circlecontrol: {
-        files: {
-          'dist/circledraw.min.js': ['<%= concat.circlecontrol.dest %>']
-        }
-      },
-      wfslayer: {
-        files: {
-          'dist/wfslayer.min.js': ['<%= concat.wfslayer.dest %>']
-        }
-      },
-      clusterstyle: {
-        files: {
-          'dist/clusterstyle.min.js': ['<%= concat.clusterstyle.dest %>']
-        }
-      },
-      wmshttpsproxy: {
-        files: {
-          'dist/wmshttpsproxy.min.js': ['<%= concat.wmshttpsproxy.dest %>']
-        }
-      },
-      ol3listmap: {
-        files: {
-          'dist/ol3listmap.min.js': ['<%= concat.ol3listmap.dest %>']
-        }
-      },
-      ol3markers: {
-        files: {
-          'dist/ol3markers.min.js': ['<%= concat.ol3markers.dest %>']
-        }
-      },
-      ol3selectevents: {
-        files: {
-          'dist/ol3selectevents.min.js': ['<%= concat.ol3selectevents.dest %>']
-        }
-      },
-      ol2core: {
-        files: {
-          'dist/bwmaplib_ol2.min.js': ['<%= concat.ol2core.dest %>']
-        }
-      },
-      ol3wrapper: {
-        files: {
-          'dist/ol3wrapper.min.js': ['<%= concat.ol3wrapper.dest %>']
+      extras: {
+        files: [
+          {
+            expand: true,
+            cwd: 'dist/ol2',
+            src: '**/*.js',
+            dest: 'dist/ol2',
+            ext: '.min.js'
+          },
+          {
+            expand: true,
+            cwd: 'dist/ol3',
+            src: '**/*.js',
+            dest: 'dist/ol3',
+            ext: '.min.js'
+          }
+        ],
+        rename: function(destBase, destPath) {
+            return destBase + destPath.replace('.js', '.min.js');
         }
       }
     },
@@ -510,26 +445,7 @@ module.exports = function ( grunt ) {
 
 
 /* Handle extras*/
-  grunt.registerTask('dist-extras' , [
-    'concat:circlecontrol',
-    'concat:wfslayer',
-    'concat:clusterstyle',
-    'concat:wmshttpsproxy',
-    'concat:ol3listmap',
-    'concat:ol3markers',
-    'concat:ol3selectevents',
-    'concat:ol2core',
-    'concat:ol3wrapper',
-    'uglify:circlecontrol',
-    'uglify:wfslayer',
-    'uglify:clusterstyle',
-    'uglify:wmshttpsproxy',
-    'uglify:ol3listmap',
-    'uglify:ol3markers',
-    'uglify:ol3selectevents',
-    'uglify:ol2core',
-    'uglify:ol3wrapper'
-  ]);
+  grunt.registerTask('dist-extras' , ['concat:extras', 'uglify:extras']);
 
 
 

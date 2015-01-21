@@ -20,5 +20,8 @@
     "openlayers3": "*",
     "xml2json": "*",
     "proj4": "*"
+  },
+  "devDependencies": {
+    "backbone": "~1.1.2"
   }
 }
