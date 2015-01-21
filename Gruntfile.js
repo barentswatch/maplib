@@ -182,16 +182,16 @@ module.exports = function ( grunt ) {
       },
       extras: {
         files: {
-            'dist/ol2/bwmaplib_ol2.js': ['src/ol2/Mapcore.js'],
-            'dist/ol2/circledraw.js': ['src/ol2/CircleDraw.js'],
-            'dist/ol2/wfslayer.js': ['src/ol2/WfsLayer.js'],
-            'dist/ol2/clusterstyle.js': ['src/ol2/ClusterStyle.js'],
-            'dist/ol2/markers.js': ['src/ol2/Markers.js'],
-            'dist/ol2/wmshttpsproxy.js':['src/ol2/WmsHttpsProxy.js'],
-            'dist/ol3/listmap.js': ['src/ol3/FeatureCollection.js', 'src/ol3/ListMapView.js'],
-            'dist/ol3/markers.js': ['src/ol3/Markers.js'],
-            'dist/ol3/selectevents.js': ['src/ol3/SelectEvents.js'],
-            'dist/ol3/wrapper.js': ['src/ol3/ParserWrapper.js']
+            '<%= compile_dir %>/ol2/bwmaplib_ol2.js': ['src/ol2/Mapcore.js'],
+            '<%= compile_dir %>/ol2/circledraw.js': ['src/ol2/CircleDraw.js'],
+            '<%= compile_dir %>/ol2/wfslayer.js': ['src/ol2/WfsLayer.js'],
+            '<%= compile_dir %>/ol2/clusterstyle.js': ['src/ol2/ClusterStyle.js'],
+            '<%= compile_dir %>/ol2/markers.js': ['src/ol2/Markers.js'],
+            '<%= compile_dir %>/ol2/wmshttpsproxy.js':['src/ol2/WmsHttpsProxy.js'],
+            '<%= compile_dir %>/ol3/listmap.js': ['src/ol3/FeatureCollection.js', 'src/ol3/ListMapView.js'],
+            '<%= compile_dir %>/ol3/markers.js': ['src/ol3/Markers.js'],
+            '<%= compile_dir %>/ol3/selectevents.js': ['src/ol3/SelectEvents.js'],
+            '<%= compile_dir %>/ol3/wrapper.js': ['src/ol3/ParserWrapper.js']
         }
       }
     },
@@ -217,16 +217,16 @@ module.exports = function ( grunt ) {
         files: [
           {
             expand: true,
-            cwd: 'dist/ol2',
+            cwd: '<%= compile_dir %>/ol2',
             src: '**/*.js',
-            dest: 'dist/ol2',
+            dest: '<%= compile_dir %>/ol2',
             ext: '.min.js'
           },
           {
             expand: true,
-            cwd: 'dist/ol3',
+            cwd: '<%= compile_dir %>/ol3',
             src: '**/*.js',
-            dest: 'dist/ol3',
+            dest: '<%= compile_dir %>/ol3',
             ext: '.min.js'
           }
         ],
