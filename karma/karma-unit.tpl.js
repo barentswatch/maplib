@@ -11,10 +11,10 @@ module.exports = function ( karma ) {
     files: [
       <% scripts.forEach( function ( file ) { %>'<%= file %>',
       <% }); %>
-      'src/**/*.js',
+      'src/core/**/*.js',
     ],
     exclude: [
-      'src/assets/**/*.js',
+      'src/core/assets/**/*.js',
         '**/testMap.js'
     ],
     frameworks: [ 'jasmine' ],
@@ -35,7 +35,7 @@ module.exports = function ( karma ) {
     runnerPort: 9100,
     urlRoot: '/',
 
-    /** 
+    /**
      * Disable file watching by default.
      */
     autoWatch: false,

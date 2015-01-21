@@ -26,8 +26,8 @@ module.exports = {
    * app's unit tests.
    */
   app_files: {
-    js: [ 'src/**/*.js', '!src/**/*.spec.js', '!src/assets/**/*.js' ],
-    jsunit: [ 'src/**/*.spec.js' ],
+    js: [ 'src/core/**/*.js', '!src/core/**/*.spec.js', '!src/assets/core/**/*.js' ],
+    jsunit: [ 'src/core/**/*.spec.js' ],
 
     atpl: [ 'src/app/**/*.tpl.html' ],
     ctpl: [ 'src/common/**/*.tpl.html' ],

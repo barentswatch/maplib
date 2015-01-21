@@ -12,10 +12,10 @@ module.exports = function ( karma ) {
         files: [
             <% scripts.forEach( function ( file ) { %>'<%= file %>',
             <% }); %>
-        'src/**/*.js',
+        'src/core/**/*.js',
     ],
     exclude: [
-        'src/assets/**/*.js',
+        'src/core/assets/**/*.js',
         '**/testMap.js'
     ],
         frameworks: [ 'jasmine' ],
