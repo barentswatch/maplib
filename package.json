@@ -1,12 +1,14 @@
 {
+<<<<<<< HEAD
   "author": "",
   "name": "bwmaplib",
-  "version": "0.0.1",
+  "license": "BSD",
+  "version": "0.1.6",
   "homepage": "http://localhost",
   "bugs": "https://code.barentswatch.net/jira/browse/BUN/",
   "repository": {
     "type": "git",
-    "url": "https://code.barentswatch.net/stash/scm/bw/areamanagement.git"
+    "url": "git//:code.barentswatch.net/stash/projects/BW/repos/maplib.git"
   },
   "dependencies": {},
   "devDependencies": {
@@ -28,6 +30,10 @@
     "karma-ie-launcher": "^0.1.5",
     "karma-jasmine": "~0.2.0",
     "karma-phantomjs-launcher": "^0.1.4",
-    "karma-teamcity-reporter": "^0.1.2"
+    "karma-teamcity-reporter": "^0.1.2",
+    "buster": "*",
+    "grunt-buster": "~0.3.1",
+    "phantomjs": "~1.9.7-1",
+    "grunt-bump-build-git": "~1.1.1"
   }
 }

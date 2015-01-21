@@ -1,7 +1,20 @@
 {
   "name": "bwmaplib",
-  "version": "0.0.2",
-  "devDependencies": {},
+  "version": "0.1.6",
+  "description": "Kartfunkjsonalitet for BW",
+  "main": "dist/kartkjerne.js",
+  "license": "BSD",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "examples",
+    "test",
+    "src",
+    "lib",
+    "Gruntfile.js",
+    "sonar-project.properties"
+  ],
   "dependencies": {
     "jquery": "*",
     "openlayers3": "*",
