@@ -464,3 +464,4 @@ module.exports = function ( grunt ) {
         }
     });
   });
+};
