@@ -489,6 +489,10 @@ module.exports = function ( grunt ) {
           livereload: false
         }
       }
+    },
+    build: {
+      tasks: ['default'],
+      gitAdd: 'package.json bower.json dist/*'
     }
   };
 
@@ -503,6 +507,7 @@ module.exports = function ( grunt ) {
    */
   grunt.renameTask( 'watch', 'delta' );
   grunt.registerTask( 'watch', [ 'build', 'karma:unit', 'delta' ] );
+
 
 /* Handle extras*/
   grunt.registerTask('dist-extras' , [
@@ -532,6 +537,9 @@ module.exports = function ( grunt ) {
    * The default task is to build and compile.
    */
   grunt.registerTask( 'default', [ 'build', 'compile', 'dist-extras' ] );
+
+  grunt.loadNpmTasks('grunt-bump-build-git');
+  grunt.renameTask('build', 'release');
 
   /**
    * The `build` task gets your app ready to run for development and testing.
