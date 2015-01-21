@@ -1,5 +1,5 @@
 /**
- * maplib - v0.0.1 - 2015-01-20
+ * maplib - v0.0.1 - 2015-01-21
  * http://localhost
  *
  * Copyright (c) 2015 
@@ -173,6 +173,7 @@ BW.Domain.SubLayer = function(config){
         transparent: true,
         layerIndex: -1,
         legendGraphicUrl: '',
+        crossOrigin: 'anonymous',
         featureInfo: new BW.Domain.FeatureInfo()
     };
     var instance =  $.extend({}, defaults, config); // subLayerInstance
@@ -200,6 +201,7 @@ BW.Domain.SubLayer.FORMATS = {
     imagejpeg: "image/jpeg",
     geoJson: "application/json"
 };
+
 var BW = BW || {};
 BW.Events = BW.Events || {};
 
@@ -2761,7 +2763,7 @@ BW.MapImplementation.OL3.Sources.Wms = function(bwSubLayer){
             },
             url: bwSubLayer.url,
             format: bwSubLayer.format,
-            crossOrigin: 'anonymous',
+            crossOrigin: bwSubLayer.crossOrigin,
             transparent: bwSubLayer.transparent
         });
     } else {
@@ -2772,7 +2774,7 @@ BW.MapImplementation.OL3.Sources.Wms = function(bwSubLayer){
             },
             url: bwSubLayer.url,
             format: bwSubLayer.format,
-            crossOrigin: 'anonymous',
+            crossOrigin: bwSubLayer.crossOrigin,
             transparent: bwSubLayer.transparent
         });
     }
@@ -2811,7 +2813,7 @@ BW.MapImplementation.OL3.Sources.Wmts = function(bwSubLayer){
         format: bwSubLayer.format,
         projection: projection,
         matrixSet: matrixSet,
-        crossOrigin: 'anonymous',
+        crossOrigin: bwSubLayer.crossOrigin,
         tileGrid: new ol.tilegrid.WMTS({
             origin: ol.extent.getTopLeft(projectionExtent),
             resolutions: resolutions,
@@ -2819,6 +2821,7 @@ BW.MapImplementation.OL3.Sources.Wmts = function(bwSubLayer){
         })
     });
 };
+
 var BW = BW || {};
 BW.MapImplementation = BW.MapImplementation || {};
 BW.MapImplementation.OL3 = BW.MapImplementation.OL3 || {};

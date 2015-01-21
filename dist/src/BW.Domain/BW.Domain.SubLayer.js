@@ -16,6 +16,7 @@ BW.Domain.SubLayer = function(config){
         transparent: true,
         layerIndex: -1,
         legendGraphicUrl: '',
+        crossOrigin: 'anonymous',
         featureInfo: new BW.Domain.FeatureInfo()
     };
     var instance =  $.extend({}, defaults, config); // subLayerInstance

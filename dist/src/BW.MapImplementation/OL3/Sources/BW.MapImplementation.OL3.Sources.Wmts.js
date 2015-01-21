@@ -31,7 +31,7 @@ BW.MapImplementation.OL3.Sources.Wmts = function(bwSubLayer){
         format: bwSubLayer.format,
         projection: projection,
         matrixSet: matrixSet,
-        crossOrigin: 'anonymous',
+        crossOrigin: bwSubLayer.crossOrigin,
         tileGrid: new ol.tilegrid.WMTS({
             origin: ol.extent.getTopLeft(projectionExtent),
             resolutions: resolutions,
