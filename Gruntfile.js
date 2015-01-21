@@ -504,11 +504,7 @@ module.exports = function ( grunt ) {
   grunt.renameTask( 'watch', 'delta' );
   grunt.registerTask( 'watch', [ 'build', 'karma:unit', 'delta' ] );
 
-  /**
-   * The default task is to build and compile.
-   */
-  grunt.registerTask( 'default', [ 'build', 'compile' ] );
-
+/* Handle extras*/
   grunt.registerTask('dist-extras' , [
     'concat:circlecontrol',
     'concat:wfslayer',
@@ -529,6 +525,13 @@ module.exports = function ( grunt ) {
     'uglify:ol2core',
     'uglify:ol3wrapper'
   ]);
+
+
+
+  /**
+   * The default task is to build and compile.
+   */
+  grunt.registerTask( 'default', [ 'build', 'compile', 'dist-extras' ] );
 
   /**
    * The `build` task gets your app ready to run for development and testing.
