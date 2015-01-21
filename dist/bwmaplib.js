@@ -785,8 +785,8 @@ BW.MapAPI.Map = function(mapImplementation, eventHandler, featureInfo, layerHand
         Start up functions Start
      */
 
-    function init(targetId, mapConfig){
-        mapImplementation.InitMap(targetId, mapConfig);
+    function init(targetId, mapConfig, callback){
+        mapImplementation.InitMap(targetId, mapConfig, callback);
         layerHandler.Init(mapConfig);
         categoryHandler.Init(mapConfig);
 
@@ -1135,6 +1135,7 @@ BW.MapAPI.Map = function(mapImplementation, eventHandler, featureInfo, layerHand
         // Utility end
     };
 };
+
 var BW = BW || {};
 BW.MapAPI = BW.MapAPI || {};
 BW.MapAPI.Parsers = BW.MapAPI.Parsers || {};
@@ -1942,7 +1943,7 @@ BW.MapImplementation.OL3.Map = function(repository, eventHandler, httpHelper, me
         Start up functions Start
      */
 
-    function initMap(targetId, mapConfig){
+    function initMap(targetId, mapConfig, callback){
         proxyHost = mapConfig.proxyHost;
         var numZoomLevels = mapConfig.numZoomLevels;
         var newMapRes = [];
@@ -1973,6 +1974,9 @@ BW.MapImplementation.OL3.Map = function(repository, eventHandler, httpHelper, me
         });
 
         _registerMapCallbacks();
+        if (callback) {
+            callback(map);
+        }
     }
 
     function _registerMapCallbacks(){
@@ -2520,6 +2524,7 @@ BW.MapImplementation.OL3.Map.RENDERERS = {
     canvas: 'canvas',
     webgl: 'webgl'
 };
+
 var BW = BW || {};
 BW.MapImplementation = BW.MapImplementation || {};
 BW.MapImplementation.OL3 = BW.MapImplementation.OL3 || {};

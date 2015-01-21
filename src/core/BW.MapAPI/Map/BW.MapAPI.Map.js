@@ -7,8 +7,8 @@ BW.MapAPI.Map = function(mapImplementation, eventHandler, featureInfo, layerHand
         Start up functions Start
      */
 
-    function init(targetId, mapConfig){
-        mapImplementation.InitMap(targetId, mapConfig);
+    function init(targetId, mapConfig, callback){
+        mapImplementation.InitMap(targetId, mapConfig, callback);
         layerHandler.Init(mapConfig);
         categoryHandler.Init(mapConfig);
 

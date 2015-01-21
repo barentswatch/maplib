@@ -33,10 +33,12 @@
 <script type="text/javascript" src="../lib/jquery/dist/jquery.min.js"></script>
 <script type="text/javascript" src="../lib/underscore/underscore-min.js"></script>
 <script type="text/javascript" src="../lib/backbone/backbone.js"></script>
-<script type="text/javascript" src="../lib/openlayers3/build/ol.js"></script>
+<script type="text/javascript" src="../vendor/openlayers3/build/ol.js"></script>
+<script type="text/javascript" src="../vendor/proj4/dist/proj4.js"></script>
 
 
-<script type="text/javascript" src="../dist/ol3core.js"></script>
+<script type="text/javascript" src="../dist/bwmaplib.js"></script>
+<script type="text/javascript" src="../dist/ol3wrapper.js"></script>
 <script type="text/javascript" src="../dist/ol3listmap.js"></script>
 <script type="text/javascript" src="../dist/ol3selectevents.js"></script>
 <script type="text/javascript" src="../dist/ol3markers.js"></script>
@@ -47,7 +49,15 @@
     'use strict';
 
     var mapConfig = {
+        "numZoomLevels": 18,
         "zoom": 2,
+        "center": [-20617, 7661666],
+        "newMaxRes":  21664.0,
+        "coordinate_system": "EPSG:32633",
+        "extent": [
+            -2500000, 3500000, 3045984, 9045984
+        ],
+        "extentUnits": "m",
         "layers": [
             {
                 "id": "1992",
@@ -120,13 +130,13 @@
 
     function initPage(data, mapConfig, mapEl, listEl) {
         var markers = new BW.MapCore.Markers('../img/markers');
-        var normalStyle = markers.createMarkerStyle('green', 'md');
-        var hlStyle = markers.createMarkerStyle('red', 'md', 1000);
+        var normalStyle = markers.createCircleStyle('green', 5);
+        var hlStyle = markers.createCircleStyle('red', 5, 1000);
         var harbours = new BW.FeatureCollection(
             data,
             {
                 featureStyle: normalStyle,
-                selectStyle: hlStyle
+                hoverStyle: hlStyle
             }
         );
 

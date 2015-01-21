@@ -107,7 +107,7 @@ describe('BW.MapAPI.Map.Init', function() {
 
     it('calls factory.InitMap', function() {
         //repository.GetMapConfig();
-        expect(map.InitMap).toHaveBeenCalledWith('mapDiv', mapConf);
+        expect(map.InitMap).toHaveBeenCalledWith('mapDiv', mapConf, undefined);
     });
 
     it('shows the layers which should be shown', function() {

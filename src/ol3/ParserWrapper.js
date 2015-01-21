@@ -11,6 +11,7 @@ BW.MapCore = BW.MapCore || {};
 
     ns.setupMap = function (mapDiv, mapConfig, callback) {
 
+        /*
         //load config from json
         var facade = new BW.Facade.JSONConfigFacade();
         //manual dependency-injection
@@ -25,5 +26,24 @@ BW.MapCore = BW.MapCore || {};
 
         //lag kartet
         repo.GetMapConfig(mapConfig, initMap);
+        */
+
+        var eventHandler = new BW.Events.EventHandler();
+        var mapImplementation = new BW.MapImplementation.OL3.Map(
+            null,
+            eventHandler
+        );
+        var layerHandler = new BW.MapAPI.Layers(mapImplementation);
+        var categoryHandler = new BW.MapAPI.Categories();
+
+        var map = new BW.MapAPI.Map(
+            mapImplementation,
+            eventHandler,
+            null,
+            layerHandler,
+            categoryHandler
+        );
+
+        map.Init(mapDiv, mapConfig, callback);
     };
 }(BW.MapCore));
