@@ -12,7 +12,7 @@ BW.MapImplementation.OL3.Sources.Wms = function(bwSubLayer){
             },
             url: bwSubLayer.url,
             format: bwSubLayer.format,
-            crossOrigin: bwSubLayer.crossOrigin,
+            crossOrigin: 'anonymous',
             transparent: bwSubLayer.transparent
         });
     } else {
@@ -23,7 +23,7 @@ BW.MapImplementation.OL3.Sources.Wms = function(bwSubLayer){
             },
             url: bwSubLayer.url,
             format: bwSubLayer.format,
-            crossOrigin: bwSubLayer.crossOrigin,
+            crossOrigin: 'anonymous',
             transparent: bwSubLayer.transparent
         });
     }

@@ -14,7 +14,6 @@ BW.Repository.MapConfig = function(config){
         zoom: 5,
         layers:[],
         coordinate_system: "EPSG:32633",
-        matrixSet: "EPSG:32633",
         extent: [-1, -1, -1, -1],
         extentUnits: 'm',
         proxyHost: ""

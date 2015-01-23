@@ -1,5 +1,5 @@
 /**
- * maplib - v0.0.1 - 2015-01-21
+ * maplib - v0.0.1 - 2015-01-23
  * http://localhost
  *
  * Copyright (c) 2015 
@@ -166,14 +166,12 @@ BW.Domain.SubLayer = function(config){
         url: '',
         format: BW.Domain.SubLayer.FORMATS.imagepng,
         coordinate_system: '',
-        matrixSet: '',
         extent: [-1, 1, -1, 1],
         extentUnits: 'm',
         id: new BW.Utils.Guid().newGuid(),
         transparent: true,
         layerIndex: -1,
         legendGraphicUrl: '',
-        crossOrigin: 'anonymous',
         featureInfo: new BW.Domain.FeatureInfo()
     };
     var instance =  $.extend({}, defaults, config); // subLayerInstance
@@ -201,7 +199,6 @@ BW.Domain.SubLayer.FORMATS = {
     imagejpeg: "image/jpeg",
     geoJson: "application/json"
 };
-
 var BW = BW || {};
 BW.Events = BW.Events || {};
 
@@ -299,7 +296,6 @@ BW.MapAPI.CustomCrsLoader = function(){
     function loadCustomCrs(){
         // proj4 is on the global scope
         proj4.defs("EPSG:32633", '+proj=utm +zone=33 +ellps=WGS84 +datum=WGS84 +units=m +no_defs');
-        proj4.defs("EPSG:3575",  '+proj=laea +lat_0=90 +lon_0=10 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs');
     }
 
     return {
@@ -2763,7 +2759,7 @@ BW.MapImplementation.OL3.Sources.Wms = function(bwSubLayer){
             },
             url: bwSubLayer.url,
             format: bwSubLayer.format,
-            crossOrigin: bwSubLayer.crossOrigin,
+            crossOrigin: 'anonymous',
             transparent: bwSubLayer.transparent
         });
     } else {
@@ -2774,7 +2770,7 @@ BW.MapImplementation.OL3.Sources.Wms = function(bwSubLayer){
             },
             url: bwSubLayer.url,
             format: bwSubLayer.format,
-            crossOrigin: bwSubLayer.crossOrigin,
+            crossOrigin: 'anonymous',
             transparent: bwSubLayer.transparent
         });
     }
@@ -2797,14 +2793,9 @@ BW.MapImplementation.OL3.Sources.Wmts = function(bwSubLayer){
     var resolutions = new Array(14);
     var matrixIds = new Array(14);
     var numZoomLevels = 18;
-    var matrixSet = bwSubLayer.matrixSet;
-    if (matrixSet === null || matrixSet === '' || matrixSet === undefined)
-    {
-           matrixSet=bwSubLayer.coordinate_system;
-    }
     for (var z = 0; z < numZoomLevels; ++z) {
         resolutions[z] = size / Math.pow(2, z);
-        matrixIds[z] = matrixSet + ":" + z;
+        matrixIds[z] = projection.getCode() + ":" + z;
     }
 
     return new ol.source.WMTS({
@@ -2812,8 +2803,8 @@ BW.MapImplementation.OL3.Sources.Wmts = function(bwSubLayer){
         layer: bwSubLayer.name,
         format: bwSubLayer.format,
         projection: projection,
-        matrixSet: matrixSet,
-        crossOrigin: bwSubLayer.crossOrigin,
+        matrixSet: bwSubLayer.coordinate_system,
+        crossOrigin: 'anonymous',
         tileGrid: new ol.tilegrid.WMTS({
             origin: ol.extent.getTopLeft(projectionExtent),
             resolutions: resolutions,
@@ -2821,7 +2812,6 @@ BW.MapImplementation.OL3.Sources.Wmts = function(bwSubLayer){
         })
     });
 };
-
 var BW = BW || {};
 BW.MapImplementation = BW.MapImplementation || {};
 BW.MapImplementation.OL3 = BW.MapImplementation.OL3 || {};
@@ -2950,7 +2940,6 @@ BW.Repository.MapConfig = function(config){
         zoom: 5,
         layers:[],
         coordinate_system: "EPSG:32633",
-        matrixSet: "EPSG:32633",
         extent: [-1, -1, -1, -1],
         extentUnits: 'm',
         proxyHost: ""
