@@ -9,12 +9,14 @@ BW.Domain.SubLayer = function(config){
         url: '',
         format: BW.Domain.SubLayer.FORMATS.imagepng,
         coordinate_system: '',
+        matrixSet: '',
         extent: [-1, 1, -1, 1],
         extentUnits: 'm',
         id: new BW.Utils.Guid().newGuid(),
         transparent: true,
         layerIndex: -1,
         legendGraphicUrl: '',
+        crossOrigin: 'anonymous',
         featureInfo: new BW.Domain.FeatureInfo()
     };
     var instance =  $.extend({}, defaults, config); // subLayerInstance
