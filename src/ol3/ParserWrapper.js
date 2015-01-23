@@ -45,5 +45,6 @@ BW.MapCore = BW.MapCore || {};
         );
 
         map.Init(mapDiv, mapConfig, callback);
+        return map;
     };
 }(BW.MapCore));
