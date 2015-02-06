@@ -30,7 +30,7 @@
     (function () {
         'use strict';
 
-        /*var config = {
+        var config = {
             "numZoomLevels": 18,
             "newMaxRes":  24733,
             "center": [
@@ -46,8 +46,6 @@
                             "source": "WMTS",
                             "url": "http://opencache.statkart.no/gatekeeper/gk/gk.open_wmts?",
                             "name": "barentswatch_grunnkart",
-                            //"name": "havbunn_grunnkart",
-                            //"name": "sjokartraster",
                             "format": "image/png",
                             "coordinate_system": "EPSG:3575",
                             "extent": [
@@ -57,7 +55,6 @@
                             "id": "1992",
                             "tiled": true,
                             "matrixSet": 'EPSG:3575_barentswatch_grunnkart'
-                            // "matrixSet": 'EPSG:3575' // use this with havbunn_grunnkart / sjokartraster
                         }
                     ],
                     "visibleOnLoad": true
@@ -103,30 +100,7 @@
                         },
                     ],
                     "visibleOnLoad": true
-                },
-                {
-                    "id": "1997",
-                    "isBaseLayer": false,
-                    "subLayers": [
-                        {
-                            "source": "WMS",
-                            "url": "http://kart.fiskeridir.no/wms.aspx",
-                            "name": "layer_537", // Norske fartøy 2011
-                            "format": "image/png",
-                            "coordinate_system": "EPSG:3575",
-                            "extent": [
-                                -2744977.209353,-6491243.976402,3586695.021047,-159571.746002
-                            ],
-                            "extentUnits": "m",
-                            "id": "1997",
-                            "tiled": true,
-                            "crossOrigin": null
-                        },
-                    ],
-                    "visibleOnLoad": true
                 }
-
-                //
             ],
             "coordinate_system": "EPSG:3575",
             "extent": [
@@ -134,279 +108,7 @@
             ],
             "extentUnits": "m"
         };
-*/
-        var config = {
-            "id": 180,
-            "name": "polar2",
-            "comment": "",
-            "useCategories": true,
-            "categories": [
-                {
-                    "id": 398,
-                    "catId": 1,
-                    "name": "cat_1",
-                    "isOpen": true,
-                    "subCategories": [
 
-                    ],
-                    "parentId": -1
-                },
-                {
-                    "id": 399,
-                    "catId": 2,
-                    "name": "cat_2",
-                    "isOpen": true,
-                    "subCategories": [
-
-                    ],
-                    "parentId": -1
-                }
-            ],
-            "numZoomLevels": 18,
-            "newMaxRes": 24733,
-            "renderer": "canvas",
-            "center": [
-                254979.524036,
-                -3031334.467146
-            ],
-            "zoom": 3,
-            "layers": [
-                {
-                    "id": 11000,
-                    "subLayers": [
-                        {
-                            "id": 110000,
-                            "name": "barentswatch_grunnkart",
-                            "providerName": "",
-                            "source": "WMTS",
-                            "url": " http:\/\/opencache.statkart.no\/gatekeeper\/gk\/gk.open_wmts?",
-                            "format": "image\/png",
-                            "coordinate_system": "EPSG:3575",
-                            "extent": [
-                                -2744977.209353,
-                                -6491243.976402,
-                                3586695.021047,
-                                -159571.746002
-                            ],
-                            "extentUnits": "m",
-                            "transparent": true,
-                            "tiled": true,
-                            "legendGraphicUrl": "http:\/\/opencache.statkart.no\/gatekeeper\/gk\/gk.open_wmts?&Request=GetLegendGraphic&Version=1.0.0&Format=image\/png&Width=20&Height=20&Layer=Barentswatch_grunnkart",
-                            "isBaseLayer": false,
-                            "featureInfo": {
-                                "id": 0,
-                                "supportsGetFeatureInfo": true,
-                                "getFeatureInfoFormat": "application\/json",
-                                "getFeatureInfoCrs": "",
-                                "supportsGetFeature": true,
-                                "getFeatureBaseUrl": "",
-                                "getFeatureFormat": "application\/json",
-                                "getFeatureCrs": "EPSG:3575"
-                            },
-                            "matrixSet": "EPSG:3575_barentswatch_grunnkart"
-                        }
-                    ],
-                    "categoryId": -1,
-                    "name": "Barentswatch grunnkart",
-                    "visibleOnLoad": true,
-                    "isBaseLayer": true,
-                    "previewActive": false,
-                    "opacity": 1,
-                    "mapLayerIndex": 0,
-                    "legendGraphicsUrls": null,
-                    "selectedLayerOpen": false
-                },
-                {
-                    "id": 12000,
-                    "subLayers": [
-                        {
-                            "id": 120000,
-                            "name": "barentswatch_stedsnavn",
-                            "providerName": "",
-                            "source": "WMTS",
-                            "url": " http:\/\/opencache.statkart.no\/gatekeeper\/gk\/gk.open_wmts?",
-                            "format": "image\/png",
-                            "coordinate_system": "EPSG:3575",
-                            "extent": [
-                                -2744977.209353,
-                                -6491243.976402,
-                                3586695.021047,
-                                -159571.746002
-                            ],
-                            "extentUnits": "m",
-                            "transparent": true,
-                            "tiled": true,
-                            "legendGraphicUrl": "http:\/\/opencache.statkart.no\/gatekeeper\/gk\/gk.open_wmts?&Request=GetLegendGraphic&Version=1.0.0&Format=image\/png&Width=20&Height=20&Layer=barentswatch_stedsnavn",
-                            "isBaseLayer": false,
-                            "featureInfo": {
-                                "id": 0,
-                                "supportsGetFeatureInfo": true,
-                                "getFeatureInfoFormat": "application\/json",
-                                "getFeatureInfoCrs": "",
-                                "supportsGetFeature": true,
-                                "getFeatureBaseUrl": "",
-                                "getFeatureFormat": "application\/json",
-                                "getFeatureCrs": "EPSG:3575"
-                            },
-                            "matrixSet": "EPSG:3575_barentswatch_grunnkart"
-                        }
-                    ],
-                    "categoryId": -1,
-                    "name": "Barentswatch stedsnavn",
-                    "visibleOnLoad": true,
-                    "isBaseLayer": false,
-                    "previewActive": false,
-                    "opacity": 1,
-                    "mapLayerIndex": 0,
-                    "legendGraphicsUrls": null,
-                    "selectedLayerOpen": false
-                },
-                {
-                    "id": 13000,
-                    "subLayers": [
-                        {
-                            "id": 130000,
-                            "name": "havbunn_grunnkart",
-                            "providerName": "",
-                            "source": "WMTS",
-                            "url": " http:\/\/opencache.statkart.no\/gatekeeper\/gk\/gk.open_wmts?",
-                            "format": "image\/png",
-                            "coordinate_system": "EPSG:3575",
-                            "extent": [
-                                -2744977.209353,
-                                -6491243.976402,
-                                3586695.021047,
-                                -159571.746002
-                            ],
-                            "extentUnits": "m",
-                            "transparent": true,
-                            "tiled": true,
-                            "legendGraphicUrl": "http:\/\/opencache.statkart.no\/gatekeeper\/gk\/gk.open_wmts?&Request=GetLegendGraphic&Version=1.0.0&Format=image\/png&Width=20&Height=20&Layer=barentswatch_stedsnavn",
-                            "isBaseLayer": false,
-                            "featureInfo": {
-                                "id": 0,
-                                "supportsGetFeatureInfo": true,
-                                "getFeatureInfoFormat": "application\/json",
-                                "getFeatureInfoCrs": "",
-                                "supportsGetFeature": true,
-                                "getFeatureBaseUrl": "",
-                                "getFeatureFormat": "application\/json",
-                                "getFeatureCrs": "EPSG:3575"
-                            },
-                            "matrixSet": "EPSG:3575"
-                        }
-                    ],
-                    "categoryId": -1,
-                    "name": "Havbunn grunnkart",
-                    "visibleOnLoad": false,
-                    "isBaseLayer": true,
-                    "previewActive": false,
-                    "opacity": 1,
-                    "mapLayerIndex": 0,
-                    "legendGraphicsUrls": null,
-                    "selectedLayerOpen": false
-                },
-                {
-                    "id": 14000,
-                    "subLayers": [
-                        {
-                            "id": 140000,
-                            "name": "sjokartraster",
-                            "providerName": "",
-                            "source": "WMTS",
-                            "url": " http:\/\/opencache.statkart.no\/gatekeeper\/gk\/gk.open_wmts?",
-                            "format": "image\/png",
-                            "coordinate_system": "EPSG:3575",
-                            "extent": [
-                                -2744977.209353,
-                                -6491243.976402,
-                                3586695.021047,
-                                -159571.746002
-                            ],
-                            "extentUnits": "m",
-                            "transparent": true,
-                            "tiled": true,
-                            "legendGraphicUrl": "http:\/\/opencache.statkart.no\/gatekeeper\/gk\/gk.open_wmts?&Request=GetLegendGraphic&Version=1.0.0&Format=image\/png&Width=20&Height=20&Layer=barentswatch_stedsnavn",
-                            "isBaseLayer": false,
-                            "featureInfo": {
-                                "id": 0,
-                                "supportsGetFeatureInfo": true,
-                                "getFeatureInfoFormat": "application\/json",
-                                "getFeatureInfoCrs": "",
-                                "supportsGetFeature": true,
-                                "getFeatureBaseUrl": "",
-                                "getFeatureFormat": "application\/json",
-                                "getFeatureCrs": "EPSG:3575"
-                            },
-                            "matrixSet": "EPSG:3575"
-                        }
-                    ],
-                    "categoryId": -1,
-                    "name": "Sj\u00f8kart raster",
-                    "visibleOnLoad": false,
-                    "isBaseLayer": true,
-                    "previewActive": false,
-                    "opacity": 1,
-                    "mapLayerIndex": 0,
-                    "legendGraphicsUrls": null,
-                    "selectedLayerOpen": false
-                }
-            ],
-            "coordinate_system": "EPSG:3575",
-            "extent": [
-                -2744977.209353,
-                -6491243.976402,
-                3586695.021047,
-                -159571.746002
-            ],
-            "extentUnits": "m",
-            "proxyHost": "http:\/\/geoinnsyn.nois.no\/Proxy\/proxy\/wms?url=",
-            "languages": {
-                "en": {
-                    "1": "Fishing",
-                    "2": "Polar",
-                    "11000": "BW main map",
-                    "12000": "BW map with place names",
-                    "13000": "Base map seabottom",
-                    "14000": "Maritime map raster"
-                },
-                "no": {
-                    "1": "Fiskeri",
-                    "2": "Polar",
-                    "11000": "BW grunnkart",
-                    "12000": "BW stedsnavn",
-                    "13000": "Havbunn grunnkart",
-                    "14000": "Sj\u00f8kart raster"
-                }
-            },
-            "version": 0,
-            "tools": [
-                {
-                    "id": "DefaultZoom",
-                    "title": "DefaultZoom_Title",
-                    "hover": "DefaultZoom_hover",
-                    "symbol": "glyphicon glyphicon-zoom-in",
-                    "sortOrder": 0,
-                    "isSelected": true
-                },
-                {
-                    "id": "PointSelect",
-                    "title": "PointSelect_title",
-                    "hover": "PointSelect_hover",
-                    "symbol": "glyphicon glyphicon-map-marker",
-                    "sortOrder": 1,
-                    "isSelected": false
-                },
-                {
-                    "id": "BoxSelect",
-                    "title": "BoxSelect_title",
-                    "hover": "BoxSelect_hover",
-                    "symbol": "glyphicon glyphicon-unchecked",
-                    "sortOrder": 2,
-                    "isSelected": false
-                }
-            ]
-        };
         var eventHandler = new BW.Events.EventHandler();
         var mapImplementation = new BW.MapImplementation.OL3.Map(
             null,
