@@ -1,5 +1,5 @@
 /**
- * maplib - v0.0.1 - 2015-01-23
+ * maplib - v0.0.1 - 2015-02-06
  * http://localhost
  *
  * Copyright (c) 2015 
@@ -2064,7 +2064,7 @@ BW.MapImplementation.OL3.Map = function(repository, eventHandler, httpHelper, me
                     break;
 
                 case BW.Domain.SubLayer.SOURCES.proxyWmts:
-                    bwSubLayer.url = proxyHost + bwSubLayer.url;
+                    bwSubLayer.url = proxyHost + encodeURIComponent(bwSubLayer.url);
                     source = new BW.MapImplementation.OL3.Sources.Wmts(bwSubLayer);
                     break;
 
@@ -2082,7 +2082,7 @@ BW.MapImplementation.OL3.Map = function(repository, eventHandler, httpHelper, me
                  No 'Access-Control-Allow-Origin' header is present on the requested resource.
                  **/
                 case BW.Domain.SubLayer.SOURCES.proxyWms:
-                    bwSubLayer.url = proxyHost + bwSubLayer.url;
+                    bwSubLayer.url = proxyHost + encodeURIComponent(bwSubLayer.url);
                     source = new BW.MapImplementation.OL3.Sources.Wms(bwSubLayer);
                     break;
                 case BW.Domain.SubLayer.SOURCES.vector:
