@@ -68,8 +68,7 @@ BW.MapAPI.FeatureInfo = function(mapImplementation, httpHelper, eventHandler, fe
             callback(jsonCapabilities);
         };
 
-        // TODO: This replace is too specific
-        var wmsUrl = bwSubLayer.url.replace('proxy/wms', 'proxy/');
+        var wmsUrl = bwSubLayer.url;
         var getCapabilitiesUrl;
         var questionMark = '?';
         var urlHasQuestionMark = wmsUrl.indexOf(questionMark) > -1;
@@ -87,8 +86,7 @@ BW.MapAPI.FeatureInfo = function(mapImplementation, httpHelper, eventHandler, fe
 
     function parseGetCapabilities(getCapabilitiesXml){
         var parser = new ol.format.WMSCapabilities();
-        var result = parser.read(getCapabilitiesXml);
-        return result;
+        return parser.read(getCapabilitiesXml);
     }
 
     /*
@@ -170,9 +168,7 @@ BW.MapAPI.FeatureInfo = function(mapImplementation, httpHelper, eventHandler, fe
         url = decodeURIComponent(url);
         url = url.substring(url.lastIndexOf('?'), url.length);
         url = url.replace('?', '');
-        url = encodeURIComponent(url);
-        // TODO: This replace is too specific
-        return bwSubLayer.url.replace('proxy/wms', 'proxy/') + url;
+        return bwSubLayer.url + url;
     }
 
     function getSupportedGetFeatureFormats(bwSubLayer, callback){
