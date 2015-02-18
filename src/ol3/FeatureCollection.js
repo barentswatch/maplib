@@ -65,6 +65,10 @@ var BW = this.BW || {};
             this.on('deselect', this.deselectFeature, this);
         },
 
+        toggleSelected: function (feature) {
+            this.selected = !this.selected;
+        },
+
         featureOver: function () {
             this.trigger('over');
         },
