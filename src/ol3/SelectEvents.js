@@ -14,33 +14,6 @@ BW.SelectEvents = BW.SelectEvents || {};
 (function (ns) {
     'use strict';
 
-    function registerSelectEventsHack(condition, map, layer, on, off) {
-        $(map.getViewport()).on(condition, function (evt) {
-            var pixel = map.getEventPixel(evt.originalEvent);
-
-            var features = layer.getSource().getFeatures();
-            var selected  = _.find(features, function (feature) {
-                return (feature[on] === true);
-            });
-
-            var feature = map.forEachFeatureAtPixel(pixel, function (feature, fLayer) {
-                if (fLayer === layer) {
-                    return feature;
-                }
-            });
-            if (selected) {
-                map.getTarget().style.cursor = '';
-                selected[on] = false;
-                selected.trigger(off, selected);
-            }
-
-            if (feature && feature !== selected) {
-                map.getTarget().style.cursor = 'pointer';
-                feature[on] = true;
-                feature.trigger(on, feature);
-            }
-        });
-    }
 
     function registerSelectEvents(map, layer, style, condition, on, off) {
         var interaction = new ol.interaction.Select({
@@ -92,41 +65,12 @@ BW.SelectEvents = BW.SelectEvents || {};
         });
     }
 
-    ns.registerHoverEvents = function (map, layer, hightlightStyle) {
-        registerSelectEventsHack('mousemove', map, layer, 'over', 'out');
 
-        /*
-        TODO when https://github.com/openlayers/ol3/pull/2965 gets merged
-        to ol3 master and released we should rewrite this to work in the same
-        fashion as registerClickEvents (using a ol.events.condition.mouseMove
-        condition with a Select interaction. Then we can drop all style-
-        related stuff in FeatureCollection.js
-        this can be done by removing the call to registerSelectEventsHack
-        and enable the lines below
-        */
-        /*
+    ns.registerHoverEvents = function (map, layer, hightlightStyle) {
         var on = 'over';
         var off = 'out';
         var condition = ol.events.condition.mouseMove;
         registerSelectEvents(map, layer, hightlightStyle, condition, on, off);
-        */
-
-        /*
-        In addition, the BW.FeatureModel (in FeatureCollection.js) needs to be
-        changed, replace the highlightFeature and unhighlightFeature with these:
-
-        highlightFeature: function () {
-            this.get('feature').over = true;
-            this.collection.getLayer().dispatchEvent('overFeature');
-        },
-
-        unhighlightFeature: function () {
-            this.get('feature').over = false;
-            this.collection.getLayer().dispatchEvent('outFeature');
-        }
-
-        Also make sure to pass a hightlight-style to registerHoverEvents
-        */
     };
 
 
@@ -136,5 +80,6 @@ BW.SelectEvents = BW.SelectEvents || {};
         var condition = ol.events.condition.click;
         registerSelectEvents(map, layer, selectStyle, condition, on, off);
     };
+
 
 }(BW.SelectEvents));

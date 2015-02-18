@@ -92,17 +92,14 @@ var BW = this.BW || {};
         },
 
         highlightFeature: function () {
-            this.get('feature').setStyle(
-                this.collection.options.hoverStyle
-            );
+            this.get('feature').over = true;
+            this.collection.getLayer().dispatchEvent('overFeature');
         },
 
         unhighlightFeature: function () {
-            this.get('feature').setStyle(
-                this.collection.options.featureStyle
-            );
+            this.get('feature').over = false;
+            this.collection.getLayer().dispatchEvent('outFeature');
         }
-
     });
 
     ns.FeatureCollection = Backbone.Collection.extend({
