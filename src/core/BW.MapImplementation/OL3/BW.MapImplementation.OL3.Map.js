@@ -454,6 +454,10 @@ BW.MapImplementation.OL3.Map = function(repository, eventHandler, httpHelper, me
         Utility functions start
      */
 
+    function fitExtent(extent){
+        map.getView().fitExtent(extent, map.getSize());
+    }
+
     var _getUrlObject = function(){
         var retVal = {
             layers: _getGuidsForVisibleLayers()
@@ -579,6 +583,7 @@ BW.MapImplementation.OL3.Map = function(repository, eventHandler, httpHelper, me
         /***********************************/
 
         // Utility start
+        FitExtent: fitExtent,
         TransformBox: transformBox,
         ConvertGmlToGeoJson: convertGmlToGeoJson,
         ExtentToGeoJson: extentToGeoJson,

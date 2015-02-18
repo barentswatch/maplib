@@ -230,6 +230,10 @@ BW.MapAPI.Map = function(mapImplementation, eventHandler, featureInfo, layerHand
         Utility functions Start
      */
 
+    function fitExtent(extent){
+        mapImplementation.FitExtent(extent);
+    }
+    
     function extentToGeoJson(x, y){
         mapImplementation.ExtentToGeoJson(x, y);
     }
@@ -348,6 +352,7 @@ BW.MapAPI.Map = function(mapImplementation, eventHandler, featureInfo, layerHand
         /***********************************/
 
         // Utility start
+        FitExtent: fitExtent,
         ConvertGmlToGeoJson: convertGmlToGeoJson,
         SetLegendGraphics: setLegendGraphics,
         ExtentToGeoJson: extentToGeoJson,
