@@ -43,8 +43,13 @@ BW.MapCore = BW.MapCore || {};
             layerHandler,
             categoryHandler
         );
+        var fetched = function (olmap) {
+            if (callback) {
+                callback(olmap, map);
+            }
+        };
+        map.Init(mapDiv, mapConfig, fetched);
 
-        map.Init(mapDiv, mapConfig, callback);
         return map;
     };
 }(BW.MapCore));

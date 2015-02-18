@@ -110,7 +110,7 @@ var BW = this.BW || {};
         model: ns.FeatureModel,
 
         reset: function (models, options) {
-            var modifiedModels = _.map(models, this.parseGeom);
+            var modifiedModels = _.map(models, _.bind(this.parseGeom, this));
             var resetResult = Backbone.Collection.prototype.reset.apply(
                 this,
                 [modifiedModels, options]

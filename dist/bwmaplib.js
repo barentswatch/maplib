@@ -1,5 +1,5 @@
 /**
- * bwmaplib - v0.2.0 - 2015-01-23
+ * bwmaplib - v0.2.0 - 2015-02-18
  * http://localhost
  *
  * Copyright (c) 2015 
@@ -1008,6 +1008,10 @@ BW.MapAPI.Map = function(mapImplementation, eventHandler, featureInfo, layerHand
         Utility functions Start
      */
 
+    function fitExtent(extent){
+        mapImplementation.FitExtent(extent);
+    }
+    
     function extentToGeoJson(x, y){
         mapImplementation.ExtentToGeoJson(x, y);
     }
@@ -1126,6 +1130,7 @@ BW.MapAPI.Map = function(mapImplementation, eventHandler, featureInfo, layerHand
         /***********************************/
 
         // Utility start
+        FitExtent: fitExtent,
         ConvertGmlToGeoJson: convertGmlToGeoJson,
         SetLegendGraphics: setLegendGraphics,
         ExtentToGeoJson: extentToGeoJson,
@@ -2385,6 +2390,10 @@ BW.MapImplementation.OL3.Map = function(repository, eventHandler, httpHelper, me
         Utility functions start
      */
 
+    function fitExtent(extent){
+        map.getView().fitExtent(extent, map.getSize());
+    }
+
     var _getUrlObject = function(){
         var retVal = {
             layers: _getGuidsForVisibleLayers()
@@ -2510,6 +2519,7 @@ BW.MapImplementation.OL3.Map = function(repository, eventHandler, httpHelper, me
         /***********************************/
 
         // Utility start
+        FitExtent: fitExtent,
         TransformBox: transformBox,
         ConvertGmlToGeoJson: convertGmlToGeoJson,
         ExtentToGeoJson: extentToGeoJson,
