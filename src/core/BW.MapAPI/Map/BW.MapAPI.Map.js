@@ -269,7 +269,7 @@ BW.MapAPI.Map = function(mapImplementation, eventHandler, featureInfo, layerHand
     }
 
     function getZoomLevel() {
-        mapImplementation.GetZoomLevel();
+        return mapImplementation.GetZoomLevel();
     }
 
     function addZoom() {
