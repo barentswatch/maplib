@@ -1,5 +1,5 @@
 /**
- * bwmaplib - v0.2.0 - 2015-02-18
+ * bwmaplib - v0.2.0 - 2015-02-19
  * http://localhost
  *
  * Copyright (c) 2015 
@@ -1046,6 +1046,10 @@ BW.MapAPI.Map = function(mapImplementation, eventHandler, featureInfo, layerHand
         }
     }
 
+    function getZoomLevel() {
+        mapImplementation.GetZoomLevel();
+    }
+
     function addZoom() {
         mapImplementation.AddZoom();
     }
@@ -1134,6 +1138,7 @@ BW.MapAPI.Map = function(mapImplementation, eventHandler, featureInfo, layerHand
         ConvertGmlToGeoJson: convertGmlToGeoJson,
         SetLegendGraphics: setLegendGraphics,
         ExtentToGeoJson: extentToGeoJson,
+        GetZoomLevel: getZoomLevel,
         AddZoom: addZoom,
         AddZoomSlider: addZoomSlider
         //AddVectorTestData: addVectorTestData
@@ -2446,6 +2451,10 @@ BW.MapImplementation.OL3.Map = function(repository, eventHandler, httpHelper, me
         return geoJson.writeFeature(feature);
     }
 
+    function getZoomLevel() {
+        return map.getView().getZoom();
+    }
+
     function addZoom() {
         var zoom = new ol.control.Zoom();
         map.addControl(zoom);
@@ -2523,6 +2532,7 @@ BW.MapImplementation.OL3.Map = function(repository, eventHandler, httpHelper, me
         TransformBox: transformBox,
         ConvertGmlToGeoJson: convertGmlToGeoJson,
         ExtentToGeoJson: extentToGeoJson,
+        GetZoomLevel: getZoomLevel,
         AddZoom: addZoom,
         AddZoomSlider: addZoomSlider
 

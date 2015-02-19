@@ -510,6 +510,10 @@ BW.MapImplementation.OL3.Map = function(repository, eventHandler, httpHelper, me
         return geoJson.writeFeature(feature);
     }
 
+    function getZoomLevel() {
+        return map.getView().getZoom();
+    }
+
     function addZoom() {
         var zoom = new ol.control.Zoom();
         map.addControl(zoom);
@@ -587,6 +591,7 @@ BW.MapImplementation.OL3.Map = function(repository, eventHandler, httpHelper, me
         TransformBox: transformBox,
         ConvertGmlToGeoJson: convertGmlToGeoJson,
         ExtentToGeoJson: extentToGeoJson,
+        GetZoomLevel: getZoomLevel,
         AddZoom: addZoom,
         AddZoomSlider: addZoomSlider
 
