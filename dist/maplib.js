@@ -1,5 +1,5 @@
 /**
- * maplib - v0.0.1 - 2015-02-11
+ * maplib - v0.0.1 - 2015-02-23
  * http://localhost
  *
  * Copyright (c) 2015 
@@ -166,6 +166,7 @@ BW.Domain.SubLayer = function(config){
         url: '',
         format: BW.Domain.SubLayer.FORMATS.imagepng,
         coordinate_system: '',
+        maxResolution: '',
         matrixSet: '',
         extent: [-1, 1, -1, 1],
         extentUnits: 'm',
@@ -1930,7 +1931,7 @@ BW.MapImplementation.OL3 = BW.MapImplementation.OL3 || {};
 BW.MapImplementation.OL3.Map = function(repository, eventHandler, httpHelper, measure, featureInfo, mapExport){
     var map;
     var layerPool = [];
-
+    var originalMapConfig = "";
     var proxyHost = "";
 
     /*
@@ -1938,6 +1939,7 @@ BW.MapImplementation.OL3.Map = function(repository, eventHandler, httpHelper, me
      */
 
     function initMap(targetId, mapConfig){
+        originalMapConfig = mapConfig;
         proxyHost = mapConfig.proxyHost;
         var numZoomLevels = mapConfig.numZoomLevels;
         var newMapRes = [];
@@ -2031,6 +2033,27 @@ BW.MapImplementation.OL3.Map = function(repository, eventHandler, httpHelper, me
 
     function showBaseLayer(bwSubLayer){
         var layer = _createLayer(bwSubLayer);
+
+        var newMapRes = [];
+        newMapRes[0]= bwSubLayer.maxResolution;
+        for (var t = 1; t < originalMapConfig.numZoomLevels; t++) {
+            newMapRes[t] = newMapRes[t - 1] / 2;
+        }
+        var sm = new ol.proj.Projection({
+            code: bwSubLayer.coordinate_system,
+            extent: bwSubLayer.extent,
+            units: bwSubLayer.extentUnits
+        });
+
+        map.setView(new ol.View({
+            projection: sm,
+            center: originalMapConfig.center,
+            zoom: originalMapConfig.zoom,
+            resolutions: newMapRes,
+            maxResolution: bwSubLayer.maxResolution,
+            numZoomLevels: originalMapConfig.numZoomLevels
+        }));
+
         map.getLayers().insertAt(0, layer);
 
         _trigLayersChanged();

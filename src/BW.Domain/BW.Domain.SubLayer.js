@@ -9,6 +9,7 @@ BW.Domain.SubLayer = function(config){
         url: '',
         format: BW.Domain.SubLayer.FORMATS.imagepng,
         coordinate_system: '',
+        maxResolution: '',
         matrixSet: '',
         extent: [-1, 1, -1, 1],
         extentUnits: 'm',
