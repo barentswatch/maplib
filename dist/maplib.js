@@ -1,5 +1,5 @@
 /**
- * maplib - v0.0.1 - 2015-02-23
+ * maplib - v0.0.1 - 2015-02-24
  * http://localhost
  *
  * Copyright (c) 2015 
@@ -2034,28 +2034,31 @@ BW.MapImplementation.OL3.Map = function(repository, eventHandler, httpHelper, me
     function showBaseLayer(bwSubLayer){
         var layer = _createLayer(bwSubLayer);
 
-        var newMapRes = [];
-        newMapRes[0]= bwSubLayer.maxResolution;
-        for (var t = 1; t < originalMapConfig.numZoomLevels; t++) {
-            newMapRes[t] = newMapRes[t - 1] / 2;
-        }
-        var sm = new ol.proj.Projection({
-            code: bwSubLayer.coordinate_system,
-            extent: bwSubLayer.extent,
-            units: bwSubLayer.extentUnits
-        });
+        // Need to calculate new resolutions according to the layers maxResolution if it has a value
+        var newMaxRes = bwSubLayer.maxResolution;
+        if (!(newMaxRes === '' || newMaxRes === undefined)){
+            var newMapResArray = [];
+            newMapResArray[0]= newMaxRes;
+            for (var t = 1; t < originalMapConfig.numZoomLevels; t++) {
+                newMapResArray[t] = newMapResArray[t - 1] / 2;
+            }
+            var sm = new ol.proj.Projection({
+                code: bwSubLayer.coordinate_system,
+                extent: bwSubLayer.extent,
+                units: bwSubLayer.extentUnits
+            });
 
-        map.setView(new ol.View({
-            projection: sm,
-            center: originalMapConfig.center,
-            zoom: originalMapConfig.zoom,
-            resolutions: newMapRes,
-            maxResolution: bwSubLayer.maxResolution,
-            numZoomLevels: originalMapConfig.numZoomLevels
-        }));
+            map.setView(new ol.View({
+                projection: sm,
+                center: originalMapConfig.center,
+                zoom: originalMapConfig.zoom,
+                resolutions: newMapResArray,
+                maxResolution: newMaxRes,
+                numZoomLevels: originalMapConfig.numZoomLevels
+            }));
+        }
 
         map.getLayers().insertAt(0, layer);
-
         _trigLayersChanged();
     }
 
