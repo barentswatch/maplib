@@ -122,7 +122,7 @@ BW.MapImplementation.OL3.Map = function(repository, eventHandler, httpHelper, me
 
             map.setView(new ol.View({
                 projection: sm,
-                center: bwSubLayer.center,
+                center: [bwSubLayer.centerX, bwSubLayer.centerY],
                 zoom: bwSubLayer.zoom,
                 resolutions: newMapResArray,
                 maxResolution: newMaxRes,
