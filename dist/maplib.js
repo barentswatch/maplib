@@ -1931,7 +1931,6 @@ BW.MapImplementation.OL3 = BW.MapImplementation.OL3 || {};
 BW.MapImplementation.OL3.Map = function(repository, eventHandler, httpHelper, measure, featureInfo, mapExport){
     var map;
     var layerPool = [];
-    var originalMapConfig = "";
     var proxyHost = "";
 
     /*
@@ -1939,7 +1938,6 @@ BW.MapImplementation.OL3.Map = function(repository, eventHandler, httpHelper, me
      */
 
     function initMap(targetId, mapConfig){
-        originalMapConfig = mapConfig;
         proxyHost = mapConfig.proxyHost;
         var numZoomLevels = mapConfig.numZoomLevels;
         var newMapRes = [];
@@ -2039,7 +2037,7 @@ BW.MapImplementation.OL3.Map = function(repository, eventHandler, httpHelper, me
         if (!(newMaxRes === '' || newMaxRes === undefined)){
             var newMapResArray = [];
             newMapResArray[0]= newMaxRes;
-            for (var t = 1; t < originalMapConfig.numZoomLevels; t++) {
+            for (var t = 1; t < bwSubLayer.numZoomLevels; t++) {
                 newMapResArray[t] = newMapResArray[t - 1] / 2;
             }
             var sm = new ol.proj.Projection({
@@ -2050,11 +2048,11 @@ BW.MapImplementation.OL3.Map = function(repository, eventHandler, httpHelper, me
 
             map.setView(new ol.View({
                 projection: sm,
-                center: originalMapConfig.center,
-                zoom: originalMapConfig.zoom,
+                center: bwSubLayer.center,
+                zoom: bwSubLayer.zoom,
                 resolutions: newMapResArray,
                 maxResolution: newMaxRes,
-                numZoomLevels: originalMapConfig.numZoomLevels
+                numZoomLevels: bwSubLayer.numZoomLevels
             }));
         }
 
