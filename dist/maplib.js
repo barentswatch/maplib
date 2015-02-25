@@ -1,5 +1,5 @@
 /**
- * maplib - v0.0.1 - 2015-02-24
+ * maplib - v0.0.1 - 2015-02-25
  * http://localhost
  *
  * Copyright (c) 2015 
@@ -2813,9 +2813,9 @@ BW.MapImplementation.OL3.Sources.Wmts = function(bwSubLayer){
 
     var projectionExtent = projection.getExtent();
     var size = ol.extent.getWidth(projectionExtent) / 256;
-    var resolutions = new Array(14);
-    var matrixIds = new Array(14);
-    var numZoomLevels = 18;
+    var resolutions = new Array(bwSubLayer.numZoomLevels);
+    var matrixIds = new Array(bwSubLayer.numZoomLevels);
+    var numZoomLevels = bwSubLayer.numZoomLevels;
     var matrixSet = bwSubLayer.matrixSet;
     if (matrixSet === null || matrixSet === '' || matrixSet === undefined)
     {
