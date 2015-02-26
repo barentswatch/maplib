@@ -1,5 +1,5 @@
 /**
- * bwmaplib - v0.2.0 - 2015-02-19
+ * bwmaplib - v0.2.0 - 2015-02-26
  * http://localhost
  *
  * Copyright (c) 2015 
@@ -376,8 +376,7 @@ BW.MapAPI.FeatureInfo = function(mapImplementation, httpHelper, eventHandler, fe
             callback(jsonCapabilities);
         };
 
-        // TODO: This replace is too specific
-        var wmsUrl = bwSubLayer.url.replace('proxy/wms', 'proxy/');
+        var wmsUrl = bwSubLayer.url;
         var getCapabilitiesUrl;
         var questionMark = '?';
         var urlHasQuestionMark = wmsUrl.indexOf(questionMark) > -1;
@@ -395,8 +394,7 @@ BW.MapAPI.FeatureInfo = function(mapImplementation, httpHelper, eventHandler, fe
 
     function parseGetCapabilities(getCapabilitiesXml){
         var parser = new ol.format.WMSCapabilities();
-        var result = parser.read(getCapabilitiesXml);
-        return result;
+        return parser.read(getCapabilitiesXml);
     }
 
     /*
@@ -478,9 +476,7 @@ BW.MapAPI.FeatureInfo = function(mapImplementation, httpHelper, eventHandler, fe
         url = decodeURIComponent(url);
         url = url.substring(url.lastIndexOf('?'), url.length);
         url = url.replace('?', '');
-        url = encodeURIComponent(url);
-        // TODO: This replace is too specific
-        return bwSubLayer.url.replace('proxy/wms', 'proxy/') + url;
+        return bwSubLayer.url + url;
     }
 
     function getSupportedGetFeatureFormats(bwSubLayer, callback){
@@ -1789,8 +1785,7 @@ BW.MapImplementation.OL3.FeatureInfo = function(){
         var url = layerSource.getGetFeatureInfoUrl(coordinate, viewResolution, projection, {'INFO_FORMAT': bwSubLayer.featureInfo.getFeatureInfoFormat, 'feature_count': 10});
         var decodedUrl = decodeURIComponent(url);
         var queryString = decodedUrl.substring(decodedUrl.lastIndexOf('?'), decodedUrl.length).replace('?', '');
-        var queryStringEncoded = encodeURIComponent(queryString);
-        return bwSubLayer.url.replace('proxy/wms', 'proxy/') + queryStringEncoded;
+        return bwSubLayer.url + queryString;
     }
 
     function activateInfoClick(callback, map){

@@ -52,8 +52,7 @@ BW.MapImplementation.OL3.FeatureInfo = function(){
         var url = layerSource.getGetFeatureInfoUrl(coordinate, viewResolution, projection, {'INFO_FORMAT': bwSubLayer.featureInfo.getFeatureInfoFormat, 'feature_count': 10});
         var decodedUrl = decodeURIComponent(url);
         var queryString = decodedUrl.substring(decodedUrl.lastIndexOf('?'), decodedUrl.length).replace('?', '');
-        var queryStringEncoded = encodeURIComponent(queryString);
-        return bwSubLayer.url.replace('proxy/wms', 'proxy/') + queryStringEncoded;
+        return bwSubLayer.url + queryString;
     }
 
     function activateInfoClick(callback, map){
