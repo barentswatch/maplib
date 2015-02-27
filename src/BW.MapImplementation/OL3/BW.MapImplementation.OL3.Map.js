@@ -120,10 +120,13 @@ BW.MapImplementation.OL3.Map = function(repository, eventHandler, httpHelper, me
                 units: bwSubLayer.extentUnits
             });
 
+            // If url parameters, use those
+            urlparams = _getUrlObject();
+
             map.setView(new ol.View({
                 projection: sm,
-                center: [bwSubLayer.centerX, bwSubLayer.centerY],
-                zoom: bwSubLayer.initZoom,
+                center: [Number(urlparams.y) || bwSubLayer.centerY, Number(urlparams.x) || bwSubLayer.centerX],
+                zoom: Number(urlparams.zoom) || bwSubLayer.initZoom || 0,
                 resolutions: newMapResArray,
                 maxResolution: newMaxRes,
                 numZoomLevels: bwSubLayer.numZoomLevels
@@ -132,7 +135,7 @@ BW.MapImplementation.OL3.Map = function(repository, eventHandler, httpHelper, me
         }
 
         map.getLayers().insertAt(0, layer);
-        _trigLayersChanged();
+        //_trigLayersChanged();
     }
 
     function hideLayer(bwSubLayer){
