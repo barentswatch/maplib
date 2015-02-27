@@ -128,6 +128,7 @@ BW.MapImplementation.OL3.Map = function(repository, eventHandler, httpHelper, me
                 maxResolution: newMaxRes,
                 numZoomLevels: bwSubLayer.numZoomLevels
             }));
+            _registerMapCallbacks();
         }
 
         map.getLayers().insertAt(0, layer);

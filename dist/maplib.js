@@ -1,5 +1,5 @@
 /**
- * maplib - v0.0.1 - 2015-02-25
+ * maplib - v0.0.1 - 2015-02-27
  * http://localhost
  *
  * Copyright (c) 2015 
@@ -2054,6 +2054,7 @@ BW.MapImplementation.OL3.Map = function(repository, eventHandler, httpHelper, me
                 maxResolution: newMaxRes,
                 numZoomLevels: bwSubLayer.numZoomLevels
             }));
+            _registerMapCallbacks();
         }
 
         map.getLayers().insertAt(0, layer);
