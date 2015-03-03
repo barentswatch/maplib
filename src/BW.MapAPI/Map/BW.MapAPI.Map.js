@@ -38,6 +38,10 @@ BW.MapAPI.Map = function(mapImplementation, eventHandler, featureInfo, layerHand
         layerHandler.HideLayer(bwLayer);
     }
 
+    function getLayerParams(bwLayer) {
+        layerHandler.GetLayerParams(bwLayer);
+    }
+
     function setLayerOpacity(bwLayer, value) {
         var subLayers = bwLayer.subLayers;
         for(var j = 0; j < subLayers.length; j++){
@@ -297,6 +301,7 @@ BW.MapAPI.Map = function(mapImplementation, eventHandler, featureInfo, layerHand
         GetOverlayLayers: getOverlayLayers,
         GetBaseLayers: getBaseLayers,
         GetLayerById: getLayerById,
+        GetLayerParams: getLayerParams,
         GetFirstVisibleBaseLayer: getFirstVisibleBaseLayer,
         SetBaseLayer: setBaseLayer,
         SetStateFromUrlParams: setStateFromUrlParams,
