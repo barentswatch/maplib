@@ -39,7 +39,7 @@ BW.MapAPI.Map = function(mapImplementation, eventHandler, featureInfo, layerHand
     }
 
     function getLayerParams(bwLayer) {
-        layerHandler.GetLayerParams(bwLayer);
+        mapImplementation.GetLayerParams(bwLayer);
     }
 
     function setLayerOpacity(bwLayer, value) {
