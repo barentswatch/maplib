@@ -1,5 +1,5 @@
 /**
- * maplib - v0.0.1 - 2015-02-27
+ * maplib - v0.0.1 - 2015-03-03
  * http://localhost
  *
  * Copyright (c) 2015 
@@ -175,7 +175,8 @@ BW.Domain.SubLayer = function(config){
         layerIndex: -1,
         legendGraphicUrl: '',
         crossOrigin: 'anonymous',
-        featureInfo: new BW.Domain.FeatureInfo()
+        featureInfo: new BW.Domain.FeatureInfo(),
+        wmsTimeSupport: false
     };
     var instance =  $.extend({}, defaults, config); // subLayerInstance
 
