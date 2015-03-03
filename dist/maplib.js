@@ -2073,6 +2073,13 @@ BW.MapImplementation.OL3.Map = function(repository, eventHandler, httpHelper, me
         }
     }
 
+    function getLayerParams(bwSubLayer){
+        var layer = _getLayerByGuid(bwSubLayer.id);
+        if(layer){
+            return layer.getSource().getParams();
+        }
+    }
+
     function _createLayer(bwSubLayer){
         var layer;
         var source;
@@ -2485,6 +2492,7 @@ BW.MapImplementation.OL3.Map = function(repository, eventHandler, httpHelper, me
         HideLayer: hideLayer,
         GetLayerByName: getLayerByName,
         SetLayerOpacity: setLayerOpacity,
+        GetLayerParams: getLayerParams,
         SetLayerSaturation: setLayerSaturation,
         SetLayerHue: setLayerHue,
         SetLayerBrightness: setLayerBrightness,
