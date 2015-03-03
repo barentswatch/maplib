@@ -18,7 +18,8 @@ BW.Domain.SubLayer = function(config){
         layerIndex: -1,
         legendGraphicUrl: '',
         crossOrigin: 'anonymous',
-        featureInfo: new BW.Domain.FeatureInfo()
+        featureInfo: new BW.Domain.FeatureInfo(),
+        wmsTimeSupport: false
     };
     var instance =  $.extend({}, defaults, config); // subLayerInstance
 
