@@ -63,6 +63,7 @@ BW.SelectEvents = BW.SelectEvents || {};
                 }
             });
         });
+        return interaction;
     }
 
 
@@ -70,7 +71,7 @@ BW.SelectEvents = BW.SelectEvents || {};
         var on = 'over';
         var off = 'out';
         var condition = ol.events.condition.pointerMove;
-        registerSelectEvents(map, layer, hightlightStyle, condition, on, off);
+        return registerSelectEvents(map, layer, hightlightStyle, condition, on, off);
     };
 
 
@@ -78,7 +79,7 @@ BW.SelectEvents = BW.SelectEvents || {};
         var on = 'select';
         var off = 'deselect';
         var condition = ol.events.condition.click;
-        registerSelectEvents(map, layer, selectStyle, condition, on, off);
+        return registerSelectEvents(map, layer, selectStyle, condition, on, off);
     };
 
 
