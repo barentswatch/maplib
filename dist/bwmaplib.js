@@ -1,5 +1,5 @@
 /**
- * bwmaplib - v0.2.0 - 2015-02-26
+ * bwmaplib - v0.2.0 - 2015-03-04
  * http://localhost
  *
  * Copyright (c) 2015 
