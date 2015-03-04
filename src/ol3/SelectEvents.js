@@ -69,7 +69,7 @@ BW.SelectEvents = BW.SelectEvents || {};
     ns.registerHoverEvents = function (map, layer, hightlightStyle) {
         var on = 'over';
         var off = 'out';
-        var condition = ol.events.condition.mouseMove;
+        var condition = ol.events.condition.pointerMove;
         registerSelectEvents(map, layer, hightlightStyle, condition, on, off);
     };
 
