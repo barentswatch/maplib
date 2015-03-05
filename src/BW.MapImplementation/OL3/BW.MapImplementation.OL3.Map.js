@@ -153,12 +153,18 @@ BW.MapImplementation.OL3.Map = function(repository, eventHandler, httpHelper, me
         }
     }
 
+    function handleData(data, source){
+        time = wmsTime.GetWmsTime(data);
+        source.updateParams({
+            TIME: time.current.Value
+        });
+    }
+
     function _setTime(bwSubLayer, source){
         if (bwSubLayer.wmsTimeSupport){
-            time = wmsTime.GetWmsTime();
-            source.updateParams({
-                TIME: time.current
-            });
+
+            wmsTime.GetCapabilitiesJson().done(handleData, source);
+
         }
     }
 
