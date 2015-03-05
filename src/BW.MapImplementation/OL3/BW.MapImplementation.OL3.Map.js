@@ -2,7 +2,7 @@ var BW = BW || {};
 BW.MapImplementation = BW.MapImplementation || {};
 BW.MapImplementation.OL3 = BW.MapImplementation.OL3 || {};
 
-BW.MapImplementation.OL3.Map = function(repository, eventHandler, httpHelper, measure, featureInfo, mapExport){
+BW.MapImplementation.OL3.Map = function(repository, eventHandler, httpHelper, measure, featureInfo, mapExport, wmsTime){
     var map;
     var layerPool = [];
     var proxyHost = "";
@@ -153,6 +153,17 @@ BW.MapImplementation.OL3.Map = function(repository, eventHandler, httpHelper, me
         }
     }
 
+    function _setTime(bwSubLayer){
+        if (bwSubLayer.wmsTimeSupport){
+            time = wmsTime.GetWmsTime();
+            //if (bwSubLayer.id === 1393){  // Todo: Make general, this is just to test a single ice-layer
+            source.updateParams({
+                TIME: time.current
+            });
+            //}
+        }
+    }
+
     function _createLayer(bwSubLayer){
         var layer;
         var source;
@@ -174,6 +185,7 @@ BW.MapImplementation.OL3.Map = function(repository, eventHandler, httpHelper, me
 
                 case BW.Domain.SubLayer.SOURCES.wms:
                     source = new BW.MapImplementation.OL3.Sources.Wms(bwSubLayer);
+                    _setTime(bwSubLayer);
                     break;
                 /**
                  Bruker proxy mot disse):
@@ -188,6 +200,7 @@ BW.MapImplementation.OL3.Map = function(repository, eventHandler, httpHelper, me
                 case BW.Domain.SubLayer.SOURCES.proxyWms:
                     bwSubLayer.url = proxyHost + bwSubLayer.url;
                     source = new BW.MapImplementation.OL3.Sources.Wms(bwSubLayer);
+                    _setTime(bwSubLayer);
                     break;
                 case BW.Domain.SubLayer.SOURCES.vector:
                     source = new BW.MapImplementation.OL3.Sources.Vector(bwSubLayer, map.getView().getProjection());

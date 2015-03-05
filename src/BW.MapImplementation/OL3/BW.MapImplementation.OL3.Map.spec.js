@@ -29,8 +29,9 @@ describe('BW.MapImplementation.OL3.Map', function(){
         };
         featureInfo = new BW.MapImplementation.OL3.FeatureInfo();
         mapExport = new BW.MapImplementation.OL3.Export();
+        wmsTime = new BW.MapImplementation.OL3.Time();
 
-        map = new BW.MapImplementation.OL3.Map(repository, eventHandler, httpHelper, measure, featureInfo, mapExport);
+        map = new BW.MapImplementation.OL3.Map(repository, eventHandler, httpHelper, measure, featureInfo, mapExport, wmsTime);
 
         spyOn(map, 'InitMap').and.callThrough();
         spyOn(map, 'ShowLayer');
