@@ -135,7 +135,6 @@ BW.MapImplementation.OL3.Map = function(repository, eventHandler, httpHelper, me
         }
 
         map.getLayers().insertAt(0, layer);
-        //_trigLayersChanged();
     }
 
     function hideLayer(bwSubLayer){
@@ -153,17 +152,15 @@ BW.MapImplementation.OL3.Map = function(repository, eventHandler, httpHelper, me
         }
     }
 
-    function handleData(data, source){
-        time = wmsTime.GetWmsTime(data);
-        source.updateParams({
-            TIME: time.current.Value
-        });
-    }
-
     function _setTime(bwSubLayer, source){
         if (bwSubLayer.wmsTimeSupport){
-
-            wmsTime.GetCapabilitiesJson().done(handleData, source);
+            //http://bw-wms.met.no/barentswatch/default.map?SERVICE=WMS&REQUEST=GetCapabilities&version=1.3.0
+            wmsTime.GetCapabilitiesJson(bwSubLayer.url).done(function(data){
+                time = wmsTime.GetWmsTime(data, bwSubLayer.name);
+                source.updateParams({
+                    TIME: time.current.Value
+                });
+            });
 
         }
     }

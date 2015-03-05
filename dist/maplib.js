@@ -2067,7 +2067,6 @@ BW.MapImplementation.OL3.Map = function(repository, eventHandler, httpHelper, me
         }
 
         map.getLayers().insertAt(0, layer);
-        //_trigLayersChanged();
     }
 
     function hideLayer(bwSubLayer){
@@ -2085,17 +2084,15 @@ BW.MapImplementation.OL3.Map = function(repository, eventHandler, httpHelper, me
         }
     }
 
-    function handleData(data, source){
-        time = wmsTime.GetWmsTime(data);
-        source.updateParams({
-            TIME: time.current.Value
-        });
-    }
-
     function _setTime(bwSubLayer, source){
         if (bwSubLayer.wmsTimeSupport){
-
-            wmsTime.GetCapabilitiesJson().done(handleData, source);
+            //http://bw-wms.met.no/barentswatch/default.map?SERVICE=WMS&REQUEST=GetCapabilities&version=1.3.0
+            wmsTime.GetCapabilitiesJson(bwSubLayer.url).done(function(data){
+                time = wmsTime.GetWmsTime(data, bwSubLayer.name);
+                source.updateParams({
+                    TIME: time.current.Value
+                });
+            });
 
         }
     }
@@ -2762,26 +2759,24 @@ BW.MapImplementation.OL3 = BW.MapImplementation.OL3 || {};
 
 BW.MapImplementation.OL3.Time = function() {
 
-    //var Extent_Time = "2015-03-03T12:30Z,2015-03-03T13:30Z,2015-03-03T14:30Z,2015-03-03T15:30Z,2015-03-03T16:30Z,2015-03-03T17:30Z,2015-03-03T18:30Z,2015-03-03T19:30Z,2015-03-03T20:30Z,2015-03-03T21:30Z,2015-03-03T22:30Z,2015-03-03T23:30Z";
     var Extent_Time;
     var arrayLength;
     var json_dates = [];
 
-    function getCapabilitiesJson() {
-        var capabilitiesUrl = "http://bw-wms.met.no/barentswatch/default.map?SERVICE=WMS&REQUEST=GetCapabilities&version=1.3.0";
+    function getCapabilitiesJson(url) {
+        var capabilitiesUrl = url + "?SERVICE=WMS&REQUEST=GetCapabilities&version=1.3.0";
         return $.ajax({
             url: capabilitiesUrl,
             type: 'GET'
         });
     }
 
-    function getWmsTime(capabilityResponse) {
+    function getWmsTime(capabilityResponse, layerName) {
         var parser = new ol.format.WMSCapabilities();
-        var layername = "osisaf.iceconcentration";
         result = parser.read(capabilityResponse);
         for (var i = 0; i < result.Capability.Layer.Layer.length; i++) {
             var layer = result.Capability.Layer.Layer[i];
-            if (layer.Name === layername) {
+            if (layer.Name === layerName) {
                 Extent_Time = layer.Dimension[0].values;
                 var timeArray = Extent_Time.split(",");
                 arrayLength = timeArray.length;
@@ -2810,7 +2805,7 @@ BW.MapImplementation.OL3.Time = function() {
             var prev = json_dates[k - 1];
             var curr = json_dates[k];
             if (prev.type != curr.type) {
-                console.log(k, "Error");
+                // Different time formats, not supported
                 return "error";
             }
 
@@ -2820,7 +2815,7 @@ BW.MapImplementation.OL3.Time = function() {
                     resolution = "Minutes";
                 }
                 else if (resolution !== "Minutes") {
-                    console.log(k, "Error");
+                    // Different resolutions not supported
                     return "error";
                 }
                 continue;
@@ -2832,7 +2827,7 @@ BW.MapImplementation.OL3.Time = function() {
                     resolution = "Hour";
                 }
                 else if (resolution !== "Hour") {
-                    console.log(k, "Error");
+                    // Different resolutions not supported
                     return "error";
                 }
                 continue;
@@ -2844,7 +2839,7 @@ BW.MapImplementation.OL3.Time = function() {
                     resolution = "Day";
                 }
                 else if (resolution !== "Day") {
-                    console.log(k, "Error");
+                    // Different resolutions not supported
                     return "error";
                 }
                 continue;
@@ -2856,7 +2851,7 @@ BW.MapImplementation.OL3.Time = function() {
                     resolution = "Month";
                 }
                 else if (resolution !== "Month") {
-                    console.log(k, "Error");
+                    // Different resolutions not supported
                     return "error";
                 }
                 continue;
@@ -2868,7 +2863,7 @@ BW.MapImplementation.OL3.Time = function() {
                     resolution = "Year";
                 }
                 else if (resolution !== "Year") {
-                    console.log(k, "Error");
+                    // Different resolutions not supported
                     return "error";
                 }
             }
@@ -2887,9 +2882,6 @@ BW.MapImplementation.OL3.Time = function() {
         }
         else if (moment(datestring, "YYYY-MM-DDTHH:mm:ss").isValid()) {
             dateformat = 3;
-        }
-        else if (moment(datestring, "YYYYMMDD").isValid()) {
-            dateformat = 13;
         }
         else if (moment(datestring, "YYYY-MM-DDTHH:mm:ss").isValid()) {
             dateformat = 4;
@@ -2917,6 +2909,9 @@ BW.MapImplementation.OL3.Time = function() {
         }
         else if (moment(datestring, "THH:mm:ss").isValid()) {
             dateformat = 12;
+        }
+        else if (moment(datestring, "YYYYMMDD").isValid()) {
+            dateformat = 13;
         }
         else { // invalid format
             return {};
