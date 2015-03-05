@@ -1,5 +1,5 @@
 /**
- * bwmaplib - v0.2.0 - 2015-03-04
+ * bwmaplib - v0.2.0 - 2015-03-05
  * http://localhost
  *
  * Copyright (c) 2015 
@@ -781,8 +781,8 @@ BW.MapAPI.Map = function(mapImplementation, eventHandler, featureInfo, layerHand
         Start up functions Start
      */
 
-    function init(targetId, mapConfig, callback){
-        mapImplementation.InitMap(targetId, mapConfig, callback);
+    function init(targetId, mapConfig, callback, options){
+        mapImplementation.InitMap(targetId, mapConfig, callback, options);
         layerHandler.Init(mapConfig);
         categoryHandler.Init(mapConfig);
 
@@ -1948,7 +1948,7 @@ BW.MapImplementation.OL3.Map = function(repository, eventHandler, httpHelper, me
         Start up functions Start
      */
 
-    function initMap(targetId, mapConfig, callback){
+    function initMap(targetId, mapConfig, callback, options){
         proxyHost = mapConfig.proxyHost;
         var numZoomLevels = mapConfig.numZoomLevels;
         var newMapRes = [];
@@ -1978,7 +1978,10 @@ BW.MapImplementation.OL3.Map = function(repository, eventHandler, httpHelper, me
             overlays: []
         });
 
-        _registerMapCallbacks();
+        if (!(options && options.skipMapCallbacks)) {
+            _registerMapCallbacks();
+        } 
+        
         if (callback) {
             callback(map);
         }

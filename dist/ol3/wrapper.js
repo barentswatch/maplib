@@ -48,7 +48,7 @@ BW.MapCore = BW.MapCore || {};
                 callback(olmap, map);
             }
         };
-        map.Init(mapDiv, mapConfig, fetched);
+        map.Init(mapDiv, mapConfig, fetched, { skipMapCallbacks: true });
 
         return map;
     };
