@@ -9,6 +9,7 @@ BW.MapImplementation.OL3.Time = function() {
     var json_dates = [];
 
     function getCapabilitiesJson(url) {
+        url = url.replace(/\?$/g,'');   // remove trailing "?"
         var capabilitiesUrl = url + "?SERVICE=WMS&REQUEST=GetCapabilities&version=1.3.0";
         return $.ajax({
             url: capabilitiesUrl,
