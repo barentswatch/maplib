@@ -1,5 +1,5 @@
 /**
- * maplib - v0.0.1 - 2015-03-05
+ * maplib - v0.0.1 - 2015-03-06
  * http://localhost
  *
  * Copyright (c) 2015 
@@ -2089,9 +2089,11 @@ BW.MapImplementation.OL3.Map = function(repository, eventHandler, httpHelper, me
             //http://bw-wms.met.no/barentswatch/default.map?SERVICE=WMS&REQUEST=GetCapabilities&version=1.3.0
             wmsTime.GetCapabilitiesJson(bwSubLayer.url).done(function(data){
                 time = wmsTime.GetWmsTime(data, bwSubLayer.name);
-                source.updateParams({
-                    TIME: time.current.Value
-                });
+                if (time !== undefined) {
+                    source.updateParams({
+                        TIME: time.current.Value
+                    });
+                }
             });
 
         }
@@ -2759,9 +2761,9 @@ BW.MapImplementation.OL3 = BW.MapImplementation.OL3 || {};
 
 BW.MapImplementation.OL3.Time = function() {
 
-    var Extent_Time;
+    var extentTime;
     var arrayLength;
-    var json_dates = [];
+    var jsonDates = [];
 
     function getCapabilitiesJson(url) {
         url = url.replace(/\?$/g,'');   // remove trailing "?"
@@ -2774,30 +2776,35 @@ BW.MapImplementation.OL3.Time = function() {
 
     function getWmsTime(capabilityResponse, layerName) {
         var parser = new ol.format.WMSCapabilities();
-        result = parser.read(capabilityResponse);
-        for (var i = 0; i < result.Capability.Layer.Layer.length; i++) {
-            var layer = result.Capability.Layer.Layer[i];
-            if (layer.Name === layerName) {
-                Extent_Time = layer.Dimension[0].values;
-                var timeArray = Extent_Time.split(",");
-                arrayLength = timeArray.length;
+        var jsonCapabilities = parser.read(capabilityResponse);
 
-                for (var j = 0; j < arrayLength; j++) {
-                    var json_item = analyzeDate(timeArray[j]);
-                    json_dates.push(json_item);
+        if (jsonCapabilities.Capability !== undefined) {
+            for (var i = 0; i < jsonCapabilities.Capability.Layer.Layer.length; i++) {
+                var layer = jsonCapabilities.Capability.Layer.Layer[i];
+                if (layer.Name === layerName) {
+                    extentTime = layer.Dimension[0].values;
+                    var timeArray = extentTime.split(",");
+                    arrayLength = timeArray.length;
+
+                    for (var j = 0; j < arrayLength; j++) {
+                        var json_item = analyzeDate(timeArray[j]);
+                        jsonDates.push(json_item);
+                    }
+                    var resolution = getResolution();
+
+                    var result = {
+                        "dates": jsonDates,
+                        "resolution": resolution,
+                        "current": jsonDates[jsonDates.length - 1]
+                    };
+
+                    return result;
                 }
-                var resolution = getResolution();
-
-                var result = {
-                    "dates": json_dates,
-                    "resolution": resolution,
-                    "current": json_dates[json_dates.length - 1]
-                };
-
-                return result;
             }
         }
+        return undefined;
     }
+
 
     function getResolution() {
         var resolution;
