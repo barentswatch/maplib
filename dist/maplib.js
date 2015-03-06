@@ -2774,6 +2774,18 @@ BW.MapImplementation.OL3.Time = function() {
         });
     }
 
+    function getCurrent(dateArray) {
+        var current = '';
+        arrayLength = dateArray.length;
+        for (var j = 0; j < arrayLength; j++) {
+            if (moment(dateArray[j]) < moment()) {
+                current = timeArray[j];
+            }
+            else {
+                return current;
+            }
+        }
+    }
     function getWmsTime(capabilityResponse, layerName) {
         var parser = new ol.format.WMSCapabilities();
         var jsonCapabilities = parser.read(capabilityResponse);
@@ -2784,18 +2796,19 @@ BW.MapImplementation.OL3.Time = function() {
                 if (layer.Name === layerName) {
                     extentTime = layer.Dimension[0].values;
                     var timeArray = extentTime.split(",");
+                    timeArray.sort();
                     arrayLength = timeArray.length;
 
                     for (var j = 0; j < arrayLength; j++) {
-                        var json_item = analyzeDate(timeArray[j]);
-                        jsonDates.push(json_item);
+                        var jsonItem = analyzeDate(timeArray[j]);
+                        jsonDates.push(jsonItem);
                     }
                     var resolution = getResolution();
 
                     var result = {
                         "dates": jsonDates,
                         "resolution": resolution,
-                        "current": jsonDates[jsonDates.length - 1]
+                        "current": getCurrent(timeArray)
                     };
 
                     return result;
