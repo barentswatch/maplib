@@ -159,7 +159,7 @@ BW.MapImplementation.OL3.Map = function(repository, eventHandler, httpHelper, me
                 time = wmsTime.GetWmsTime(data, bwSubLayer.name);
                 if (time !== undefined) {
                     source.updateParams({
-                        TIME: time.current.Value
+                        TIME: time.current
                     });
                 }
             });
