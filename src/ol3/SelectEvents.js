@@ -14,7 +14,6 @@ BW.SelectEvents = BW.SelectEvents || {};
 (function (ns) {
     'use strict';
 
-
     function registerSelectEvents(map, layer, style, condition, on, off) {
         var interaction = new ol.interaction.Select({
             condition: condition,
@@ -25,47 +24,19 @@ BW.SelectEvents = BW.SelectEvents || {};
         var features = interaction.getFeatures();
         var selectedHere = null;
 
-        function triggerAllDeselect() {
-            if (features.getLength() === 0) {
-                layer.trigger('all' + off);
-            }
-        }
-
         features.on('change:length', function () {
             if (features.getLength() > 0) {
                 var sel = features.getArray()[0];
-                if (sel !== selectedHere) {
-                    selectedHere = sel;
-                    selectedHere.trigger(on, selectedHere);
-                }
+                sel.trigger(on, sel);
+                sel.set('selected', true);
             } else {
                 layer.getSource().forEachFeature(function (e) {
                     e.trigger(off, e);
                 });
-                selectedHere = null;
             }
-            //if check length after 100 ms to see if no new ones has been added
-            setTimeout(triggerAllDeselect, 100);
-        });
-
-        layer.on(off + 'Feature', function () {
-            layer.getSource().forEachFeature(function (e) {
-                if (!e[on]) {
-                    features.remove(e);
-                }
-            });
-        });
-
-        layer.on(on + 'Feature', function () {
-            layer.getSource().forEachFeature(function (e) {
-                if (e[on] && e !== selectedHere) {
-                    features.push(e);
-                }
-            });
         });
         return interaction;
     }
-
 
     ns.registerHoverEvents = function (map, layer, hightlightStyle) {
         var on = 'over';
@@ -73,7 +44,6 @@ BW.SelectEvents = BW.SelectEvents || {};
         var condition = ol.events.condition.pointerMove;
         return registerSelectEvents(map, layer, hightlightStyle, condition, on, off);
     };
-
 
     ns.registerClickEvents = function (map, layer, selectStyle) {
         var on = 'select';
