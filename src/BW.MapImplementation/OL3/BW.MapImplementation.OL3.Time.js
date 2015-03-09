@@ -65,6 +65,7 @@ BW.MapImplementation.OL3.Time = function() {
                 return current;
             }
         }
+        return current;
     }
 
     // helper method when determining/validating the data resolution

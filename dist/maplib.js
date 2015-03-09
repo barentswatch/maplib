@@ -1,5 +1,5 @@
 /**
- * maplib - v0.0.1 - 2015-03-06
+ * maplib - v0.0.1 - 2015-03-09
  * http://localhost
  *
  * Copyright (c) 2015 
@@ -2822,6 +2822,7 @@ BW.MapImplementation.OL3.Time = function() {
                 return current;
             }
         }
+        return current;
     }
 
     // helper method when determining/validating the data resolution
