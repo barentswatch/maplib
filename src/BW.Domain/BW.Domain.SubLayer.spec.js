@@ -2,7 +2,10 @@ describe('BW.Domain.SubLayer', function() {
     var tv = 'testValue';
     var config = {
         layerIndex: 0,
-        testValue: tv
+        testValue: tv,
+        source: BW.Domain.SubLayer.SOURCES.proxyWms,
+        isBaseLayer: false
+
     };
 
     it('', function(){
