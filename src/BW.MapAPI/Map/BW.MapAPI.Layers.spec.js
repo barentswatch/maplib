@@ -30,8 +30,9 @@ describe('BW.MapAPI.Layers', function(){
         };
         featureInfo = new BW.MapImplementation.OL3.FeatureInfo();
         mapExport = new BW.MapImplementation.OL3.Export();
+        wmsTime = new BW.MapImplementation.OL3.Time();
 
-        map = new BW.MapImplementation.OL3.Map(repository, eventHandler, httpHelper, measure, featureInfo, mapExport);
+        map = new BW.MapImplementation.OL3.Map(repository, eventHandler, httpHelper, measure, featureInfo, mapExport, wmsTime);
         map.InitMap(dummyDivId, mapConfig);
 
         layers = new BW.MapAPI.Layers(map);
