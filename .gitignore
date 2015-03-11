@@ -1,1 +1,12 @@
+*.sw*
+*~
+.bower-cache/
+.bower-registry/
+.bower-tmp/
+/build/
+karma/
 node_modules/
+/vendor/
+.idea/
+.sass-cache/
+.divshot-cache/

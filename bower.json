@@ -1,9 +1,6 @@
 {
   "name": "bwmaplib",
-  "version": "0.1.6",
-  "authors": [
-    "Atle Frenvik Sveen <atle.sveen@gmail.com>"
-  ],
+  "version": "0.2.0",
   "description": "Kartfunkjsonalitet for BW",
   "main": "dist/kartkjerne.js",
   "license": "BSD",
@@ -19,9 +16,12 @@
     "sonar-project.properties"
   ],
   "dependencies": {
-    "openlayers3": "~3.0.0",
-    "jquery": "~2.1.1",
-    "backbone": "~1.1.2",
-    "proj4": "~2.3.3"
+    "jquery": "*",
+    "openlayers3": "https://github.com/openlayers/ol3/releases/download/v3.3.0/v3.3.0.zip",
+    "xml2json": "*",
+    "proj4": "*"
+  },
+  "devDependencies": {
+    "backbone": "~1.1.2"
   }
 }

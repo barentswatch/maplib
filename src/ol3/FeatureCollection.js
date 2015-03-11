@@ -65,6 +65,10 @@ var BW = this.BW || {};
             this.on('deselect', this.deselectFeature, this);
         },
 
+        toggleSelected: function (feature) {
+            this.selected = !this.selected;
+        },
+
         featureOver: function () {
             this.trigger('over');
         },
@@ -92,17 +96,14 @@ var BW = this.BW || {};
         },
 
         highlightFeature: function () {
-            this.get('feature').setStyle(
-                this.collection.options.hoverStyle
-            );
+            this.get('feature').over = true;
+            this.collection.getLayer().dispatchEvent('overFeature');
         },
 
         unhighlightFeature: function () {
-            this.get('feature').setStyle(
-                this.collection.options.featureStyle
-            );
+            this.get('feature').over = false;
+            this.collection.getLayer().dispatchEvent('outFeature');
         }
-
     });
 
     ns.FeatureCollection = Backbone.Collection.extend({
@@ -110,7 +111,7 @@ var BW = this.BW || {};
         model: ns.FeatureModel,
 
         reset: function (models, options) {
-            var modifiedModels = _.map(models, this.parseGeom);
+            var modifiedModels = _.map(models, _.bind(this.parseGeom, this));
             var resetResult = Backbone.Collection.prototype.reset.apply(
                 this,
                 [modifiedModels, options]
