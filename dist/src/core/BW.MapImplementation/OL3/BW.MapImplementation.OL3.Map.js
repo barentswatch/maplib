@@ -5,7 +5,6 @@ BW.MapImplementation.OL3 = BW.MapImplementation.OL3 || {};
 BW.MapImplementation.OL3.Map = function(repository, eventHandler, httpHelper, measure, featureInfo, mapExport){
     var map;
     var layerPool = [];
-
     var proxyHost = "";
 
     /*
@@ -114,9 +113,37 @@ BW.MapImplementation.OL3.Map = function(repository, eventHandler, httpHelper, me
 
     function showBaseLayer(bwSubLayer){
         var layer = _createLayer(bwSubLayer);
-        map.getLayers().insertAt(0, layer);
 
-        _trigLayersChanged();
+        // Need to calculate new resolutions according to the layers maxResolution if it has a value
+        var newMaxRes = bwSubLayer.maxResolution;
+        if (!(newMaxRes === '' || newMaxRes === undefined)){
+            var newMapResArray = [];
+            newMapResArray[0]= newMaxRes;
+            for (var t = 1; t < bwSubLayer.numZoomLevels; t++) {
+                newMapResArray[t] = newMapResArray[t - 1] / 2;
+            }
+            var sm = new ol.proj.Projection({
+                code: bwSubLayer.coordinate_system,
+                extent: bwSubLayer.extent,
+                units: bwSubLayer.extentUnits
+            });
+
+            // If url parameters, use those
+            urlparams = _getUrlObject();
+
+            map.setView(new ol.View({
+                projection: sm,
+                center: [Number(urlparams.y) || bwSubLayer.centerY, Number(urlparams.x) || bwSubLayer.centerX],
+                zoom: Number(urlparams.zoom) || bwSubLayer.initZoom || 0,
+                resolutions: newMapResArray,
+                maxResolution: newMaxRes,
+                numZoomLevels: bwSubLayer.numZoomLevels
+            }));
+            _registerMapCallbacks();
+        }
+
+        map.getLayers().insertAt(0, layer);
+        //_trigLayersChanged();
     }
 
     function hideLayer(bwSubLayer){
@@ -124,6 +151,13 @@ BW.MapImplementation.OL3.Map = function(repository, eventHandler, httpHelper, me
         if(layer){
             map.removeLayer(layer);
             _trigLayersChanged();
+        }
+    }
+
+    function getLayerParams(bwSubLayer){
+        var layer = _getLayerByGuid(bwSubLayer.id);
+        if(layer){
+            return layer.getSource().getParams();
         }
     }
 
@@ -547,6 +581,7 @@ BW.MapImplementation.OL3.Map = function(repository, eventHandler, httpHelper, me
         HideLayer: hideLayer,
         GetLayerByName: getLayerByName,
         SetLayerOpacity: setLayerOpacity,
+        GetLayerParams: getLayerParams,
         SetLayerSaturation: setLayerSaturation,
         SetLayerHue: setLayerHue,
         SetLayerBrightness: setLayerBrightness,

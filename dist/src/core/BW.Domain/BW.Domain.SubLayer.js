@@ -9,6 +9,7 @@ BW.Domain.SubLayer = function(config){
         url: '',
         format: BW.Domain.SubLayer.FORMATS.imagepng,
         coordinate_system: '',
+        maxResolution: '',
         matrixSet: '',
         extent: [-1, 1, -1, 1],
         extentUnits: 'm',
@@ -17,7 +18,8 @@ BW.Domain.SubLayer = function(config){
         layerIndex: -1,
         legendGraphicUrl: '',
         crossOrigin: 'anonymous',
-        featureInfo: new BW.Domain.FeatureInfo()
+        featureInfo: new BW.Domain.FeatureInfo(),
+        wmsTimeSupport: false
     };
     var instance =  $.extend({}, defaults, config); // subLayerInstance
 
