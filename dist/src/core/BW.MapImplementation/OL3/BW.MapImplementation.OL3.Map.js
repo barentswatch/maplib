@@ -2,7 +2,7 @@ var BW = BW || {};
 BW.MapImplementation = BW.MapImplementation || {};
 BW.MapImplementation.OL3 = BW.MapImplementation.OL3 || {};
 
-BW.MapImplementation.OL3.Map = function(repository, eventHandler, httpHelper, measure, featureInfo, mapExport){
+BW.MapImplementation.OL3.Map = function(repository, eventHandler, httpHelper, measure, featureInfo, mapExport, wmsTime){
     var map;
     var layerPool = [];
     var proxyHost = "";
@@ -143,7 +143,6 @@ BW.MapImplementation.OL3.Map = function(repository, eventHandler, httpHelper, me
         }
 
         map.getLayers().insertAt(0, layer);
-        //_trigLayersChanged();
     }
 
     function hideLayer(bwSubLayer){
@@ -158,6 +157,19 @@ BW.MapImplementation.OL3.Map = function(repository, eventHandler, httpHelper, me
         var layer = _getLayerByGuid(bwSubLayer.id);
         if(layer){
             return layer.getSource().getParams();
+        }
+    }
+
+    function _setTime(bwSubLayer, source){
+        if (bwSubLayer.wmsTimeSupport){
+            wmsTime.GetCapabilitiesJson(bwSubLayer.url).done(function(data){
+                time = wmsTime.GetWmsTime(data, bwSubLayer.name);
+                if (time !== undefined) {
+                    source.updateParams({
+                        TIME: time.current
+                    });
+                }
+            });
         }
     }
 
@@ -182,6 +194,7 @@ BW.MapImplementation.OL3.Map = function(repository, eventHandler, httpHelper, me
 
                 case BW.Domain.SubLayer.SOURCES.wms:
                     source = new BW.MapImplementation.OL3.Sources.Wms(bwSubLayer);
+                    _setTime(bwSubLayer, source);
                     break;
                 /**
                  Bruker proxy mot disse):
@@ -196,6 +209,7 @@ BW.MapImplementation.OL3.Map = function(repository, eventHandler, httpHelper, me
                 case BW.Domain.SubLayer.SOURCES.proxyWms:
                     bwSubLayer.url = proxyHost + bwSubLayer.url;
                     source = new BW.MapImplementation.OL3.Sources.Wms(bwSubLayer);
+                    _setTime(bwSubLayer, source);
                     break;
                 case BW.Domain.SubLayer.SOURCES.vector:
                     source = new BW.MapImplementation.OL3.Sources.Vector(bwSubLayer, map.getView().getProjection());

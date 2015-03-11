@@ -27,8 +27,17 @@ BW.Domain.SubLayer = function(config){
         instance.url += '?';
     }
 
-    var legendGraphic = new BW.Domain.LegendGraphic({ url: instance.url, layer: instance.name });
-    instance.legendGraphicUrl = legendGraphic.GetLegendGraphicUrl();
+    if (!instance.isBaseLayer) {
+        switch (instance.source) {
+            case BW.Domain.SubLayer.SOURCES.proxyWms:
+            case BW.Domain.SubLayer.SOURCES.wms:
+                var legendGraphic = new BW.Domain.LegendGraphic({url: instance.url, layer: instance.name});
+                instance.legendGraphicUrl = legendGraphic.GetLegendGraphicUrl();
+                break;
+            default:
+                break;
+        }
+    }
 
     return instance;
 };
