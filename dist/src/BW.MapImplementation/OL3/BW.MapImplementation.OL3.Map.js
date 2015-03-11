@@ -154,7 +154,6 @@ BW.MapImplementation.OL3.Map = function(repository, eventHandler, httpHelper, me
 
     function _setTime(bwSubLayer, source){
         if (bwSubLayer.wmsTimeSupport){
-            //http://bw-wms.met.no/barentswatch/default.map?SERVICE=WMS&REQUEST=GetCapabilities&version=1.3.0
             wmsTime.GetCapabilitiesJson(bwSubLayer.url).done(function(data){
                 time = wmsTime.GetWmsTime(data, bwSubLayer.name);
                 if (time !== undefined) {
@@ -163,7 +162,6 @@ BW.MapImplementation.OL3.Map = function(repository, eventHandler, httpHelper, me
                     });
                 }
             });
-
         }
     }
 
