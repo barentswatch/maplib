@@ -1,5 +1,5 @@
 /**
- * bwmaplib - v0.2.0 - 2015-03-11
+ * bwmaplib - v0.2.0 - 2015-03-20
  * http://localhost
  *
  * Copyright (c) 2015 
@@ -171,6 +171,7 @@ BW.Domain.SubLayer = function(config){
         extent: [-1, 1, -1, 1],
         extentUnits: 'm',
         id: new BW.Utils.Guid().newGuid(),
+        uuid: '',
         transparent: true,
         layerIndex: -1,
         legendGraphicUrl: '',

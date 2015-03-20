@@ -14,6 +14,7 @@ BW.Domain.SubLayer = function(config){
         extent: [-1, 1, -1, 1],
         extentUnits: 'm',
         id: new BW.Utils.Guid().newGuid(),
+        uuid: '',
         transparent: true,
         layerIndex: -1,
         legendGraphicUrl: '',
