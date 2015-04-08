@@ -393,13 +393,14 @@ BW.MapAPI.FeatureInfo = function(mapImplementation, httpHelper, eventHandler, fe
         var questionMark = '?';
         var urlHasQuestionMark = wmsUrl.indexOf(questionMark) > -1;
         if(!urlHasQuestionMark){
-            wmsUrl = wmsUrl + encodeURIComponent(questionMark);
+            //wmsUrl = wmsUrl + encodeURIComponent(questionMark);
+            wmsUrl = wmsUrl + questionMark;
         }
 
         var request = 'SERVICE=' + service + '&REQUEST=GETCAPABILITIES';
-        if(bwSubLayer.source === BW.Domain.SubLayer.SOURCES.proxyWms || bwSubLayer.source == BW.Domain.SubLayer.SOURCES.proxyWmts){
-            request = encodeURIComponent(request);
-        }
+        //if(bwSubLayer.source === BW.Domain.SubLayer.SOURCES.proxyWms || bwSubLayer.source == BW.Domain.SubLayer.SOURCES.proxyWmts){
+            //request = encodeURIComponent(request);
+        //}
         getCapabilitiesUrl = wmsUrl + request;
         httpHelper.get(getCapabilitiesUrl).success(parseCallback);
     }
