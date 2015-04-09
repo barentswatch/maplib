@@ -94,6 +94,30 @@ BW.MapAPI.FeatureInfo = function(mapImplementation, httpHelper, eventHandler, fe
         Get Feature Info function
      */
 
+    function assignInfoFormat(bwSubLayer) {
+        //Store supported formats for featureInfo with the layer.
+        var callback = function (formats) {
+            //console.log(formats);
+            // Supported formats, ordered by preference
+            var maplibSupportedFormats = ['application/json', 'application/vnd.ogc.gml', 'application/vnd.ogc.gml/3.1.1', 'text/plain', 'text/html'];
+            var preferredFormat = 'application/json';
+            if (formats.length > 0) {
+                for (var i = 0; i < maplibSupportedFormats.length; i++) {
+                    if (_.contains(formats, maplibSupportedFormats[i])) {
+                        preferredFormat = maplibSupportedFormats[i];
+                        break;
+                    }
+                }
+            }
+            bwSubLayer.featureInfo.getFeatureInfoFormat = preferredFormat;
+            bwSubLayer.featureInfo.getFeatureFormat = preferredFormat;
+        };
+
+        if (bwSubLayer.featureInfo.getFeatureInfoFormat === '') {
+            getSupportedGetFeatureInfoFormats(bwSubLayer, callback);
+        }
+    }
+
     function handlePointSelect(coordinate, layersSupportingGetFeatureInfo){
         if(useInfoMarker === true){
             _showInfoMarker(coordinate);
@@ -135,6 +159,7 @@ BW.MapAPI.FeatureInfo = function(mapImplementation, httpHelper, eventHandler, fe
     /*
         Get Feature functions
      */
+
 
     function handleBoxSelect(boxExtent, layersSupportingGetFeature){
         _trigStartGetInfoRequest(layersSupportingGetFeature);
@@ -227,6 +252,7 @@ BW.MapAPI.FeatureInfo = function(mapImplementation, httpHelper, eventHandler, fe
     }
 
     return {
+        AssignInfoFormat: assignInfoFormat,
         HandlePointSelect: handlePointSelect,
         HandleBoxSelect: handleBoxSelect,
         CreateDefaultInfoMarker: createDefaultInfoMarker,

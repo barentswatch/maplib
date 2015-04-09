@@ -180,6 +180,10 @@ BW.MapAPI.Map = function(mapImplementation, eventHandler, featureInfo, layerHand
         featureInfo.GetSupportedGetFeatureInfoFormats(bwSubLayer, callback);
     }
 
+    function assignInfoFormat(bwSubLayer){
+        featureInfo.AssignInfoFormat(bwSubLayer);
+    }
+
     function getSupportedGetFeatureFormats(bwSubLayer, callback){
         featureInfo.GetSupportedGetFeatureFormats(bwSubLayer, callback);
     }
@@ -346,6 +350,7 @@ BW.MapAPI.Map = function(mapImplementation, eventHandler, featureInfo, layerHand
         SetImageInfoMarker: setImageInfoMarker,
         GetSupportedGetFeatureInfoFormats: getSupportedGetFeatureInfoFormats,
         GetSupportedGetFeatureFormats: getSupportedGetFeatureFormats,
+        AssignInfoFormat: assignInfoFormat,
         RemoveInfoMarker: removeInfoMarker,
         ActivateBoxSelect: activateBoxSelect,
         DeactivateBoxSelect: deactivateBoxSelect,

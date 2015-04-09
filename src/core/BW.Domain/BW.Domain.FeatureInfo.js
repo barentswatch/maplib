@@ -5,7 +5,8 @@ BW.Domain.FeatureInfo = function(config){
     var defaults = {
         // single select via WMS GetFeatureInfo
         supportsGetFeatureInfo: true,
-        getFeatureInfoFormat: 'application/json',
+        //getFeatureInfoFormat: 'application/json',
+        getFeatureInfoFormat: '',
         getFeatureInfoCrs: '',
 
         // multi select via WFS GetFeature

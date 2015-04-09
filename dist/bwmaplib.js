@@ -1,5 +1,5 @@
 /**
- * bwmaplib - v0.2.0 - 2015-04-08
+ * bwmaplib - v0.2.0 - 2015-04-09
  * http://localhost
  *
  * Copyright (c) 2015 
@@ -36,7 +36,8 @@ BW.Domain.FeatureInfo = function(config){
     var defaults = {
         // single select via WMS GetFeatureInfo
         supportsGetFeatureInfo: true,
-        getFeatureInfoFormat: 'application/json',
+        //getFeatureInfoFormat: 'application/json',
+        getFeatureInfoFormat: '',
         getFeatureInfoCrs: '',
 
         // multi select via WFS GetFeature
@@ -414,6 +415,30 @@ BW.MapAPI.FeatureInfo = function(mapImplementation, httpHelper, eventHandler, fe
         Get Feature Info function
      */
 
+    function assignInfoFormat(bwSubLayer) {
+        //Store supported formats for featureInfo with the layer.
+        var callback = function (formats) {
+            //console.log(formats);
+            // Supported formats, ordered by preference
+            var maplibSupportedFormats = ['application/json', 'application/vnd.ogc.gml', 'application/vnd.ogc.gml/3.1.1', 'text/plain', 'text/html'];
+            var preferredFormat = 'application/json';
+            if (formats.length > 0) {
+                for (var i = 0; i < maplibSupportedFormats.length; i++) {
+                    if (_.contains(formats, maplibSupportedFormats[i])) {
+                        preferredFormat = maplibSupportedFormats[i];
+                        break;
+                    }
+                }
+            }
+            bwSubLayer.featureInfo.getFeatureInfoFormat = preferredFormat;
+            bwSubLayer.featureInfo.getFeatureFormat = preferredFormat;
+        };
+
+        if (bwSubLayer.featureInfo.getFeatureInfoFormat === '') {
+            getSupportedGetFeatureInfoFormats(bwSubLayer, callback);
+        }
+    }
+
     function handlePointSelect(coordinate, layersSupportingGetFeatureInfo){
         if(useInfoMarker === true){
             _showInfoMarker(coordinate);
@@ -455,6 +480,7 @@ BW.MapAPI.FeatureInfo = function(mapImplementation, httpHelper, eventHandler, fe
     /*
         Get Feature functions
      */
+
 
     function handleBoxSelect(boxExtent, layersSupportingGetFeature){
         _trigStartGetInfoRequest(layersSupportingGetFeature);
@@ -547,6 +573,7 @@ BW.MapAPI.FeatureInfo = function(mapImplementation, httpHelper, eventHandler, fe
     }
 
     return {
+        AssignInfoFormat: assignInfoFormat,
         HandlePointSelect: handlePointSelect,
         HandleBoxSelect: handleBoxSelect,
         CreateDefaultInfoMarker: createDefaultInfoMarker,
@@ -967,6 +994,10 @@ BW.MapAPI.Map = function(mapImplementation, eventHandler, featureInfo, layerHand
         featureInfo.GetSupportedGetFeatureInfoFormats(bwSubLayer, callback);
     }
 
+    function assignInfoFormat(bwSubLayer){
+        featureInfo.AssignInfoFormat(bwSubLayer);
+    }
+
     function getSupportedGetFeatureFormats(bwSubLayer, callback){
         featureInfo.GetSupportedGetFeatureFormats(bwSubLayer, callback);
     }
@@ -1133,6 +1164,7 @@ BW.MapAPI.Map = function(mapImplementation, eventHandler, featureInfo, layerHand
         SetImageInfoMarker: setImageInfoMarker,
         GetSupportedGetFeatureInfoFormats: getSupportedGetFeatureInfoFormats,
         GetSupportedGetFeatureFormats: getSupportedGetFeatureFormats,
+        AssignInfoFormat: assignInfoFormat,
         RemoveInfoMarker: removeInfoMarker,
         ActivateBoxSelect: activateBoxSelect,
         DeactivateBoxSelect: deactivateBoxSelect,
