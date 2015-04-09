@@ -109,11 +109,11 @@ BW.MapAPI.FeatureInfo = function(mapImplementation, httpHelper, eventHandler, fe
                     }
                 }
             }
-            bwSubLayer.featureInfo.getFeatureInfoFormat = preferredFormat;
-            bwSubLayer.featureInfo.getFeatureFormat = preferredFormat;
+            bwSubLayer.subLayers[0].featureInfo.getFeatureInfoFormat = preferredFormat;
+            bwSubLayer.subLayers[0].featureInfo.getFeatureFormat = preferredFormat;
         };
 
-        if (bwSubLayer.featureInfo.getFeatureInfoFormat === '') {
+        if (bwSubLayer.subLayers[0].featureInfo.getFeatureInfoFormat === '') {
             getSupportedGetFeatureInfoFormats(bwSubLayer, callback);
         }
     }

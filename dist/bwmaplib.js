@@ -430,11 +430,11 @@ BW.MapAPI.FeatureInfo = function(mapImplementation, httpHelper, eventHandler, fe
                     }
                 }
             }
-            bwSubLayer.featureInfo.getFeatureInfoFormat = preferredFormat;
-            bwSubLayer.featureInfo.getFeatureFormat = preferredFormat;
+            bwSubLayer.subLayers[0].featureInfo.getFeatureInfoFormat = preferredFormat;
+            bwSubLayer.subLayers[0].featureInfo.getFeatureFormat = preferredFormat;
         };
 
-        if (bwSubLayer.featureInfo.getFeatureInfoFormat === '') {
+        if (bwSubLayer.subLayers[0].featureInfo.getFeatureInfoFormat === '') {
             getSupportedGetFeatureInfoFormats(bwSubLayer, callback);
         }
     }
@@ -846,6 +846,7 @@ BW.MapAPI.Map = function(mapImplementation, eventHandler, featureInfo, layerHand
 
     function showLayer(bwLayer) {
         layerHandler.ShowLayer(bwLayer);
+        assignInfoFormat(bwLayer);
     }
 
     function hideLayer(bwLayer) {

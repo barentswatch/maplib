@@ -32,6 +32,7 @@ BW.MapAPI.Map = function(mapImplementation, eventHandler, featureInfo, layerHand
 
     function showLayer(bwLayer) {
         layerHandler.ShowLayer(bwLayer);
+        assignInfoFormat(bwLayer);
     }
 
     function hideLayer(bwLayer) {
