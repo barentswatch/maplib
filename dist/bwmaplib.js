@@ -1,5 +1,5 @@
 /**
- * bwmaplib - v0.2.0 - 2015-04-09
+ * bwmaplib - v0.2.0 - 2015-04-10
  * http://localhost
  *
  * Copyright (c) 2015 
@@ -36,8 +36,7 @@ BW.Domain.FeatureInfo = function(config){
     var defaults = {
         // single select via WMS GetFeatureInfo
         supportsGetFeatureInfo: true,
-        //getFeatureInfoFormat: 'application/json',
-        getFeatureInfoFormat: '',
+        getFeatureInfoFormat: 'application/json',
         getFeatureInfoCrs: '',
 
         // multi select via WFS GetFeature
@@ -177,7 +176,7 @@ BW.Domain.SubLayer = function(config){
         layerIndex: -1,
         legendGraphicUrl: '',
         crossOrigin: 'anonymous',
-        featureInfo: new BW.Domain.FeatureInfo(),
+        featureInfo: new BW.Domain.FeatureInfo(config),
         wmsTimeSupport: false
     };
     var instance =  $.extend({}, defaults, config); // subLayerInstance
@@ -435,7 +434,7 @@ BW.MapAPI.FeatureInfo = function(mapImplementation, httpHelper, eventHandler, fe
         };
 
         if (bwSubLayer.subLayers[0].featureInfo.getFeatureInfoFormat === '') {
-            getSupportedGetFeatureInfoFormats(bwSubLayer, callback);
+            getSupportedGetFeatureInfoFormats(bwSubLayer.subLayers[0], callback);
         }
     }
 
@@ -846,7 +845,7 @@ BW.MapAPI.Map = function(mapImplementation, eventHandler, featureInfo, layerHand
 
     function showLayer(bwLayer) {
         layerHandler.ShowLayer(bwLayer);
-        assignInfoFormat(bwLayer);
+        assignInfoFormat(bwLayer);  // TODO: Should this be done somewhere else?
     }
 
     function hideLayer(bwLayer) {

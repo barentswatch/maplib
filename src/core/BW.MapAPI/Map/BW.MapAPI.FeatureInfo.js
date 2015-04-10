@@ -114,7 +114,7 @@ BW.MapAPI.FeatureInfo = function(mapImplementation, httpHelper, eventHandler, fe
         };
 
         if (bwSubLayer.subLayers[0].featureInfo.getFeatureInfoFormat === '') {
-            getSupportedGetFeatureInfoFormats(bwSubLayer, callback);
+            getSupportedGetFeatureInfoFormats(bwSubLayer.subLayers[0], callback);
         }
     }
 
