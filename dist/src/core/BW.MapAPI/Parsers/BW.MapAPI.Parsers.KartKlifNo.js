@@ -6,7 +6,14 @@ BW.MapAPI.Parsers = BW.MapAPI.Parsers || {};
 BW.MapAPI.Parsers.KartKlifNo = function() {
     function parse(result) {
         var jsonResult = [];
-        result = result.replace(/:/g, ''); // Remove colon to prevent xml errors
+        var insteadOfGml = 'insteadofgml';
+        result = result.replace(/:gml/g, '');
+        result = result.replace(/[\n\f\r\t\0\v]/g, ' '); // replace tab & Co with space
+        result = result.replace(/gml:/g, insteadOfGml);
+        result = result.replace(/s:x/g, 'sx');
+        result = result.replace(/xmlns\S*="\S+"/g, '');    // remove namespace tags
+        result = result.replace(/ +/g, ' '); // replace multispace with space
+        result = result.replace(/\s+>/g, '>'); // space inside tag
         var jsonFeatures = xml2json.parser(result);
 
         if(jsonFeatures.featureinforesponse){

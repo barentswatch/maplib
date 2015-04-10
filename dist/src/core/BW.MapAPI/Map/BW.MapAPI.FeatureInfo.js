@@ -113,9 +113,9 @@ BW.MapAPI.FeatureInfo = function(mapImplementation, httpHelper, eventHandler, fe
             bwSubLayer.subLayers[0].featureInfo.getFeatureFormat = preferredFormat;
         };
 
-        if (bwSubLayer.subLayers[0].featureInfo.getFeatureInfoFormat === '') {
+        //if (bwSubLayer.subLayers[0].featureInfo.getFeatureInfoFormat === '') {
             getSupportedGetFeatureInfoFormats(bwSubLayer.subLayers[0], callback);
-        }
+        //}
     }
 
     function handlePointSelect(coordinate, layersSupportingGetFeatureInfo){
