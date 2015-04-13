@@ -19,14 +19,14 @@ BW.MapAPI.Parsers.Base = function(factory) {
         else if(result.toLowerCase().indexOf(exception) > -1){
             return parseAsException(result);
         }
+        else if(result.toLowerCase().indexOf(msGMLOutput) > -1){
+            parserName = 'kartKlifNo';
+        }
         else if(result.toLowerCase().indexOf(xml) > -1){
             parserName = 'kartKlifNo';
         }
         else if(result.toLowerCase().indexOf(html) > -1){
             return parseAsHtml(result);
-        }
-        else if(result.toLowerCase().indexOf(msGMLOutput) > -1){
-            parserName = 'fisheryDirectory';
         }
         else{
             return null; // Should be empty collection

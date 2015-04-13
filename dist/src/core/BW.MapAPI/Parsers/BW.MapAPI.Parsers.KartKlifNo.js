@@ -5,7 +5,7 @@ BW.MapAPI.Parsers = BW.MapAPI.Parsers || {};
 
 BW.MapAPI.Parsers.KartKlifNo = function() {
     function parse(result) {
-        var jsonResult = [];
+        var properties = {};
         var insteadOfGml = 'insteadofgml';
         result = result.replace(/:gml/g, '');
         result = result.replace(/[\n\f\r\t\0\v]/g, ' '); // replace tab & Co with space
@@ -14,39 +14,35 @@ BW.MapAPI.Parsers.KartKlifNo = function() {
         result = result.replace(/xmlns\S*="\S+"/g, '');    // remove namespace tags
         result = result.replace(/ +/g, ' '); // replace multispace with space
         result = result.replace(/\s+>/g, '>'); // space inside tag
-        var jsonFeatures = xml2json.parser(result);
 
-        if(jsonFeatures.featureinforesponse){
-            var response = jsonFeatures.featureinforesponse;
-            if(response.fields){
-                var fields = response.fields;
-                if(fields instanceof Array){
-                    for(var i = 0; i < fields.length; i++){
-                        jsonResult.push(fields[i]);
-                    }
-                }
-                else{
-                    jsonResult.push(fields);
-                }
-            }
-        }
-        return _convertToFeatureResponse(jsonResult);
+        var featureTag = $(result).find("*").first().children().last();
+        var tagname = featureTag[0].tagName;
+        $(result).find(tagname).each(function () {
+            console.log("wildcard(*)=" + featureTag);
+            $(this).children().each(function () {
+                properties[this.tagName] = $(this).text();
+                console.log(this.tagName + "/" + $(this).text());
+            });
+        });
+        return _convertToFeatureResponseXML(properties);
     }
 
-    function _convertToFeatureResponse(jsonFeatures){
+    function _convertToFeatureResponseXML(jsonFeatures) {
         var responseFeatureCollection = [];
-        for(var i = 0; i < jsonFeatures.length; i++){
+        if (jsonFeatures !== undefined) {
             var responseFeature = new BW.Domain.FeatureResponse();
-            responseFeature.attributes = _getAttributesArray(jsonFeatures[i]);
+            responseFeature.attributes = _getAttributesArrayXML(jsonFeatures);
             responseFeatureCollection.push(responseFeature);
         }
         return responseFeatureCollection;
     }
-
-    function _getAttributesArray(properties){
+    function _getAttributesArrayXML(properties) {
         var attributes = [];
-        for(var i in properties){
-            attributes.push([i, properties[i]]);
+        for (var i in properties) {
+            if (i != "INSTEADOFGMLBOUNDEDBY") {
+                attributes.push([i, properties[i]]);
+            }
+
         }
         return attributes;
     }
