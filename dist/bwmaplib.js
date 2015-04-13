@@ -1,5 +1,5 @@
 /**
- * bwmaplib - v0.2.0 - 2015-04-10
+ * bwmaplib - v0.2.0 - 2015-04-13
  * http://localhost
  *
  * Copyright (c) 2015 
@@ -2511,9 +2511,9 @@ BW.MapImplementation.OL3.Map = function(repository, eventHandler, httpHelper, me
 
         var view = map.getView();
         var center = view.getCenter();
-        var zoom = view.getZoom().toString();
+        var zoom = view.getZoom();
         if(zoom){
-            retVal.zoom = zoom;
+            retVal.zoom = zoom.toString();
         }
         if(center){
             retVal.x = center[1].toFixed(2);
