@@ -16,14 +16,16 @@ BW.MapAPI.Parsers.KartKlifNo = function() {
         result = result.replace(/\s+>/g, '>'); // space inside tag
 
         var featureTag = $(result).find("*").first().children().last();
-        var tagname = featureTag[0].tagName;
-        $(result).find(tagname).each(function () {
-            console.log("wildcard(*)=" + featureTag);
-            $(this).children().each(function () {
-                properties[this.tagName] = $(this).text();
-                console.log(this.tagName + "/" + $(this).text());
+        if (featureTag.length > 0) {
+            var tagname = featureTag[0].tagName;
+            $(result).find(tagname).each(function () {
+                console.log("wildcard(*)=" + featureTag);
+                $(this).children().each(function () {
+                    properties[this.tagName] = $(this).text();
+                    console.log(this.tagName + "/" + $(this).text());
+                });
             });
-        });
+        }
         return _convertToFeatureResponseXML(properties);
     }
 
