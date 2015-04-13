@@ -25,19 +25,26 @@ BW.MapAPI.Parsers.KartKlifNo = function() {
                     console.log(this.tagName + "/" + $(this).text());
                 });
             });
+            return _convertToFeatureResponseXML(properties);
         }
-        return _convertToFeatureResponseXML(properties);
+        return _convertToFeatureResponseXML(undefined);
     }
 
     function _convertToFeatureResponseXML(jsonFeatures) {
         var responseFeatureCollection = [];
+        var responseFeature = new BW.Domain.FeatureResponse();
         if (jsonFeatures !== undefined) {
-            var responseFeature = new BW.Domain.FeatureResponse();
             responseFeature.attributes = _getAttributesArrayXML(jsonFeatures);
+            responseFeatureCollection.push(responseFeature);
+        } else {
+            var noattributes = [];
+            noattributes.push(['data','no data found']);
+            responseFeature.attributes = noattributes;
             responseFeatureCollection.push(responseFeature);
         }
         return responseFeatureCollection;
     }
+
     function _getAttributesArrayXML(properties) {
         var attributes = [];
         for (var i in properties) {
