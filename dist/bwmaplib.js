@@ -1,5 +1,5 @@
 /**
- * bwmaplib - v0.2.0 - 2015-04-13
+ * bwmaplib - v0.2.0 - 2015-04-15
  * http://localhost
  *
  * Copyright (c) 2015 
@@ -1257,8 +1257,9 @@ BW.MapAPI = BW.MapAPI || {};
 BW.MapAPI.Parsers = BW.MapAPI.Parsers || {};
 
 BW.MapAPI.Parsers.Exception = function() {
-    function parse(exception){
-        var message = exception.replace(/(<([^>]+)>)/ig, '');
+    function parse(exception) {
+        console.log(exception.replace(/(<([^>]+)>)/ig, ''));
+        var message = 'No data. Exeption from service logged.';
         throw message;
     }
 
@@ -1266,6 +1267,7 @@ BW.MapAPI.Parsers.Exception = function() {
         Parse: parse
     };
 };
+
 var BW = BW || {};
 BW.MapAPI = BW.MapAPI || {};
 BW.MapAPI.Parsers = BW.MapAPI.Parsers || {};

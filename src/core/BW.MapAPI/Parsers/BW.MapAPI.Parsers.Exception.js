@@ -3,8 +3,9 @@ BW.MapAPI = BW.MapAPI || {};
 BW.MapAPI.Parsers = BW.MapAPI.Parsers || {};
 
 BW.MapAPI.Parsers.Exception = function() {
-    function parse(exception){
-        var message = exception.replace(/(<([^>]+)>)/ig, '');
+    function parse(exception) {
+        console.log(exception.replace(/(<([^>]+)>)/ig, ''));
+        var message = 'No data. Exeption from service logged.';
         throw message;
     }
 
