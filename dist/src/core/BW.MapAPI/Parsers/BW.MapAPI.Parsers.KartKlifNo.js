@@ -25,6 +25,7 @@ BW.MapAPI.Parsers.KartKlifNo = function() {
                     console.log(this.tagName + "/" + $(this).text());
                 });
             });
+
             return _convertToFeatureResponseXML(properties);
         }
         return _convertToFeatureResponseXML(undefined);
@@ -57,6 +58,6 @@ BW.MapAPI.Parsers.KartKlifNo = function() {
     }
 
     return {
-      Parse: parse
+        Parse: parse
     };
 };

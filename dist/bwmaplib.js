@@ -1,5 +1,5 @@
 /**
- * bwmaplib - v0.2.0 - 2015-04-15
+ * bwmaplib - v0.2.0 - 2015-04-16
  * http://localhost
  *
  * Copyright (c) 2015 
@@ -1202,7 +1202,7 @@ BW.MapAPI.Parsers.Base = function(factory) {
         var xml = "<?xml";
         var html = "<html";
         var msGMLOutput = "msgmloutput";
-
+        var fieldsDirectly = "\":";
         var parserName;
 
         if(result.type){
@@ -1222,6 +1222,9 @@ BW.MapAPI.Parsers.Base = function(factory) {
         else if(result.toLowerCase().indexOf(html) > -1){
             return parseAsHtml(result);
         }
+        else if (result.toLowerCase().indexOf(fieldsDirectly) > -1) {
+            return parseFieldsDirectly(result);
+        }
         else{
             return null; // Should be empty collection
         }
@@ -1234,18 +1237,68 @@ BW.MapAPI.Parsers.Base = function(factory) {
         var exceptionParser = new BW.MapAPI.Parsers.Exception();
         exceptionParser.Parse(exception);
     }
-
-    function parseAsHtml(result){
-        var indexOfTableStart = result.indexOf("<table");
-        if(indexOfTableStart > -1){
-            var tableResult = result.substring(indexOfTableStart, result.length);
-            var indexOfTableEnd = tableResult.indexOf("</body>");
-            tableResult = tableResult.substring(0, indexOfTableEnd);
-            console.log(tableResult);
-            var jsonObject = xml2json.parser(tableResult);
-            console.log(jsonObject);
+    function parseFieldsDirectly(result) {
+        var returnArray = [];
+        var fieldsArray = result.split(' \"');
+        if (fieldsArray != null) {
+            for (var i in fieldsArray) {
+                var subArray = [];
+                if (fieldsArray[i].indexOf('":') > -1) {
+                    var valueArray = fieldsArray[i].split('":');
+                    if (valueArray != null) {
+                        subArray.push(valueArray[0].trim());
+                        subArray.push(valueArray[1].trim());
+                        returnArray.push(subArray);
+                    }
+                }
+            }
         }
-        return [];
+        return _convertToFeatureResponseDirect(returnArray);
+    }
+    function parseAsHtml(result) {
+        var htmlError = result.indexOf("error has occured");
+        if (htmlError == -1) {
+            var indexOfTableStart = result.indexOf("<table");
+            if(indexOfTableStart > -1){
+                var tableResult = result.substring(indexOfTableStart, result.length);
+                var indexOfTableEnd = tableResult.indexOf("</body>");
+                tableResult = tableResult.substring(0, indexOfTableEnd);
+                var jsonObject = xml2json.parser(tableResult);
+                return _convertToFeatureResponseHtml(jsonObject);//[];
+            }
+            return _convertToFeatureResponseHtml(undefined);//[];
+        }
+        return _convertToFeatureResponseHtml(undefined);//[];
+    }
+
+    function _convertToFeatureResponseDirect(jsonFeatures) {
+        var responseFeatureCollection = [];
+        var responseFeature = new BW.Domain.FeatureResponse();
+        if (jsonFeatures !== undefined) {
+            responseFeature.attributes = jsonFeatures;
+            responseFeatureCollection.push(responseFeature);
+        } else {
+            var noattributes = [];
+            noattributes.push(['data', 'no data found']);
+            responseFeature.attributes = noattributes;
+            responseFeatureCollection.push(responseFeature);
+        }
+        return responseFeatureCollection;
+    }
+
+    function _convertToFeatureResponseHtml(jsonFeatures) {
+        var responseFeatureCollection = [];
+        var responseFeature = new BW.Domain.FeatureResponse();
+        if (jsonFeatures !== undefined) {
+            responseFeature.attributes = jsonFeatures;
+            responseFeatureCollection.push(responseFeature);
+        } else {
+            var noattributes = [];
+            noattributes.push(['Data', 'no data found']);
+            responseFeature.attributes = noattributes;
+            responseFeatureCollection.push(responseFeature);
+        }
+        return responseFeatureCollection;
     }
 
     return {
@@ -1382,11 +1435,16 @@ BW.MapAPI.Parsers.GML = function() {
 var BW = BW || {};
 BW.MapAPI = BW.MapAPI || {};
 BW.MapAPI.Parsers = BW.MapAPI.Parsers || {};
+var mapObj = {
+    "j.pattedyr": "jøpattedyr",
+    "mr.de": "mråde",
+    ".kjerring": "åkjerring"
+};
 
 BW.MapAPI.Parsers.GeoJSON = function() {
     function parse(result) {
         var responseFeatureCollection = [];
-
+        var replaceFeatures = [];
         var crs;
         if(result.crs){
             var crsObject = result.crs;
@@ -1407,11 +1465,41 @@ BW.MapAPI.Parsers.GeoJSON = function() {
             responseFeature.crs = crs;
             responseFeature.geometryObject = feature;
             responseFeature.attributes = _getAttributesArray(feature.properties);
-
+            // remove symbols
+            var replaced = [];
+            for (var j in responseFeature.attributes) {
+                replaced = responseFeature.attributes[j];
+                if (replaced != null) {
+                    replaceFeatures.push(replaceUtfError(replaced));
+                }
+            }
+            responseFeature.attributes = replaceFeatures;
             responseFeatureCollection.push(responseFeature);
         }
-
         return responseFeatureCollection;
+    }
+    function replaceUtfError(element) {
+        var sub = [];
+        var replacedValue = "";
+        var attributeName = "";
+        if (element!= null) {
+            if (typeof element[1]== "number") {
+                replacedValue = element[1].toString();
+            }
+
+            if (typeof element[1] == "string") {
+                var re = new RegExp(Object.keys(mapObj).join("|"), "gi");
+                replacedValue = element[1].replace(re, function (matched) {
+                    return mapObj[matched];
+                });
+            }
+            if (element[0]!=="") {
+                attributeName = element[0];
+            }
+        }
+        sub.push(attributeName);
+        sub.push(replacedValue);
+        return sub;
     }
 
     function _getAttributesArray(properties){
@@ -1454,6 +1542,7 @@ BW.MapAPI.Parsers.KartKlifNo = function() {
                     console.log(this.tagName + "/" + $(this).text());
                 });
             });
+
             return _convertToFeatureResponseXML(properties);
         }
         return _convertToFeatureResponseXML(undefined);
@@ -1486,7 +1575,7 @@ BW.MapAPI.Parsers.KartKlifNo = function() {
     }
 
     return {
-      Parse: parse
+        Parse: parse
     };
 };
 var BW = BW || {};
