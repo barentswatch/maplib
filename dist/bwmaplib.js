@@ -1205,6 +1205,11 @@ BW.MapAPI.Parsers.Base = function(factory) {
         var fieldsDirectly = "\":";
         var parserName;
 
+        var emptyResult = jQuery.isEmptyObject(result);
+        if (emptyResult)
+        {
+            return null; // Should be empty collection
+        }
         if(result.type){
             if(result.type == "FeatureCollection"){
                 parserName = 'geoJson';
@@ -1432,13 +1437,15 @@ BW.MapAPI.Parsers.GML = function() {
         Parse: parse
     };
 };
+/* jshint -W100 */
 var BW = BW || {};
 BW.MapAPI = BW.MapAPI || {};
 BW.MapAPI.Parsers = BW.MapAPI.Parsers || {};
 var mapObj = {
-    "j.pattedyr": "jøpattedyr",
-    "mr.de": "mråde",
-    ".kjerring": "åkjerring"
+    "j�pattedyr": "jøpattedyr",
+    "mr�de": "mråde",
+    "h�y": "høy",
+    "�kjerring": "åkjerring"
 };
 
 BW.MapAPI.Parsers.GeoJSON = function() {

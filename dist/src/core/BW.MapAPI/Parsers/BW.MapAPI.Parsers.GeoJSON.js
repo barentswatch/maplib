@@ -1,10 +1,12 @@
+/* jshint -W100 */
 var BW = BW || {};
 BW.MapAPI = BW.MapAPI || {};
 BW.MapAPI.Parsers = BW.MapAPI.Parsers || {};
 var mapObj = {
-    "j.pattedyr": "jøpattedyr",
-    "mr.de": "mråde",
-    ".kjerring": "åkjerring"
+    "j�pattedyr": "jøpattedyr",
+    "mr�de": "mråde",
+    "h�y": "høy",
+    "�kjerring": "åkjerring"
 };
 
 BW.MapAPI.Parsers.GeoJSON = function() {

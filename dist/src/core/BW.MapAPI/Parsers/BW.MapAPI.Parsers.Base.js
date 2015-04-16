@@ -11,6 +11,11 @@ BW.MapAPI.Parsers.Base = function(factory) {
         var fieldsDirectly = "\":";
         var parserName;
 
+        var emptyResult = jQuery.isEmptyObject(result);
+        if (emptyResult)
+        {
+            return null; // Should be empty collection
+        }
         if(result.type){
             if(result.type == "FeatureCollection"){
                 parserName = 'geoJson';
