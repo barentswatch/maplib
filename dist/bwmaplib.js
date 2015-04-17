@@ -1,5 +1,5 @@
 /**
- * bwmaplib - v0.2.0 - 2015-04-16
+ * bwmaplib - v0.2.0 - 2015-04-17
  * http://localhost
  *
  * Copyright (c) 2015 
@@ -393,14 +393,10 @@ BW.MapAPI.FeatureInfo = function(mapImplementation, httpHelper, eventHandler, fe
         var questionMark = '?';
         var urlHasQuestionMark = wmsUrl.indexOf(questionMark) > -1;
         if(!urlHasQuestionMark){
-            //wmsUrl = wmsUrl + encodeURIComponent(questionMark);
             wmsUrl = wmsUrl + questionMark;
         }
 
         var request = 'SERVICE=' + service + '&REQUEST=GETCAPABILITIES';
-        //if(bwSubLayer.source === BW.Domain.SubLayer.SOURCES.proxyWms || bwSubLayer.source == BW.Domain.SubLayer.SOURCES.proxyWmts){
-            //request = encodeURIComponent(request);
-        //}
         getCapabilitiesUrl = wmsUrl + request;
         httpHelper.get(getCapabilitiesUrl).success(parseCallback);
     }
@@ -433,6 +429,7 @@ BW.MapAPI.FeatureInfo = function(mapImplementation, httpHelper, eventHandler, fe
             bwSubLayer.subLayers[0].featureInfo.getFeatureFormat = preferredFormat;
         };
 
+        // Temporary, see BUN-568
         //if (bwSubLayer.subLayers[0].featureInfo.getFeatureInfoFormat === '') {
             getSupportedGetFeatureInfoFormats(bwSubLayer.subLayers[0], callback);
         //}
@@ -479,7 +476,6 @@ BW.MapAPI.FeatureInfo = function(mapImplementation, httpHelper, eventHandler, fe
     /*
         Get Feature functions
      */
-
 
     function handleBoxSelect(boxExtent, layersSupportingGetFeature){
         _trigStartGetInfoRequest(layersSupportingGetFeature);
@@ -845,7 +841,7 @@ BW.MapAPI.Map = function(mapImplementation, eventHandler, featureInfo, layerHand
 
     function showLayer(bwLayer) {
         layerHandler.ShowLayer(bwLayer);
-        assignInfoFormat(bwLayer);  // TODO: Should this be done somewhere else?
+        assignInfoFormat(bwLayer);  // To be changed with BUN-568
     }
 
     function hideLayer(bwLayer) {

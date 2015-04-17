@@ -32,7 +32,7 @@ BW.MapAPI.Map = function(mapImplementation, eventHandler, featureInfo, layerHand
 
     function showLayer(bwLayer) {
         layerHandler.ShowLayer(bwLayer);
-        assignInfoFormat(bwLayer);  // TODO: Should this be done somewhere else?
+        assignInfoFormat(bwLayer);  // To be changed with BUN-568
     }
 
     function hideLayer(bwLayer) {
