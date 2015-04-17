@@ -2,7 +2,7 @@ var BW = BW || {};
 BW.MapAPI = BW.MapAPI || {};
 BW.MapAPI.Parsers = BW.MapAPI.Parsers || {};
 
-BW.MapAPI.Parsers.Factory = function(geoJson, gml, kartKlifNo, fiskeriDir){
+BW.MapAPI.Parsers.Factory = function(geoJson, gml, generalXmlGml, fiskeriDir){
     function createParser(parserName){
         var parser;
         switch (parserName){
@@ -12,8 +12,8 @@ BW.MapAPI.Parsers.Factory = function(geoJson, gml, kartKlifNo, fiskeriDir){
             case 'gml':
                 parser = gml;
                 break;
-            case 'kartKlifNo':
-                parser = kartKlifNo;
+            case 'generalXmlGml':
+                parser = generalXmlGml;
                 break;
             case 'fisheryDirectory':
                 parser = fiskeriDir;

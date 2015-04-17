@@ -25,10 +25,10 @@ BW.MapAPI.Parsers.Base = function(factory) {
             return parseAsException(result);
         }
         else if(result.toLowerCase().indexOf(msGMLOutput) > -1){
-            parserName = 'kartKlifNo';
+            parserName = 'generalXmlGml';
         }
         else if(result.toLowerCase().indexOf(xml) > -1){
-            parserName = 'kartKlifNo';
+            parserName = 'generalXmlGml';
         }
         else if(result.toLowerCase().indexOf(html) > -1){
             return parseAsHtml(result);

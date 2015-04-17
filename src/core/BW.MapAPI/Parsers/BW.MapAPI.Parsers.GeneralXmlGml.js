@@ -3,7 +3,7 @@ var BW = BW || {};
 BW.MapAPI = BW.MapAPI || {};
 BW.MapAPI.Parsers = BW.MapAPI.Parsers || {};
 
-BW.MapAPI.Parsers.KartKlifNo = function() {
+BW.MapAPI.Parsers.GeneralXmlGml = function() {
     function parse(result) {
         var properties = {};
         var insteadOfGml = 'insteadofgml';
