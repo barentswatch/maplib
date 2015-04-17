@@ -178,7 +178,7 @@ BW.MapImplementation.OL3.Map = function(repository, eventHandler, httpHelper, me
         var source;
         var layerFromPool = _getLayerFromPool(bwSubLayer);
 
-        if(layerFromPool != null){
+        if(layerFromPool !== null){
             layer = layerFromPool;
         }
         else{

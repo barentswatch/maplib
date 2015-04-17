@@ -784,7 +784,7 @@ BW.MapAPI.Layers = function(mapImplementation){
         for(var i = 0; i < subLayers.length; i++){
             var subLayer = subLayers[i];
             var thisIndex = mapImplementation.GetLayerIndex(subLayer);
-            if(thisIndex != null){
+            if(thisIndex !== null){
                 indexes.push(thisIndex);
             }
         }
@@ -1241,12 +1241,12 @@ BW.MapAPI.Parsers.Base = function(factory) {
     function parseFieldsDirectly(result) {
         var returnArray = [];
         var fieldsArray = result.split(' \"');
-        if (fieldsArray != null) {
+        if (fieldsArray !== null) {
             for (var i in fieldsArray) {
                 var subArray = [];
                 if (fieldsArray[i].indexOf('":') > -1) {
                     var valueArray = fieldsArray[i].split('":');
-                    if (valueArray != null) {
+                    if (valueArray !== null) {
                         subArray.push(valueArray[0].trim());
                         subArray.push(valueArray[1].trim());
                         returnArray.push(subArray);
@@ -1312,7 +1312,8 @@ BW.MapAPI.Parsers = BW.MapAPI.Parsers || {};
 
 BW.MapAPI.Parsers.Exception = function() {
     function parse(exception) {
-        console.log(exception.replace(/(<([^>]+)>)/ig, ''));
+        if (typeof console === "object") {
+        console.log(exception.replace(/(<([^>]+)>)/ig, ''));}
         var message = 'No data. Exeption from service logged.';
         throw message;
     }
@@ -1426,7 +1427,7 @@ BW.MapAPI.Parsers = BW.MapAPI.Parsers || {};
 
 BW.MapAPI.Parsers.GML = function() {
     function parse(result) {
-        console.log(result);
+        if (typeof console === "object") {console.log(result);}
     }
 
     return {
@@ -1472,7 +1473,7 @@ BW.MapAPI.Parsers.GeoJSON = function() {
             var replaced = [];
             for (var j in responseFeature.attributes) {
                 replaced = responseFeature.attributes[j];
-                if (replaced != null) {
+                if (replaced !== null) {
                     replaceFeatures.push(replaceUtfError(replaced));
                 }
             }
@@ -1485,7 +1486,7 @@ BW.MapAPI.Parsers.GeoJSON = function() {
         var sub = [];
         var replacedValue = "";
         var attributeName = "";
-        if (element!= null) {
+        if (element!== null) {
             if (typeof element[1]== "number") {
                 replacedValue = element[1].toString();
             }
@@ -1539,10 +1540,10 @@ BW.MapAPI.Parsers.KartKlifNo = function() {
         if (featureTag.length > 0) {
             var tagname = featureTag[0].tagName;
             $(result).find(tagname).each(function () {
-                console.log("wildcard(*)=" + featureTag);
+                if (typeof console === "object") {console.log("wildcard(*)=" + featureTag);}
                 $(this).children().each(function () {
                     properties[this.tagName] = $(this).text();
-                    console.log(this.tagName + "/" + $(this).text());
+                    if (typeof console === "object") {console.log(this.tagName + "/" + $(this).text());}
                 });
             });
 
@@ -1569,7 +1570,7 @@ BW.MapAPI.Parsers.KartKlifNo = function() {
     function _getAttributesArrayXML(properties) {
         var attributes = [];
         for (var i in properties) {
-            if (i != "INSTEADOFGMLBOUNDEDBY") {
+            if (i !== "INSTEADOFGMLBOUNDEDBY") {
                 attributes.push([i, properties[i]]);
             }
 
@@ -1588,8 +1589,8 @@ BW.MapAPI.Tools = BW.MapAPI.Tools || {};
 BW.MapAPI.Tools.Tool = function(config){
     var defaults = {
         id: '',
-        activate: function(){ console.log('Not implemented');},
-        deactivate: function(){ console.log('Not implemented');},
+        activate: function(){ if (typeof console === "object") {console.log('Not implemented');}},
+        deactivate: function(){ if (typeof console === "object") {console.log('Not implemented');}},
         messageObject: [],
         description : '',
         isCommand: false
@@ -2270,7 +2271,7 @@ BW.MapImplementation.OL3.Map = function(repository, eventHandler, httpHelper, me
         var source;
         var layerFromPool = _getLayerFromPool(bwSubLayer);
 
-        if(layerFromPool != null){
+        if(layerFromPool !== null){
             layer = layerFromPool;
         }
         else{
@@ -3024,7 +3025,7 @@ BW.MapImplementation.OL3.Time = function() {
 
             var prev = jsonDates[k - 1];
             var curr = jsonDates[k];
-            if (prev.type != curr.type) {
+            if (prev.type !== curr.type) {
                 // Different time formats, not supported
                 return "error";
             }

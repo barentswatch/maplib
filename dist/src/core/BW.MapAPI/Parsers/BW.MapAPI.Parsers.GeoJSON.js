@@ -37,7 +37,7 @@ BW.MapAPI.Parsers.GeoJSON = function() {
             var replaced = [];
             for (var j in responseFeature.attributes) {
                 replaced = responseFeature.attributes[j];
-                if (replaced != null) {
+                if (replaced !== null) {
                     replaceFeatures.push(replaceUtfError(replaced));
                 }
             }
@@ -50,7 +50,7 @@ BW.MapAPI.Parsers.GeoJSON = function() {
         var sub = [];
         var replacedValue = "";
         var attributeName = "";
-        if (element!= null) {
+        if (element!== null) {
             if (typeof element[1]== "number") {
                 replacedValue = element[1].toString();
             }

@@ -51,12 +51,12 @@ BW.MapAPI.Parsers.Base = function(factory) {
     function parseFieldsDirectly(result) {
         var returnArray = [];
         var fieldsArray = result.split(' \"');
-        if (fieldsArray != null) {
+        if (fieldsArray !== null) {
             for (var i in fieldsArray) {
                 var subArray = [];
                 if (fieldsArray[i].indexOf('":') > -1) {
                     var valueArray = fieldsArray[i].split('":');
-                    if (valueArray != null) {
+                    if (valueArray !== null) {
                         subArray.push(valueArray[0].trim());
                         subArray.push(valueArray[1].trim());
                         returnArray.push(subArray);

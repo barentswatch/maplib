@@ -19,10 +19,10 @@ BW.MapAPI.Parsers.KartKlifNo = function() {
         if (featureTag.length > 0) {
             var tagname = featureTag[0].tagName;
             $(result).find(tagname).each(function () {
-                console.log("wildcard(*)=" + featureTag);
+                if (typeof console === "object") {console.log("wildcard(*)=" + featureTag);}
                 $(this).children().each(function () {
                     properties[this.tagName] = $(this).text();
-                    console.log(this.tagName + "/" + $(this).text());
+                    if (typeof console === "object") {console.log(this.tagName + "/" + $(this).text());}
                 });
             });
 
@@ -49,7 +49,7 @@ BW.MapAPI.Parsers.KartKlifNo = function() {
     function _getAttributesArrayXML(properties) {
         var attributes = [];
         for (var i in properties) {
-            if (i != "INSTEADOFGMLBOUNDEDBY") {
+            if (i !== "INSTEADOFGMLBOUNDEDBY") {
                 attributes.push([i, properties[i]]);
             }
 
