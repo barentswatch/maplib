@@ -1440,7 +1440,7 @@ BW.MapAPI.Parsers = BW.MapAPI.Parsers || {};
 var mapObj = {
     "j�pattedyr": "jøpattedyr",
     "mr�de": "mråde",
-    "h�y": "høy",
+    "sj�": "sjø",
     "�kjerring": "åkjerring"
 };
 
