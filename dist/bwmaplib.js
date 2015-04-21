@@ -1472,11 +1472,11 @@ BW.MapAPI.Parsers.GeneralXmlGml = function() {
         if (jsonFeatures !== undefined) {
             responseFeature.attributes = _getAttributesArrayXML(jsonFeatures);
             responseFeatureCollection.push(responseFeature);
-        } else {
-            var noattributes = [];
-            noattributes.push(['data','no data found']);
-            responseFeature.attributes = noattributes;
-            responseFeatureCollection.push(responseFeature);
+        //} else {
+        //    var noattributes = [];
+        //    noattributes.push(['data','no data found']);
+        //    responseFeature.attributes = noattributes;
+        //    responseFeatureCollection.push(responseFeature);
         }
         return responseFeatureCollection;
     }
