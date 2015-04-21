@@ -15,6 +15,7 @@ describe('new BW.MapAPI.FeatureInfo', function() {
         expect(featureInfo.SetInfoMarker).toBeDefined();
         expect(featureInfo.RemoveInfoMarker).toBeDefined();
         expect(featureInfo.GetSupportedGetFeatureInfoFormats).toBeDefined();
+        expect(featureInfo.AssignInfoFormat).toBeDefined();
         expect(featureInfo.GetSupportedGetFeatureFormats).toBeDefined();
         expect(featureInfo.SetInfoMarkerPath).toBeDefined();
     });

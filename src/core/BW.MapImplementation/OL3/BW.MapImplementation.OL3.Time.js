@@ -90,7 +90,7 @@ BW.MapImplementation.OL3.Time = function() {
 
             var prev = jsonDates[k - 1];
             var curr = jsonDates[k];
-            if (prev.type != curr.type) {
+            if (prev.type !== curr.type) {
                 // Different time formats, not supported
                 return "error";
             }

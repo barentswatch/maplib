@@ -3,7 +3,7 @@ var BW = BW || {};
 BW.MapAPI = BW.MapAPI || {};
 BW.MapAPI.Parsers = BW.MapAPI.Parsers || {};
 
-BW.MapAPI.Parsers.KartKlifNo = function() {
+BW.MapAPI.Parsers.GeneralXmlGml = function() {
     function parse(result) {
         var properties = {};
         var insteadOfGml = 'insteadofgml';
@@ -14,7 +14,6 @@ BW.MapAPI.Parsers.KartKlifNo = function() {
         result = result.replace(/xmlns\S*="\S+"/g, '');    // remove namespace tags
         result = result.replace(/ +/g, ' '); // replace multispace with space
         result = result.replace(/\s+>/g, '>'); // space inside tag
-
         var featureTag = $(result).find("*").first().children().last();
         if (featureTag.length > 0) {
             var tagname = featureTag[0].tagName;

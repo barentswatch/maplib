@@ -32,6 +32,7 @@ BW.MapAPI.Map = function(mapImplementation, eventHandler, featureInfo, layerHand
 
     function showLayer(bwLayer) {
         layerHandler.ShowLayer(bwLayer);
+        assignInfoFormat(bwLayer);  // To be changed with BUN-568
     }
 
     function hideLayer(bwLayer) {
@@ -178,6 +179,10 @@ BW.MapAPI.Map = function(mapImplementation, eventHandler, featureInfo, layerHand
 
     function getSupportedGetFeatureInfoFormats(bwSubLayer, callback){
         featureInfo.GetSupportedGetFeatureInfoFormats(bwSubLayer, callback);
+    }
+
+    function assignInfoFormat(bwSubLayer){
+        featureInfo.AssignInfoFormat(bwSubLayer);
     }
 
     function getSupportedGetFeatureFormats(bwSubLayer, callback){
@@ -346,6 +351,7 @@ BW.MapAPI.Map = function(mapImplementation, eventHandler, featureInfo, layerHand
         SetImageInfoMarker: setImageInfoMarker,
         GetSupportedGetFeatureInfoFormats: getSupportedGetFeatureInfoFormats,
         GetSupportedGetFeatureFormats: getSupportedGetFeatureFormats,
+        AssignInfoFormat: assignInfoFormat,
         RemoveInfoMarker: removeInfoMarker,
         ActivateBoxSelect: activateBoxSelect,
         DeactivateBoxSelect: deactivateBoxSelect,

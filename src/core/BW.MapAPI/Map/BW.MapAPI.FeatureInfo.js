@@ -73,13 +73,10 @@ BW.MapAPI.FeatureInfo = function(mapImplementation, httpHelper, eventHandler, fe
         var questionMark = '?';
         var urlHasQuestionMark = wmsUrl.indexOf(questionMark) > -1;
         if(!urlHasQuestionMark){
-            wmsUrl = wmsUrl + encodeURIComponent(questionMark);
+            wmsUrl = wmsUrl + questionMark;
         }
 
         var request = 'SERVICE=' + service + '&REQUEST=GETCAPABILITIES';
-        if(bwSubLayer.source === BW.Domain.SubLayer.SOURCES.proxyWms || bwSubLayer.source == BW.Domain.SubLayer.SOURCES.proxyWmts){
-            request = encodeURIComponent(request);
-        }
         getCapabilitiesUrl = wmsUrl + request;
         httpHelper.get(getCapabilitiesUrl).success(parseCallback);
     }
@@ -92,6 +89,31 @@ BW.MapAPI.FeatureInfo = function(mapImplementation, httpHelper, eventHandler, fe
     /*
         Get Feature Info function
      */
+
+    function assignInfoFormat(bwSubLayer) {
+        //Store supported formats for featureInfo with the layer.
+        var callback = function (formats) {
+            //console.log(formats);
+            // Supported formats, ordered by preference
+            var maplibSupportedFormats = ['application/json', 'application/vnd.ogc.gml', 'application/vnd.ogc.gml/3.1.1', 'text/plain', 'text/html'];
+            var preferredFormat = 'application/json';
+            if (formats.length > 0) {
+                for (var i = 0; i < maplibSupportedFormats.length; i++) {
+                    if (_.contains(formats, maplibSupportedFormats[i])) {
+                        preferredFormat = maplibSupportedFormats[i];
+                        break;
+                    }
+                }
+            }
+            bwSubLayer.subLayers[0].featureInfo.getFeatureInfoFormat = preferredFormat;
+            bwSubLayer.subLayers[0].featureInfo.getFeatureFormat = preferredFormat;
+        };
+
+        // Temporary, see BUN-568
+        //if (bwSubLayer.subLayers[0].featureInfo.getFeatureInfoFormat === '') {
+            getSupportedGetFeatureInfoFormats(bwSubLayer.subLayers[0], callback);
+        //}
+    }
 
     function handlePointSelect(coordinate, layersSupportingGetFeatureInfo){
         if(useInfoMarker === true){
@@ -226,6 +248,7 @@ BW.MapAPI.FeatureInfo = function(mapImplementation, httpHelper, eventHandler, fe
     }
 
     return {
+        AssignInfoFormat: assignInfoFormat,
         HandlePointSelect: handlePointSelect,
         HandleBoxSelect: handleBoxSelect,
         CreateDefaultInfoMarker: createDefaultInfoMarker,

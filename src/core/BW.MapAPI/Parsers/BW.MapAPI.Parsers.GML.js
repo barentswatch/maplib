@@ -4,7 +4,7 @@ BW.MapAPI.Parsers = BW.MapAPI.Parsers || {};
 
 BW.MapAPI.Parsers.GML = function() {
     function parse(result) {
-        console.log(result);
+        if (typeof console === "object") {console.log(result);}
     }
 
     return {

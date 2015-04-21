@@ -12,6 +12,9 @@ module.exports = function ( karma ) {
       <% scripts.forEach( function ( file ) { %>'<%= file %>',
       <% }); %>
       'src/core/**/*.js',
+
+      // fixtures
+      {pattern: 'test/data/*.*', watched: true, served: true, included: false}
     ],
     exclude: [
       'src/core/assets/**/*.js',

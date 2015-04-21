@@ -178,7 +178,7 @@ BW.MapImplementation.OL3.Map = function(repository, eventHandler, httpHelper, me
         var source;
         var layerFromPool = _getLayerFromPool(bwSubLayer);
 
-        if(layerFromPool != null){
+        if(layerFromPool !== null){
             layer = layerFromPool;
         }
         else{
@@ -518,9 +518,9 @@ BW.MapImplementation.OL3.Map = function(repository, eventHandler, httpHelper, me
 
         var view = map.getView();
         var center = view.getCenter();
-        var zoom = view.getZoom().toString();
+        var zoom = view.getZoom();
         if(zoom){
-            retVal.zoom = zoom;
+            retVal.zoom = zoom.toString();
         }
         if(center){
             retVal.x = center[1].toFixed(2);

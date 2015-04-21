@@ -5,8 +5,8 @@ BW.MapAPI.Tools = BW.MapAPI.Tools || {};
 BW.MapAPI.Tools.Tool = function(config){
     var defaults = {
         id: '',
-        activate: function(){ console.log('Not implemented');},
-        deactivate: function(){ console.log('Not implemented');},
+        activate: function(){ if (typeof console === "object") {console.log('Not implemented');}},
+        deactivate: function(){ if (typeof console === "object") {console.log('Not implemented');}},
         messageObject: [],
         description : '',
         isCommand: false

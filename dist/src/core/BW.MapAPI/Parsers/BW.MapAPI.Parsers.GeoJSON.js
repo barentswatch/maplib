@@ -1,11 +1,18 @@
+/* jshint -W100 */
 var BW = BW || {};
 BW.MapAPI = BW.MapAPI || {};
 BW.MapAPI.Parsers = BW.MapAPI.Parsers || {};
+var mapObj = {
+    "j�pattedyr": "jøpattedyr",
+    "mr�de": "mråde",
+    "sj�": "sjø",
+    "�kjerring": "åkjerring"
+};
 
 BW.MapAPI.Parsers.GeoJSON = function() {
     function parse(result) {
         var responseFeatureCollection = [];
-
+        var replaceFeatures = [];
         var crs;
         if(result.crs){
             var crsObject = result.crs;
@@ -26,11 +33,41 @@ BW.MapAPI.Parsers.GeoJSON = function() {
             responseFeature.crs = crs;
             responseFeature.geometryObject = feature;
             responseFeature.attributes = _getAttributesArray(feature.properties);
-
+            // remove symbols
+            var replaced = [];
+            for (var j in responseFeature.attributes) {
+                replaced = responseFeature.attributes[j];
+                if (replaced !== null) {
+                    replaceFeatures.push(replaceUtfError(replaced));
+                }
+            }
+            responseFeature.attributes = replaceFeatures;
             responseFeatureCollection.push(responseFeature);
         }
-
         return responseFeatureCollection;
+    }
+    function replaceUtfError(element) {
+        var sub = [];
+        var replacedValue = "";
+        var attributeName = "";
+        if (element!== null) {
+            if (typeof element[1]== "number") {
+                replacedValue = element[1].toString();
+            }
+
+            if (typeof element[1] == "string") {
+                var re = new RegExp(Object.keys(mapObj).join("|"), "gi");
+                replacedValue = element[1].replace(re, function (matched) {
+                    return mapObj[matched];
+                });
+            }
+            if (element[0]!=="") {
+                attributeName = element[0];
+            }
+        }
+        sub.push(attributeName);
+        sub.push(replacedValue);
+        return sub;
     }
 
     function _getAttributesArray(properties){

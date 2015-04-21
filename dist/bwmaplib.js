@@ -1,5 +1,5 @@
 /**
- * bwmaplib - v0.2.0 - 2015-03-11
+ * bwmaplib - v0.2.0 - 2015-04-21
  * http://localhost
  *
  * Copyright (c) 2015 
@@ -171,11 +171,12 @@ BW.Domain.SubLayer = function(config){
         extent: [-1, 1, -1, 1],
         extentUnits: 'm',
         id: new BW.Utils.Guid().newGuid(),
+        uuid: '',
         transparent: true,
         layerIndex: -1,
         legendGraphicUrl: '',
         crossOrigin: 'anonymous',
-        featureInfo: new BW.Domain.FeatureInfo(),
+        featureInfo: new BW.Domain.FeatureInfo(config),
         wmsTimeSupport: false
     };
     var instance =  $.extend({}, defaults, config); // subLayerInstance
@@ -392,13 +393,10 @@ BW.MapAPI.FeatureInfo = function(mapImplementation, httpHelper, eventHandler, fe
         var questionMark = '?';
         var urlHasQuestionMark = wmsUrl.indexOf(questionMark) > -1;
         if(!urlHasQuestionMark){
-            wmsUrl = wmsUrl + encodeURIComponent(questionMark);
+            wmsUrl = wmsUrl + questionMark;
         }
 
         var request = 'SERVICE=' + service + '&REQUEST=GETCAPABILITIES';
-        if(bwSubLayer.source === BW.Domain.SubLayer.SOURCES.proxyWms || bwSubLayer.source == BW.Domain.SubLayer.SOURCES.proxyWmts){
-            request = encodeURIComponent(request);
-        }
         getCapabilitiesUrl = wmsUrl + request;
         httpHelper.get(getCapabilitiesUrl).success(parseCallback);
     }
@@ -411,6 +409,31 @@ BW.MapAPI.FeatureInfo = function(mapImplementation, httpHelper, eventHandler, fe
     /*
         Get Feature Info function
      */
+
+    function assignInfoFormat(bwSubLayer) {
+        //Store supported formats for featureInfo with the layer.
+        var callback = function (formats) {
+            //console.log(formats);
+            // Supported formats, ordered by preference
+            var maplibSupportedFormats = ['application/json', 'application/vnd.ogc.gml', 'application/vnd.ogc.gml/3.1.1', 'text/plain', 'text/html'];
+            var preferredFormat = 'application/json';
+            if (formats.length > 0) {
+                for (var i = 0; i < maplibSupportedFormats.length; i++) {
+                    if (_.contains(formats, maplibSupportedFormats[i])) {
+                        preferredFormat = maplibSupportedFormats[i];
+                        break;
+                    }
+                }
+            }
+            bwSubLayer.subLayers[0].featureInfo.getFeatureInfoFormat = preferredFormat;
+            bwSubLayer.subLayers[0].featureInfo.getFeatureFormat = preferredFormat;
+        };
+
+        // Temporary, see BUN-568
+        //if (bwSubLayer.subLayers[0].featureInfo.getFeatureInfoFormat === '') {
+            getSupportedGetFeatureInfoFormats(bwSubLayer.subLayers[0], callback);
+        //}
+    }
 
     function handlePointSelect(coordinate, layersSupportingGetFeatureInfo){
         if(useInfoMarker === true){
@@ -545,6 +568,7 @@ BW.MapAPI.FeatureInfo = function(mapImplementation, httpHelper, eventHandler, fe
     }
 
     return {
+        AssignInfoFormat: assignInfoFormat,
         HandlePointSelect: handlePointSelect,
         HandleBoxSelect: handleBoxSelect,
         CreateDefaultInfoMarker: createDefaultInfoMarker,
@@ -760,7 +784,7 @@ BW.MapAPI.Layers = function(mapImplementation){
         for(var i = 0; i < subLayers.length; i++){
             var subLayer = subLayers[i];
             var thisIndex = mapImplementation.GetLayerIndex(subLayer);
-            if(thisIndex != null){
+            if(thisIndex !== null){
                 indexes.push(thisIndex);
             }
         }
@@ -817,6 +841,7 @@ BW.MapAPI.Map = function(mapImplementation, eventHandler, featureInfo, layerHand
 
     function showLayer(bwLayer) {
         layerHandler.ShowLayer(bwLayer);
+        assignInfoFormat(bwLayer);  // To be changed with BUN-568
     }
 
     function hideLayer(bwLayer) {
@@ -963,6 +988,10 @@ BW.MapAPI.Map = function(mapImplementation, eventHandler, featureInfo, layerHand
 
     function getSupportedGetFeatureInfoFormats(bwSubLayer, callback){
         featureInfo.GetSupportedGetFeatureInfoFormats(bwSubLayer, callback);
+    }
+
+    function assignInfoFormat(bwSubLayer){
+        featureInfo.AssignInfoFormat(bwSubLayer);
     }
 
     function getSupportedGetFeatureFormats(bwSubLayer, callback){
@@ -1131,6 +1160,7 @@ BW.MapAPI.Map = function(mapImplementation, eventHandler, featureInfo, layerHand
         SetImageInfoMarker: setImageInfoMarker,
         GetSupportedGetFeatureInfoFormats: getSupportedGetFeatureInfoFormats,
         GetSupportedGetFeatureFormats: getSupportedGetFeatureFormats,
+        AssignInfoFormat: assignInfoFormat,
         RemoveInfoMarker: removeInfoMarker,
         ActivateBoxSelect: activateBoxSelect,
         DeactivateBoxSelect: deactivateBoxSelect,
@@ -1168,9 +1198,14 @@ BW.MapAPI.Parsers.Base = function(factory) {
         var xml = "<?xml";
         var html = "<html";
         var msGMLOutput = "msgmloutput";
-
+        var fieldsDirectly = "\":";
         var parserName;
 
+        var emptyResult = jQuery.isEmptyObject(result);
+        if (emptyResult)
+        {
+            return null; // Should be empty collection
+        }
         if(result.type){
             if(result.type == "FeatureCollection"){
                 parserName = 'geoJson';
@@ -1179,14 +1214,17 @@ BW.MapAPI.Parsers.Base = function(factory) {
         else if(result.toLowerCase().indexOf(exception) > -1){
             return parseAsException(result);
         }
+        else if(result.toLowerCase().indexOf(msGMLOutput) > -1){
+            parserName = 'generalXmlGml';
+        }
         else if(result.toLowerCase().indexOf(xml) > -1){
-            parserName = 'kartKlifNo';
+            parserName = 'generalXmlGml';
         }
         else if(result.toLowerCase().indexOf(html) > -1){
             return parseAsHtml(result);
         }
-        else if(result.toLowerCase().indexOf(msGMLOutput) > -1){
-            parserName = 'fisheryDirectory';
+        else if (result.toLowerCase().indexOf(fieldsDirectly) > -1) {
+            return parseFieldsDirectly(result);
         }
         else{
             return null; // Should be empty collection
@@ -1200,18 +1238,68 @@ BW.MapAPI.Parsers.Base = function(factory) {
         var exceptionParser = new BW.MapAPI.Parsers.Exception();
         exceptionParser.Parse(exception);
     }
-
-    function parseAsHtml(result){
-        var indexOfTableStart = result.indexOf("<table");
-        if(indexOfTableStart > -1){
-            var tableResult = result.substring(indexOfTableStart, result.length);
-            var indexOfTableEnd = tableResult.indexOf("</body>");
-            tableResult = tableResult.substring(0, indexOfTableEnd);
-            console.log(tableResult);
-            var jsonObject = xml2json.parser(tableResult);
-            console.log(jsonObject);
+    function parseFieldsDirectly(result) {
+        var returnArray = [];
+        var fieldsArray = result.split(' \"');
+        if (fieldsArray !== null) {
+            for (var i in fieldsArray) {
+                var subArray = [];
+                if (fieldsArray[i].indexOf('":') > -1) {
+                    var valueArray = fieldsArray[i].split('":');
+                    if (valueArray !== null) {
+                        subArray.push(valueArray[0].trim());
+                        subArray.push(valueArray[1].trim());
+                        returnArray.push(subArray);
+                    }
+                }
+            }
         }
-        return [];
+        return _convertToFeatureResponseDirect(returnArray);
+    }
+    function parseAsHtml(result) {
+        var htmlError = result.indexOf("error has occured");
+        if (htmlError == -1) {
+            var indexOfTableStart = result.indexOf("<table");
+            if(indexOfTableStart > -1){
+                var tableResult = result.substring(indexOfTableStart, result.length);
+                var indexOfTableEnd = tableResult.indexOf("</body>");
+                tableResult = tableResult.substring(0, indexOfTableEnd);
+                var jsonObject = xml2json.parser(tableResult);
+                return _convertToFeatureResponseHtml(jsonObject);//[];
+            }
+            return _convertToFeatureResponseHtml(undefined);//[];
+        }
+        return _convertToFeatureResponseHtml(undefined);//[];
+    }
+
+    function _convertToFeatureResponseDirect(jsonFeatures) {
+        var responseFeatureCollection = [];
+        var responseFeature = new BW.Domain.FeatureResponse();
+        if (jsonFeatures !== undefined) {
+            responseFeature.attributes = jsonFeatures;
+            responseFeatureCollection.push(responseFeature);
+        } else {
+            var noattributes = [];
+            noattributes.push(['data', 'no data found']);
+            responseFeature.attributes = noattributes;
+            responseFeatureCollection.push(responseFeature);
+        }
+        return responseFeatureCollection;
+    }
+
+    function _convertToFeatureResponseHtml(jsonFeatures) {
+        var responseFeatureCollection = [];
+        var responseFeature = new BW.Domain.FeatureResponse();
+        if (jsonFeatures !== undefined) {
+            responseFeature.attributes = jsonFeatures;
+            responseFeatureCollection.push(responseFeature);
+        } else {
+            var noattributes = [];
+            noattributes.push(['Data', 'no data found']);
+            responseFeature.attributes = noattributes;
+            responseFeatureCollection.push(responseFeature);
+        }
+        return responseFeatureCollection;
     }
 
     return {
@@ -1223,8 +1311,10 @@ BW.MapAPI = BW.MapAPI || {};
 BW.MapAPI.Parsers = BW.MapAPI.Parsers || {};
 
 BW.MapAPI.Parsers.Exception = function() {
-    function parse(exception){
-        var message = exception.replace(/(<([^>]+)>)/ig, '');
+    function parse(exception) {
+        if (typeof console === "object") {
+        console.log(exception.replace(/(<([^>]+)>)/ig, ''));}
+        var message = 'No data. Exeption from service logged.';
         throw message;
     }
 
@@ -1232,11 +1322,12 @@ BW.MapAPI.Parsers.Exception = function() {
         Parse: parse
     };
 };
+
 var BW = BW || {};
 BW.MapAPI = BW.MapAPI || {};
 BW.MapAPI.Parsers = BW.MapAPI.Parsers || {};
 
-BW.MapAPI.Parsers.Factory = function(geoJson, gml, kartKlifNo, fiskeriDir){
+BW.MapAPI.Parsers.Factory = function(geoJson, gml, generalXmlGml, fiskeriDir){
     function createParser(parserName){
         var parser;
         switch (parserName){
@@ -1246,8 +1337,8 @@ BW.MapAPI.Parsers.Factory = function(geoJson, gml, kartKlifNo, fiskeriDir){
             case 'gml':
                 parser = gml;
                 break;
-            case 'kartKlifNo':
-                parser = kartKlifNo;
+            case 'generalXmlGml':
+                parser = generalXmlGml;
                 break;
             case 'fisheryDirectory':
                 parser = fiskeriDir;
@@ -1336,21 +1427,90 @@ BW.MapAPI.Parsers = BW.MapAPI.Parsers || {};
 
 BW.MapAPI.Parsers.GML = function() {
     function parse(result) {
-        console.log(result);
+        if (typeof console === "object") {console.log(result);}
     }
 
     return {
         Parse: parse
     };
 };
+// This part covers the ArcGIS Server at http://kart.klif.no/
 var BW = BW || {};
 BW.MapAPI = BW.MapAPI || {};
 BW.MapAPI.Parsers = BW.MapAPI.Parsers || {};
 
+BW.MapAPI.Parsers.GeneralXmlGml = function() {
+    function parse(result) {
+        var properties = {};
+        var insteadOfGml = 'insteadofgml';
+        result = result.replace(/:gml/g, '');
+        result = result.replace(/[\n\f\r\t\0\v]/g, ' '); // replace tab & Co with space
+        result = result.replace(/gml:/g, insteadOfGml);
+        result = result.replace(/s:x/g, 'sx');
+        result = result.replace(/xmlns\S*="\S+"/g, '');    // remove namespace tags
+        result = result.replace(/ +/g, ' '); // replace multispace with space
+        result = result.replace(/\s+>/g, '>'); // space inside tag
+        var featureTag = $(result).find("*").first().children().last();
+        if (featureTag.length > 0) {
+            var tagname = featureTag[0].tagName;
+            $(result).find(tagname).each(function () {
+                if (typeof console === "object") {console.log("wildcard(*)=" + featureTag);}
+                $(this).children().each(function () {
+                    properties[this.tagName] = $(this).text();
+                    if (typeof console === "object") {console.log(this.tagName + "/" + $(this).text());}
+                });
+            });
+
+            return _convertToFeatureResponseXML(properties);
+        }
+        return _convertToFeatureResponseXML(undefined);
+    }
+
+    function _convertToFeatureResponseXML(jsonFeatures) {
+        var responseFeatureCollection = [];
+        var responseFeature = new BW.Domain.FeatureResponse();
+        if (jsonFeatures !== undefined) {
+            responseFeature.attributes = _getAttributesArrayXML(jsonFeatures);
+            responseFeatureCollection.push(responseFeature);
+        } else {
+            var noattributes = [];
+            noattributes.push(['data','no data found']);
+            responseFeature.attributes = noattributes;
+            responseFeatureCollection.push(responseFeature);
+        }
+        return responseFeatureCollection;
+    }
+
+    function _getAttributesArrayXML(properties) {
+        var attributes = [];
+        for (var i in properties) {
+            if (i !== "INSTEADOFGMLBOUNDEDBY") {
+                attributes.push([i, properties[i]]);
+            }
+
+        }
+        return attributes;
+    }
+
+    return {
+        Parse: parse
+    };
+};
+/* jshint -W100 */
+var BW = BW || {};
+BW.MapAPI = BW.MapAPI || {};
+BW.MapAPI.Parsers = BW.MapAPI.Parsers || {};
+var mapObj = {
+    "j�pattedyr": "jøpattedyr",
+    "mr�de": "mråde",
+    "sj�": "sjø",
+    "�kjerring": "åkjerring"
+};
+
 BW.MapAPI.Parsers.GeoJSON = function() {
     function parse(result) {
         var responseFeatureCollection = [];
-
+        var replaceFeatures = [];
         var crs;
         if(result.crs){
             var crsObject = result.crs;
@@ -1371,11 +1531,41 @@ BW.MapAPI.Parsers.GeoJSON = function() {
             responseFeature.crs = crs;
             responseFeature.geometryObject = feature;
             responseFeature.attributes = _getAttributesArray(feature.properties);
-
+            // remove symbols
+            var replaced = [];
+            for (var j in responseFeature.attributes) {
+                replaced = responseFeature.attributes[j];
+                if (replaced !== null) {
+                    replaceFeatures.push(replaceUtfError(replaced));
+                }
+            }
+            responseFeature.attributes = replaceFeatures;
             responseFeatureCollection.push(responseFeature);
         }
-
         return responseFeatureCollection;
+    }
+    function replaceUtfError(element) {
+        var sub = [];
+        var replacedValue = "";
+        var attributeName = "";
+        if (element!== null) {
+            if (typeof element[1]== "number") {
+                replacedValue = element[1].toString();
+            }
+
+            if (typeof element[1] == "string") {
+                var re = new RegExp(Object.keys(mapObj).join("|"), "gi");
+                replacedValue = element[1].replace(re, function (matched) {
+                    return mapObj[matched];
+                });
+            }
+            if (element[0]!=="") {
+                attributeName = element[0];
+            }
+        }
+        sub.push(attributeName);
+        sub.push(replacedValue);
+        return sub;
     }
 
     function _getAttributesArray(properties){
@@ -1391,56 +1581,6 @@ BW.MapAPI.Parsers.GeoJSON = function() {
     };
 };
 
-// This part covers the ArcGIS Server at http://kart.klif.no/
-var BW = BW || {};
-BW.MapAPI = BW.MapAPI || {};
-BW.MapAPI.Parsers = BW.MapAPI.Parsers || {};
-
-BW.MapAPI.Parsers.KartKlifNo = function() {
-    function parse(result) {
-        var jsonResult = [];
-        result = result.replace(/:/g, ''); // Remove colon to prevent xml errors
-        var jsonFeatures = xml2json.parser(result);
-
-        if(jsonFeatures.featureinforesponse){
-            var response = jsonFeatures.featureinforesponse;
-            if(response.fields){
-                var fields = response.fields;
-                if(fields instanceof Array){
-                    for(var i = 0; i < fields.length; i++){
-                        jsonResult.push(fields[i]);
-                    }
-                }
-                else{
-                    jsonResult.push(fields);
-                }
-            }
-        }
-        return _convertToFeatureResponse(jsonResult);
-    }
-
-    function _convertToFeatureResponse(jsonFeatures){
-        var responseFeatureCollection = [];
-        for(var i = 0; i < jsonFeatures.length; i++){
-            var responseFeature = new BW.Domain.FeatureResponse();
-            responseFeature.attributes = _getAttributesArray(jsonFeatures[i]);
-            responseFeatureCollection.push(responseFeature);
-        }
-        return responseFeatureCollection;
-    }
-
-    function _getAttributesArray(properties){
-        var attributes = [];
-        for(var i in properties){
-            attributes.push([i, properties[i]]);
-        }
-        return attributes;
-    }
-
-    return {
-      Parse: parse
-    };
-};
 var BW = BW || {};
 BW.MapAPI = BW.MapAPI || {};
 BW.MapAPI.Tools = BW.MapAPI.Tools || {};
@@ -1448,8 +1588,8 @@ BW.MapAPI.Tools = BW.MapAPI.Tools || {};
 BW.MapAPI.Tools.Tool = function(config){
     var defaults = {
         id: '',
-        activate: function(){ console.log('Not implemented');},
-        deactivate: function(){ console.log('Not implemented');},
+        activate: function(){ if (typeof console === "object") {console.log('Not implemented');}},
+        deactivate: function(){ if (typeof console === "object") {console.log('Not implemented');}},
         messageObject: [],
         description : '',
         isCommand: false
@@ -2130,7 +2270,7 @@ BW.MapImplementation.OL3.Map = function(repository, eventHandler, httpHelper, me
         var source;
         var layerFromPool = _getLayerFromPool(bwSubLayer);
 
-        if(layerFromPool != null){
+        if(layerFromPool !== null){
             layer = layerFromPool;
         }
         else{
@@ -2470,9 +2610,9 @@ BW.MapImplementation.OL3.Map = function(repository, eventHandler, httpHelper, me
 
         var view = map.getView();
         var center = view.getCenter();
-        var zoom = view.getZoom().toString();
+        var zoom = view.getZoom();
         if(zoom){
-            retVal.zoom = zoom;
+            retVal.zoom = zoom.toString();
         }
         if(center){
             retVal.x = center[1].toFixed(2);
@@ -2884,7 +3024,7 @@ BW.MapImplementation.OL3.Time = function() {
 
             var prev = jsonDates[k - 1];
             var curr = jsonDates[k];
-            if (prev.type != curr.type) {
+            if (prev.type !== curr.type) {
                 // Different time formats, not supported
                 return "error";
             }

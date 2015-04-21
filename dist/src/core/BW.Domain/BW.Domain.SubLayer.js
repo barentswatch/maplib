@@ -14,11 +14,12 @@ BW.Domain.SubLayer = function(config){
         extent: [-1, 1, -1, 1],
         extentUnits: 'm',
         id: new BW.Utils.Guid().newGuid(),
+        uuid: '',
         transparent: true,
         layerIndex: -1,
         legendGraphicUrl: '',
         crossOrigin: 'anonymous',
-        featureInfo: new BW.Domain.FeatureInfo(),
+        featureInfo: new BW.Domain.FeatureInfo(config),
         wmsTimeSupport: false
     };
     var instance =  $.extend({}, defaults, config); // subLayerInstance
