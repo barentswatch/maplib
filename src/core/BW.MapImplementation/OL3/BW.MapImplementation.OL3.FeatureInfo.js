@@ -26,11 +26,27 @@ BW.MapImplementation.OL3.FeatureInfo = function(){
         vectorSource.clear();
     }
 
+    function startWaiting() {
+        if (infoMarkerOverlay !== undefined) {
+            var element = infoMarkerOverlay.getElement();
+            if (element !== undefined) {
+                element.className = element.className + " spinner";
+            }
+        }
+    }
+    function stopWaiting() {
+        if (infoMarkerOverlay !== undefined) {
+            var element = infoMarkerOverlay.getElement();
+            if (element !== undefined){
+                element.className = "";
+            }
+        }
+    }
     function showInfoMarker(coordinate, element, map){
         var $element = $(element);
         var height = $element.height();
         var width = $element.width();
-        var infoMarkerOverlay = new ol.Overlay({
+        infoMarkerOverlay = new ol.Overlay({
             element: element,
             stopEvent: false,
             offset: [-width / 2, -height]
@@ -188,6 +204,8 @@ BW.MapImplementation.OL3.FeatureInfo = function(){
 
     return {
         ShowHighlightedFeatures: showHighlightedFeatures,
+        StartWaiting: startWaiting,
+        StopWaiting: stopWaiting,
         ClearHighlightedFeatures: clearHighlightedFeatures,
         SetHighlightStyle: setHighlightStyle,
         ShowInfoMarker: showInfoMarker,

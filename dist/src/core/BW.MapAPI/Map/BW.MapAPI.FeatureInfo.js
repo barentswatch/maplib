@@ -207,9 +207,9 @@ BW.MapAPI.FeatureInfo = function(mapImplementation, httpHelper, eventHandler, fe
         Marker functions for Get Feature info click
      */
 
-    function createDefaultInfoMarker(){
+    function createDefaultInfoMarker() {
         infoMarker = document.createElement("img");
-        infoMarker.src= infoMarkerPath;
+        infoMarker.src = infoMarkerPath;
         _hideInfoMarker();
         _addInfoMarker();
     }

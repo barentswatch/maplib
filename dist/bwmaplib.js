@@ -1,5 +1,5 @@
 /**
- * bwmaplib - v0.2.0 - 2015-04-21
+ * bwmaplib - v0.2.0 - 2015-04-23
  * http://localhost
  *
  * Copyright (c) 2015 
@@ -527,9 +527,9 @@ BW.MapAPI.FeatureInfo = function(mapImplementation, httpHelper, eventHandler, fe
         Marker functions for Get Feature info click
      */
 
-    function createDefaultInfoMarker(){
+    function createDefaultInfoMarker() {
         infoMarker = document.createElement("img");
-        infoMarker.src= infoMarkerPath;
+        infoMarker.src = infoMarkerPath;
         _hideInfoMarker();
         _addInfoMarker();
     }
@@ -1915,11 +1915,27 @@ BW.MapImplementation.OL3.FeatureInfo = function(){
         vectorSource.clear();
     }
 
+    function startWaiting() {
+        if (infoMarkerOverlay !== undefined) {
+            var element = infoMarkerOverlay.getElement();
+            if (element !== undefined) {
+                element.className = element.className + " spinner";
+            }
+        }
+    }
+    function stopWaiting() {
+        if (infoMarkerOverlay !== undefined) {
+            var element = infoMarkerOverlay.getElement();
+            if (element !== undefined){
+                element.className = "";
+            }
+        }
+    }
     function showInfoMarker(coordinate, element, map){
         var $element = $(element);
         var height = $element.height();
         var width = $element.width();
-        var infoMarkerOverlay = new ol.Overlay({
+        infoMarkerOverlay = new ol.Overlay({
             element: element,
             stopEvent: false,
             offset: [-width / 2, -height]
@@ -2077,6 +2093,8 @@ BW.MapImplementation.OL3.FeatureInfo = function(){
 
     return {
         ShowHighlightedFeatures: showHighlightedFeatures,
+        StartWaiting: startWaiting,
+        StopWaiting: stopWaiting,
         ClearHighlightedFeatures: clearHighlightedFeatures,
         SetHighlightStyle: setHighlightStyle,
         ShowInfoMarker: showInfoMarker,
