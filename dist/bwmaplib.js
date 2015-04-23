@@ -959,10 +959,10 @@ BW.MapAPI.Map = function(mapImplementation, eventHandler, featureInfo, layerHand
     }
 
     function startWaiting(){
-        featureInfo.StartWaiting();
+        mapImplementation.StartWaiting();
     }
     function stopWaiting(){
-        featureInfo.StopWaiting();
+        mapImplementation.StopWaiting();
     }
 
     function showHighlightedFeatures(features){
