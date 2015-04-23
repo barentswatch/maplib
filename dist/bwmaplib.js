@@ -958,6 +958,13 @@ BW.MapAPI.Map = function(mapImplementation, eventHandler, featureInfo, layerHand
         featureInfo.RemoveInfoMarker();
     }
 
+    function startWaiting(){
+        featureInfo.StartWaiting();
+    }
+    function stopWaiting(){
+        featureInfo.StopWaiting();
+    }
+
     function showHighlightedFeatures(features){
         mapImplementation.ShowHighlightedFeatures(features);
     }
@@ -1154,6 +1161,8 @@ BW.MapAPI.Map = function(mapImplementation, eventHandler, featureInfo, layerHand
         ActivateInfoClick: activateInfoClick,
         DeactivateInfoClick: deactivateInfoClick,
         ShowHighlightedFeatures: showHighlightedFeatures,
+        StartWaiting: startWaiting,
+        StopWaiting: stopWaiting,
         ClearHighlightedFeatures: clearHighlightedFeatures,
         SetHighlightStyle: setHighlightStyle,
         SetInfoMarker: setInfoMarker,
