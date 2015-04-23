@@ -217,6 +217,7 @@ BW.MapAPI.FeatureInfo = function(mapImplementation, httpHelper, eventHandler, fe
     function _showInfoMarker(coordinate){
         setInfoMarker(infoMarker, true);
         infoMarker.style.visibility = "visible";
+        infoMarker.style.margin = "0";
         mapImplementation.ShowInfoMarker(coordinate, infoMarker);
     }
 
