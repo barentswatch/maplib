@@ -2570,6 +2570,13 @@ BW.MapImplementation.OL3.Map = function(repository, eventHandler, httpHelper, me
         featureInfo.RemoveInfoMarker(element, map);
     }
 
+    function startWaiting(){
+        featureInfo.StartWaiting();
+    }
+    function stopWaiting(){
+        featureInfo.StopWaiting();
+    }
+
     function setHighlightStyle(style){
         featureInfo.SetHighlightStyle(style);
     }
@@ -2732,6 +2739,8 @@ BW.MapImplementation.OL3.Map = function(repository, eventHandler, httpHelper, me
         GetInfoUrl: getFeatureInfoUrl,
         ShowHighlightedFeatures: showHighlightedFeatures,
         ClearHighlightedFeatures: clearHighlightedFeatures,
+        StartWaiting: startWaiting,
+        StopWaiting: stopWaiting,
         ShowInfoMarker: showInfoMarker,
         SetHighlightStyle: setHighlightStyle,
         RemoveInfoMarker: removeInfoMarker,
