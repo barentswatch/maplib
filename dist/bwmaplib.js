@@ -1,5 +1,5 @@
 /**
- * bwmaplib - v0.2.0 - 2015-04-23
+ * bwmaplib - v0.2.0 - 2015-04-24
  * http://localhost
  *
  * Copyright (c) 2015 
@@ -1907,6 +1907,7 @@ BW.MapImplementation.OL3.FeatureInfo = function(){
     var infoKey = "";
     var boundingBox;
     var infoMarkerOverlay;
+    var waitElement;
 
     function showHighlightedFeatures(features, map){
         _ensureHighlightLayer(map);
@@ -1929,7 +1930,10 @@ BW.MapImplementation.OL3.FeatureInfo = function(){
         if (infoMarkerOverlay !== undefined) {
             var element = infoMarkerOverlay.getElement();
             if (element !== undefined) {
-                element.className = element.className + " spinner";
+                element.style.display = "none";
+                waitElement = document.createElement("div");
+                waitElement.className = "featureWait spinner glyphicon glyphicon-refresh";
+                element.parentElement.appendChild(waitElement);
             }
         }
     }
@@ -1937,7 +1941,11 @@ BW.MapImplementation.OL3.FeatureInfo = function(){
         if (infoMarkerOverlay !== undefined) {
             var element = infoMarkerOverlay.getElement();
             if (element !== undefined){
+                element.style.display = "block";
                 element.className = "";
+            }
+            if (waitElement !== undefined){
+                waitElement.className = "featureDone";
             }
         }
     }
