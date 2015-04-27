@@ -88,11 +88,6 @@ BW.MapAPI.Parsers.Base = function(factory) {
         if (jsonFeatures !== undefined) {
             responseFeature.attributes = jsonFeatures;
             responseFeatureCollection.push(responseFeature);
-        //} else {
-        //    var noattributes = [];
-        //    noattributes.push(['data', 'no data found']);
-        //    responseFeature.attributes = noattributes;
-        //    responseFeatureCollection.push(responseFeature);
         }
         return responseFeatureCollection;
     }
@@ -103,11 +98,6 @@ BW.MapAPI.Parsers.Base = function(factory) {
         if (jsonFeatures !== undefined) {
             responseFeature.attributes = jsonFeatures;
             responseFeatureCollection.push(responseFeature);
-        //} else {
-        //    var noattributes = [];
-        //    noattributes.push(['Data', 'no data found']);
-        //    responseFeature.attributes = noattributes;
-        //    responseFeatureCollection.push(responseFeature);
         }
         return responseFeatureCollection;
     }
