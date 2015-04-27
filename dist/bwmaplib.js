@@ -1,5 +1,5 @@
 /**
- * bwmaplib - v0.2.0 - 2015-04-24
+ * bwmaplib - v0.2.0 - 2015-04-27
  * http://localhost
  *
  * Copyright (c) 2015 
@@ -1324,7 +1324,8 @@ BW.MapAPI.Parsers.Exception = function() {
     function parse(exception) {
         if (typeof console === "object") {
         console.log(exception.replace(/(<([^>]+)>)/ig, ''));}
-        var message = 'No data. Exeption from service logged.';
+        //var message = 'No data received from service. Exception was logged to console.';
+        var message = 'Det er ingen data tilgjengelig i dette punktet;';
         throw message;
     }
 
