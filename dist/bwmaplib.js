@@ -1,5 +1,5 @@
 /**
- * bwmaplib - v0.2.0 - 2015-04-21
+ * bwmaplib - v0.2.0 - 2015-04-27
  * http://localhost
  *
  * Copyright (c) 2015 
@@ -527,9 +527,9 @@ BW.MapAPI.FeatureInfo = function(mapImplementation, httpHelper, eventHandler, fe
         Marker functions for Get Feature info click
      */
 
-    function createDefaultInfoMarker(){
+    function createDefaultInfoMarker() {
         infoMarker = document.createElement("img");
-        infoMarker.src= infoMarkerPath;
+        infoMarker.src = infoMarkerPath;
         _hideInfoMarker();
         _addInfoMarker();
     }
@@ -537,6 +537,7 @@ BW.MapAPI.FeatureInfo = function(mapImplementation, httpHelper, eventHandler, fe
     function _showInfoMarker(coordinate){
         setInfoMarker(infoMarker, true);
         infoMarker.style.visibility = "visible";
+        infoMarker.style.margin = "0";
         mapImplementation.ShowInfoMarker(coordinate, infoMarker);
     }
 
@@ -958,6 +959,13 @@ BW.MapAPI.Map = function(mapImplementation, eventHandler, featureInfo, layerHand
         featureInfo.RemoveInfoMarker();
     }
 
+    function startWaiting(){
+        mapImplementation.StartWaiting();
+    }
+    function stopWaiting(){
+        mapImplementation.StopWaiting();
+    }
+
     function showHighlightedFeatures(features){
         mapImplementation.ShowHighlightedFeatures(features);
     }
@@ -1154,6 +1162,8 @@ BW.MapAPI.Map = function(mapImplementation, eventHandler, featureInfo, layerHand
         ActivateInfoClick: activateInfoClick,
         DeactivateInfoClick: deactivateInfoClick,
         ShowHighlightedFeatures: showHighlightedFeatures,
+        StartWaiting: startWaiting,
+        StopWaiting: stopWaiting,
         ClearHighlightedFeatures: clearHighlightedFeatures,
         SetHighlightStyle: setHighlightStyle,
         SetInfoMarker: setInfoMarker,
@@ -1278,11 +1288,6 @@ BW.MapAPI.Parsers.Base = function(factory) {
         if (jsonFeatures !== undefined) {
             responseFeature.attributes = jsonFeatures;
             responseFeatureCollection.push(responseFeature);
-        } else {
-            var noattributes = [];
-            noattributes.push(['data', 'no data found']);
-            responseFeature.attributes = noattributes;
-            responseFeatureCollection.push(responseFeature);
         }
         return responseFeatureCollection;
     }
@@ -1292,11 +1297,6 @@ BW.MapAPI.Parsers.Base = function(factory) {
         var responseFeature = new BW.Domain.FeatureResponse();
         if (jsonFeatures !== undefined) {
             responseFeature.attributes = jsonFeatures;
-            responseFeatureCollection.push(responseFeature);
-        } else {
-            var noattributes = [];
-            noattributes.push(['Data', 'no data found']);
-            responseFeature.attributes = noattributes;
             responseFeatureCollection.push(responseFeature);
         }
         return responseFeatureCollection;
@@ -1314,7 +1314,8 @@ BW.MapAPI.Parsers.Exception = function() {
     function parse(exception) {
         if (typeof console === "object") {
         console.log(exception.replace(/(<([^>]+)>)/ig, ''));}
-        var message = 'No data. Exeption from service logged.';
+        //var message = 'No data received from service. Exception was logged to console.';
+        var message = 'Det er ingen data tilgjengelig i dette punktet';
         throw message;
     }
 
@@ -1471,11 +1472,6 @@ BW.MapAPI.Parsers.GeneralXmlGml = function() {
         var responseFeature = new BW.Domain.FeatureResponse();
         if (jsonFeatures !== undefined) {
             responseFeature.attributes = _getAttributesArrayXML(jsonFeatures);
-            responseFeatureCollection.push(responseFeature);
-        } else {
-            var noattributes = [];
-            noattributes.push(['data','no data found']);
-            responseFeature.attributes = noattributes;
             responseFeatureCollection.push(responseFeature);
         }
         return responseFeatureCollection;
@@ -1897,6 +1893,7 @@ BW.MapImplementation.OL3.FeatureInfo = function(){
     var infoKey = "";
     var boundingBox;
     var infoMarkerOverlay;
+    var waitElement;
 
     function showHighlightedFeatures(features, map){
         _ensureHighlightLayer(map);
@@ -1915,11 +1912,34 @@ BW.MapImplementation.OL3.FeatureInfo = function(){
         vectorSource.clear();
     }
 
+    function startWaiting() {
+        if (infoMarkerOverlay !== undefined) {
+            var element = infoMarkerOverlay.getElement();
+            if (element !== undefined) {
+                element.style.display = "none";
+                waitElement = document.createElement("div");
+                waitElement.className = "featureWait spinner glyphicon glyphicon-refresh";
+                element.parentElement.appendChild(waitElement);
+            }
+        }
+    }
+    function stopWaiting() {
+        if (infoMarkerOverlay !== undefined) {
+            var element = infoMarkerOverlay.getElement();
+            if (element !== undefined){
+                element.style.display = "block";
+                element.className = "";
+            }
+            if (waitElement !== undefined){
+                waitElement.className = "featureDone";
+            }
+        }
+    }
     function showInfoMarker(coordinate, element, map){
         var $element = $(element);
         var height = $element.height();
         var width = $element.width();
-        var infoMarkerOverlay = new ol.Overlay({
+        infoMarkerOverlay = new ol.Overlay({
             element: element,
             stopEvent: false,
             offset: [-width / 2, -height]
@@ -2077,6 +2097,8 @@ BW.MapImplementation.OL3.FeatureInfo = function(){
 
     return {
         ShowHighlightedFeatures: showHighlightedFeatures,
+        StartWaiting: startWaiting,
+        StopWaiting: stopWaiting,
         ClearHighlightedFeatures: clearHighlightedFeatures,
         SetHighlightStyle: setHighlightStyle,
         ShowInfoMarker: showInfoMarker,
@@ -2552,6 +2574,13 @@ BW.MapImplementation.OL3.Map = function(repository, eventHandler, httpHelper, me
         featureInfo.RemoveInfoMarker(element, map);
     }
 
+    function startWaiting(){
+        featureInfo.StartWaiting();
+    }
+    function stopWaiting(){
+        featureInfo.StopWaiting();
+    }
+
     function setHighlightStyle(style){
         featureInfo.SetHighlightStyle(style);
     }
@@ -2714,6 +2743,8 @@ BW.MapImplementation.OL3.Map = function(repository, eventHandler, httpHelper, me
         GetInfoUrl: getFeatureInfoUrl,
         ShowHighlightedFeatures: showHighlightedFeatures,
         ClearHighlightedFeatures: clearHighlightedFeatures,
+        StartWaiting: startWaiting,
+        StopWaiting: stopWaiting,
         ShowInfoMarker: showInfoMarker,
         SetHighlightStyle: setHighlightStyle,
         RemoveInfoMarker: removeInfoMarker,

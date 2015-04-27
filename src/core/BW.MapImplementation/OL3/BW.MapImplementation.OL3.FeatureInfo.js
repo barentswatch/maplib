@@ -8,6 +8,7 @@ BW.MapImplementation.OL3.FeatureInfo = function(){
     var infoKey = "";
     var boundingBox;
     var infoMarkerOverlay;
+    var waitElement;
 
     function showHighlightedFeatures(features, map){
         _ensureHighlightLayer(map);
@@ -26,11 +27,34 @@ BW.MapImplementation.OL3.FeatureInfo = function(){
         vectorSource.clear();
     }
 
+    function startWaiting() {
+        if (infoMarkerOverlay !== undefined) {
+            var element = infoMarkerOverlay.getElement();
+            if (element !== undefined) {
+                element.style.display = "none";
+                waitElement = document.createElement("div");
+                waitElement.className = "featureWait spinner glyphicon glyphicon-refresh";
+                element.parentElement.appendChild(waitElement);
+            }
+        }
+    }
+    function stopWaiting() {
+        if (infoMarkerOverlay !== undefined) {
+            var element = infoMarkerOverlay.getElement();
+            if (element !== undefined){
+                element.style.display = "block";
+                element.className = "";
+            }
+            if (waitElement !== undefined){
+                waitElement.className = "featureDone";
+            }
+        }
+    }
     function showInfoMarker(coordinate, element, map){
         var $element = $(element);
         var height = $element.height();
         var width = $element.width();
-        var infoMarkerOverlay = new ol.Overlay({
+        infoMarkerOverlay = new ol.Overlay({
             element: element,
             stopEvent: false,
             offset: [-width / 2, -height]
@@ -188,6 +212,8 @@ BW.MapImplementation.OL3.FeatureInfo = function(){
 
     return {
         ShowHighlightedFeatures: showHighlightedFeatures,
+        StartWaiting: startWaiting,
+        StopWaiting: stopWaiting,
         ClearHighlightedFeatures: clearHighlightedFeatures,
         SetHighlightStyle: setHighlightStyle,
         ShowInfoMarker: showInfoMarker,
