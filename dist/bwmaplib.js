@@ -1325,7 +1325,7 @@ BW.MapAPI.Parsers.Exception = function() {
         if (typeof console === "object") {
         console.log(exception.replace(/(<([^>]+)>)/ig, ''));}
         //var message = 'No data received from service. Exception was logged to console.';
-        var message = 'Det er ingen data tilgjengelig i dette punktet;';
+        var message = 'Det er ingen data tilgjengelig i dette punktet';
         throw message;
     }
 
