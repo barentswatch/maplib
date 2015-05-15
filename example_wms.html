@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style type="text/css">
+             html, body {
+                 height:100%;
+                 width:100%;
+                 padding: 0;
+                 margin: 0;
+             }
+
+             #map {
+                 width:100%;
+                 height:90%;
+                 background-color: #D8E7EF;
+             }
+         </style>
+    </head>
+<body>
+
+<div id="map"></div>
+<script type="text/javascript" src="vendor/openlayers3/build/ol.js"></script>
+<script type="text/javascript" src="vendor/proj4/dist/proj4.js"></script>
+<script type="text/javascript" src="dist/bwmaplib.js"></script>
+
+<script type="text/javascript">
+    (function () {
+        'use strict';
+
+        var config = {
+            "id": 76,
+            "name": "WMS_3857",
+            "comment": "",
+            "useCategories": true,
+            "categories": [
+                {
+                    "id": 186,
+                    "catId": 999,
+                    "name": "cat_999",
+                    "isOpen": true,
+                    "subCategories": [],
+                    "parentId": -1
+                },
+                {
+                    "id": 187,
+                    "catId": 1,
+                    "name": "cat_1",
+                    "isOpen": true,
+                    "subCategories": [],
+                    "parentId": -1
+                }
+            ],
+            "numZoomLevels": 18,
+            "newMaxRes": 20000,
+            "renderer": "canvas",
+            "center": [
+                647995.158314,
+                9418834.606919
+            ],
+            "zoom": 4,
+            "layers": [
+                {
+                    "id": 5752,
+                    "subLayers": [
+                        {
+                            "id": 5752,
+                            "name": "havbunn_grunnkart",
+                            "providerName": "",
+                            "source": "WMTS",
+                            "url": "http://opencache.statkart.no/gatekeeper/gk/gk.open_wmts?",
+                            "format": "image/png",
+                            "coordinate_system": "EPSG:3857",
+                            "extent": [
+                                -20037508.34,
+                                -20037508.345578495,
+                                20037508.345578495,
+                                20037508.34
+                            ],
+                            "extentUnits": "m",
+                            "transparent": false,
+                            "tiled": true,
+                            "legendGraphicUrl": "",
+                            "isBaseLayer": false,
+                            "featureInfo": {
+                                "id": 0,
+                                "supportsGetFeatureInfo": true,
+                                "getFeatureInfoFormat": "application/json",
+                                "getFeatureInfoCrs": "",
+                                "supportsGetFeature": true,
+                                "getFeatureBaseUrl": "",
+                                "getFeatureFormat": "application/json",
+                                "getFeatureCrs": "EPSG:4326"
+                            },
+                            "matrixSet": "EPSG:3857",
+                            "epsgCode": null,
+                            "uuid": null,
+                            "maxResolution": "156543",
+                            "numZoomLevels": 18,
+                            "centerX": 647995.158314,
+                            "centerY": 9418834.606919,
+                            "initZoom": 4,
+                            "wmsTimeSupport": false
+                        }
+                    ],
+                    "categoryId": 999,
+                    "name": "Havbunn grunnkart",
+                    "visibleOnLoad": true,
+                    "isBaseLayer": true,
+                    "previewActive": false,
+                    "opacity": 1,
+                    "mapLayerIndex": 0,
+                    "legendGraphicsUrls": null,
+                    "selectedLayerOpen": false
+                },
+                {
+                    "id": 1218,
+                    "subLayers": [
+                        {
+                            "id": 1218,
+                            "name": "1_nautisk_mil",
+                            "providerName": "",
+                            "source": "WMS",
+                            "url": "http://wms.geonorge.no/skwms1/wms.nmg?",
+                            "format": "image/png",
+                            "coordinate_system": "EPSG:3857",
+                            "extent": [
+                                -20037508.34,
+                                -20037508.345578495,
+                                20037508.345578495,
+                                20037508.34
+                            ],
+                            "extentUnits": "m",
+                            "transparent": false,
+                            "tiled": false,
+                            "legendGraphicUrl": "http://wms.geonorge.no/skwms1/wms.nmg?&Request=GetLegendGraphic&Version=1.0.0&Format=image/png&Width=20&Height=20&Layer=1_nautisk_mil",
+                            "isBaseLayer": false,
+                            "featureInfo": {
+                                "id": 0,
+                                "supportsGetFeatureInfo": true,
+                                "getFeatureInfoFormat": "application/json",
+                                "getFeatureInfoCrs": "",
+                                "supportsGetFeature": true,
+                                "getFeatureBaseUrl": "",
+                                "getFeatureFormat": "application/json",
+                                "getFeatureCrs": "EPSG:4326"
+                            },
+                            "matrixSet": "WMS",
+                            "epsgCode": null,
+                            "uuid": "f25226c4-9e33-46f4-92a9-93180ed57dd6",
+                            "maxResolution": "0",
+                            "numZoomLevels": 18,
+                            "centerX": 0,
+                            "centerY": 0,
+                            "initZoom": 0,
+                            "wmsTimeSupport": false
+                        }
+                    ],
+                    "categoryId": 1,
+                    "name": "1 nautisk mil",
+                    "visibleOnLoad": true,
+                    "isBaseLayer": false,
+                    "previewActive": false,
+                    "opacity": 1,
+                    "mapLayerIndex": 0,
+                    "legendGraphicsUrls": null,
+                    "selectedLayerOpen": false
+                },
+                {
+                    "id": 1919,
+                    "subLayers": [
+                        {
+                            "id": 1919,
+                            "name": "test:areavalue",
+                            "providerName": "",
+                            "source": "WMS",
+                            "url": "http://maps.imr.no/geoserver/wms?LAYERS=test%3Aareavalue&SLD=http%3A%2F%2Fwww.imr.no%2Fgeodata%2Fspring%2Fgetcodsld25_29cm_2010y.html%3Ffile%3Dcod_25-29cm_y2010_depthW.sld&",
+                            "format": "image/png",
+                            "coordinate_system": "EPSG:3857",
+                            "extent": [
+                                -20037508.34,
+                                -20037508.345578495,
+                                20037508.345578495,
+                                20037508.34
+                            ],
+                            "extentUnits": "m",
+                            "transparent": false,
+                            "tiled": false,
+                            "legendGraphicUrl": "http://maps.imr.no/geoserver/wms?&Request=GetLegendGraphic&Version=1.0.0&Format=image/png&Width=20&Height=20&Layer=test:areavalue",
+                            "isBaseLayer": false,
+                            "featureInfo": {
+                                "id": 0,
+                                "supportsGetFeatureInfo": true,
+                                "getFeatureInfoFormat": "application/json",
+                                "getFeatureInfoCrs": "",
+                                "supportsGetFeature": true,
+                                "getFeatureBaseUrl": "",
+                                "getFeatureFormat": "application/json",
+                                "getFeatureCrs": "EPSG:4326"
+                            },
+                            "matrixSet": "WMS",
+                            "epsgCode": null,
+                            "uuid": "f69442df-5216-4b3e-acff-ba85918ffec2",
+                            "maxResolution": "0",
+                            "numZoomLevels": 18,
+                            "centerX": 0,
+                            "centerY": 0,
+                            "initZoom": 0,
+                            "wmsTimeSupport": false
+                        }
+                    ],
+                    "categoryId": 1,
+                    "name": "cod 2010 25-29cm depth B10",
+                    "visibleOnLoad": true,
+                    "isBaseLayer": false,
+                    "previewActive": false,
+                    "opacity": 1,
+                    "mapLayerIndex": 0,
+                    "legendGraphicsUrls": null,
+                    "selectedLayerOpen": false
+                },
+                {
+                    "id": 1234,
+                    "subLayers": [
+                        {
+                            "id": 1234,
+                            "name": "200_nautiske_mil",
+                            "providerName": "",
+                            "source": "WMS",
+                            "url": "http://wms.geonorge.no/skwms1/wms.nmg?",
+                            "format": "image/png",
+                            "coordinate_system": "EPSG:3857",
+                            "extent": [
+                                -20037508.34,
+                                -20037508.345578495,
+                                20037508.345578495,
+                                20037508.34
+                            ],
+                            "extentUnits": "m",
+                            "transparent": false,
+                            "tiled": false,
+                            "legendGraphicUrl": "http://wms.geonorge.no/skwms1/wms.nmg?&Request=GetLegendGraphic&Version=1.0.0&Format=image/png&Width=20&Height=20&Layer=200_nautiske_mil",
+                            "isBaseLayer": false,
+                            "featureInfo": {
+                                "id": 0,
+                                "supportsGetFeatureInfo": true,
+                                "getFeatureInfoFormat": "application/json",
+                                "getFeatureInfoCrs": "",
+                                "supportsGetFeature": true,
+                                "getFeatureBaseUrl": "",
+                                "getFeatureFormat": "application/json",
+                                "getFeatureCrs": "EPSG:4326"
+                            },
+                            "matrixSet": "WMS",
+                            "epsgCode": null,
+                            "uuid": "6b73fef8-7c74-4b1b-8043-a34bcb58e230",
+                            "maxResolution": "0",
+                            "numZoomLevels": 18,
+                            "centerX": 0,
+                            "centerY": 0,
+                            "initZoom": 0,
+                            "wmsTimeSupport": false
+                        }
+                    ],
+                    "categoryId": 1,
+                    "name": "200 nautiske mil",
+                    "visibleOnLoad": true,
+                    "isBaseLayer": false,
+                    "previewActive": false,
+                    "opacity": 1,
+                    "mapLayerIndex": 0,
+                    "legendGraphicsUrls": null,
+                    "selectedLayerOpen": false
+                },
+                {
+                    "id": 1825,
+                    "subLayers": [
+                        {
+                            "id": 1825,
+                            "name": "layer_34",
+                            "providerName": "",
+                            "source": "WMS",
+                            "url": "http://wms.nina.no/seapop/wms.aspx?",
+                            "format": "image/png",
+                            "coordinate_system": "EPSG:3857",
+                            "extent": [
+                                -20037508.34,
+                                -20037508.345578495,
+                                20037508.345578495,
+                                20037508.34
+                            ],
+                            "extentUnits": "m",
+                            "transparent": false,
+                            "tiled": false,
+                            "legendGraphicUrl": "http://wms.nina.no/seapop/wms.aspx?&Request=GetLegendGraphic&Version=1.0.0&Format=image/png&Width=20&Height=20&Layer=layer_34",
+                            "isBaseLayer": false,
+                            "featureInfo": {
+                                "id": 0,
+                                "supportsGetFeatureInfo": true,
+                                "getFeatureInfoFormat": "application/json",
+                                "getFeatureInfoCrs": "",
+                                "supportsGetFeature": true,
+                                "getFeatureBaseUrl": "",
+                                "getFeatureFormat": "application/json",
+                                "getFeatureCrs": "EPSG:4326"
+                            },
+                            "matrixSet": "WMS",
+                            "epsgCode": null,
+                            "uuid": "66c0395f-d6cb-473c-bb76-5ca337b6be84",
+                            "maxResolution": "0",
+                            "numZoomLevels": 18,
+                            "centerX": 0,
+                            "centerY": 0,
+                            "initZoom": 0,
+                            "wmsTimeSupport": false
+                        }
+                    ],
+                    "categoryId": 1,
+                    "name": "Gravand, sommer",
+                    "visibleOnLoad": true,
+                    "isBaseLayer": false,
+                    "previewActive": false,
+                    "opacity": 1,
+                    "mapLayerIndex": 0,
+                    "legendGraphicsUrls": null,
+                    "selectedLayerOpen": false
+                },
+                {
+                    "id": 1286,
+                    "subLayers": [
+                        {
+                            "id": 1286,
+                            "name": "Seismic_areas",
+                            "providerName": "",
+                            "source": "WMS",
+                            "url": "http://npdwms.npd.no/npdwmsmap_wgs84.asp?service=wms&request=getcapabilities",
+                            "format": "image/png",
+                            "coordinate_system": "EPSG:3857",
+                            "extent": [
+                                -20037508.34,
+                                -20037508.345578495,
+                                20037508.345578495,
+                                20037508.34
+                            ],
+                            "extentUnits": "m",
+                            "transparent": false,
+                            "tiled": false,
+                            "legendGraphicUrl": "http://npdwms.npd.no/npdwmsmap_wgs84.asp?&Request=GetLegendGraphic&Version=1.0.0&Format=image/png&Width=20&Height=20&Layer=Seismic_areas",
+                            "isBaseLayer": false,
+                            "featureInfo": {
+                                "id": 0,
+                                "supportsGetFeatureInfo": true,
+                                "getFeatureInfoFormat": "application/json",
+                                "getFeatureInfoCrs": "",
+                                "supportsGetFeature": true,
+                                "getFeatureBaseUrl": "",
+                                "getFeatureFormat": "application/json",
+                                "getFeatureCrs": "EPSG:4326"
+                            },
+                            "matrixSet": "WMS",
+                            "epsgCode": null,
+                            "uuid": "748e7d8b-c2eb-4901-9eec-98cfc59ebcff",
+                            "maxResolution": "0",
+                            "numZoomLevels": 18,
+                            "centerX": 0,
+                            "centerY": 0,
+                            "initZoom": 0,
+                            "wmsTimeSupport": false
+                        }
+                    ],
+                    "categoryId": 1,
+                    "name": "Seismic area (wms)",
+                    "visibleOnLoad": true,
+                    "isBaseLayer": false,
+                    "previewActive": false,
+                    "opacity": 1,
+                    "mapLayerIndex": 0,
+                    "legendGraphicsUrls": null,
+                    "selectedLayerOpen": false
+                },
+                {
+                    "id": 2156,
+                    "subLayers": [
+                        {
+                            "id": 2156,
+                            "name": "pl_all",
+                            "providerName": "",
+                            "source": "WMS",
+                            "url": "http://npdwms.npd.no/npdwmsmap_wgs84.asp?service=wms&request=getcapabilities",
+                            "format": "image/png",
+                            "coordinate_system": "EPSG:3857",
+                            "extent": [
+                                -20037508.34,
+                                -20037508.345578495,
+                                20037508.345578495,
+                                20037508.34
+                            ],
+                            "extentUnits": "m",
+                            "transparent": false,
+                            "tiled": false,
+                            "legendGraphicUrl": "http://npdwms.npd.no/npdwmsmap_wgs84.asp?&Request=GetLegendGraphic&Version=1.0.0&Format=image/png&Width=20&Height=20&Layer=pl_all",
+                            "isBaseLayer": false,
+                            "featureInfo": {
+                                "id": 0,
+                                "supportsGetFeatureInfo": true,
+                                "getFeatureInfoFormat": "application/json",
+                                "getFeatureInfoCrs": "",
+                                "supportsGetFeature": true,
+                                "getFeatureBaseUrl": "",
+                                "getFeatureFormat": "application/json",
+                                "getFeatureCrs": "EPSG:4326"
+                            },
+                            "matrixSet": "WMS",
+                            "epsgCode": null,
+                            "uuid": "3645d4c5-a590-42c9-a9d2-e45d874a9f36",
+                            "maxResolution": "0",
+                            "numZoomLevels": 18,
+                            "centerX": 0,
+                            "centerY": 0,
+                            "initZoom": 0,
+                            "wmsTimeSupport": false
+                        }
+                    ],
+                    "categoryId": 1,
+                    "name": "Production licences (wms)",
+                    "visibleOnLoad": true,
+                    "isBaseLayer": false,
+                    "previewActive": false,
+                    "opacity": 1,
+                    "mapLayerIndex": 0,
+                    "legendGraphicsUrls": null,
+                    "selectedLayerOpen": false
+                }
+            ],
+            "coordinate_system": "EPSG:3857",
+            "extent": [
+                -20037508.34,
+                -20037508.345578495,
+                20037508.345578495,
+                20037508.34
+            ],
+            "extentUnits": "m",
+            "languages": {
+                "en": {
+                    "1": "wm",
+                    "999": "dummyCategory",
+                    "1218": "1 nautisk mil",
+                    "1234": "200 nautiske mil",
+                    "1286": "Seismic area (wms)",
+                    "1825": "Gravand, sommer",
+                    "1919": "cod 2010 25-29cm depth B10",
+                    "2156": "Production licences (wms)",
+                    "5752": "Havbunn grunnkart"
+                },
+                "no": {
+                    "1": "Webmercator",
+                    "999": "dummyCategory",
+                    "1218": "1 nautisk mil",
+                    "1234": "200 nautiske mil",
+                    "1286": "Seismic area (wms)",
+                    "1825": "Gravand, sommer",
+                    "1919": "cod 2010 25-29cm depth B10",
+                    "2156": "Production licences (wms)",
+                    "5752": "Havbunn grunnkart"
+                }
+            },
+        };
+
+        var eventHandler = new BW.Events.EventHandler();
+        var mapImplementation = new BW.MapImplementation.OL3.Map(
+            null,
+            eventHandler
+        );
+        var layerHandler = new BW.MapAPI.Layers(mapImplementation);
+        var categoryHandler = new BW.MapAPI.Categories();
+
+        var map = new BW.MapAPI.Map(
+            mapImplementation,
+            eventHandler,
+            null,
+            layerHandler,
+            categoryHandler
+        );
+
+        map.Init('map', config);
+
+        console.log("Categories:");
+        var mapCats = map.GetCategories();
+        for (var c = 0; c < mapCats.length; c++){
+            console.log("Id:" + mapCats[c].id + " name:" + mapCats[c].name);
+        }
+
+        console.log("Baselayers:");
+        var baseLayers = map.GetBaseLayers();
+        for (c = 0; c < baseLayers.length; c++){
+            console.log("Id:" + baseLayers[c].id + " name:" + baseLayers[c].name);
+        }
+
+        console.log("Overlaylayers:");
+        var overlayLayers = map.GetOverlayLayers();
+        for (c = 0; c < overlayLayers.length; c++){
+            console.log("Id:" + overlayLayers[c].id + " name:" + overlayLayers[c].name);
+        }
+
+
+
+    }());
+</script>
+
+</body>
+</html>
