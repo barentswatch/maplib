@@ -13,7 +13,7 @@
 
              #map {
                  width:100%;
-                 height:90%;
+                 height:100%;
                  background-color: #D8E7EF;
              }
          </style>
@@ -485,23 +485,52 @@
 
         map.Init('map', config);
 
-        console.log("Categories:");
-        var mapCats = map.GetCategories();
-        for (var c = 0; c < mapCats.length; c++){
-            console.log("Id:" + mapCats[c].id + " name:" + mapCats[c].name);
-        }
-
-        console.log("Baselayers:");
+        console.log("GetBaseLayers:");
         var baseLayers = map.GetBaseLayers();
-        for (c = 0; c < baseLayers.length; c++){
+        var aBaseLayer, aOverlayLayer;
+        for (var c = 0; c < baseLayers.length; c++){
             console.log("Id:" + baseLayers[c].id + " name:" + baseLayers[c].name);
+            aBaseLayer = baseLayers[c];
         }
 
-        console.log("Overlaylayers:");
+        console.log("SetBaseLayer:" + aBaseLayer.id);
+        map.SetBaseLayer(aBaseLayer);
+
+        console.log("GetOverlayLayers:");
         var overlayLayers = map.GetOverlayLayers();
         for (c = 0; c < overlayLayers.length; c++){
             console.log("Id:" + overlayLayers[c].id + " name:" + overlayLayers[c].name);
+            aOverlayLayer = overlayLayers[c];
         }
+
+        console.log("GetLayerById:" + aOverlayLayer.id);
+        aOverlayLayer = map.GetLayerById(aOverlayLayer.id);
+        console.log("id:" + aOverlayLayer.id);
+
+
+        console.log("HideLayer:" + aOverlayLayer.id);
+        map.HideLayer(aOverlayLayer);
+
+        //console.log("ShowLayer:");
+        //map.ShowLayer(aOverlayLayer);
+
+//        console.log("GetVisibleBaseLayers:");
+//        baseLayers = map.GetVisibleBaseLayers();
+//        for (c = 0; c < baseLayers.length; c++){
+//            console.log("Id:" + baseLayers[c].id + " name:" + baseLayers[c].name);
+//        }
+
+//        console.log("GetVisibleSubLayers:");
+//        overlayLayers = map.GetVisibleSubLayers();
+//        for (c = 0; c < overlayLayers.length; c++){
+//            console.log("Id:" + overlayLayers[c].id + " name:" + overlayLayers[c].name);
+//        }
+
+        console.log("MoveLayerToIndex:");
+        map.MoveLayerToIndex(aOverlayLayer, 0);
+
+//        console.log("ShouldBeVisible:");
+//        map.ShouldBeVisible();
 
     }());
 </script>
