@@ -17,7 +17,7 @@
   ],
   "dependencies": {
     "jquery": "*",
-    "openlayers3": "https://github.com/openlayers/ol3/releases/download/v3.4.0/v3.4.0.zip",
+    "openlayers3": "https://github.com/openlayers/ol3/releases/download/v3.6.0/v3.6.0.zip",
     "xml2json": "*",
     "proj4": "*"
   },
