@@ -1,5 +1,5 @@
 /**
- * bwmaplib - v0.2.0 - 2015-06-11
+ * bwmaplib - v0.2.0 - 2015-06-19
  * http://localhost
  *
  * Copyright (c) 2015 
@@ -110,13 +110,14 @@ BW.Domain.LegendGraphic = function(config){
         request : "GetLegendGraphic",
         version : "1.0.0",
         layer : '',
-        url : ''
+        url : '',
+        service : 'WMS'
     };
 
     var instance =  $.extend({}, defaults, config);
 
     function getLegendGraphicUrl (){
-        return instance.url + "&Request=" + instance.request + "&Version=" + instance.version + "&Format=" + instance.format + "&Width=" + instance.width + "&Height=" + instance.height + "&Layer=" + instance.layer;
+        return instance.url + "&Request=" + instance.request + "&Version=" + instance.version + "&Service=" + instance.service + "&Format=" + instance.format + "&Width=" + instance.width + "&Height=" + instance.height + "&Layer=" + instance.layer;
     }
 
     return {
