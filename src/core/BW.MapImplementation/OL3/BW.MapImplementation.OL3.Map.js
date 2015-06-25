@@ -143,6 +143,8 @@ BW.MapImplementation.OL3.Map = function(repository, eventHandler, httpHelper, me
         }
 
         map.getLayers().insertAt(0, layer);
+
+        _trigLayersChanged();
     }
 
     function hideLayer(bwSubLayer){
