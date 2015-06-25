@@ -1,5 +1,5 @@
 /**
- * bwmaplib - v0.2.0 - 2015-06-19
+ * bwmaplib - v0.2.0 - 2015-06-25
  * http://localhost
  *
  * Copyright (c) 2015 
@@ -664,6 +664,20 @@ BW.MapAPI.Layers = function(mapImplementation){
         _showBaseLayer(bwLayer);
     }
 
+    function _showBaseLayer(bwLayer) {
+        var subLayers = bwLayer.subLayers;
+        for(var j = 0; j < subLayers.length; j++){
+            var bwSubLayer = subLayers[j];
+            mapImplementation.HideLayer(bwSubLayer);
+            if(shouldBeVisible(bwSubLayer)){
+                mapImplementation.ShowBaseLayer(bwSubLayer);
+            }
+        }
+
+        bwLayer.isVisible = true;
+        _recalculateMapLayerIndexes();
+    }
+
     function showLayer(bwLayer) {
         var subLayers = bwLayer.subLayers;
         for(var j = 0; j < subLayers.length; j++){
@@ -742,20 +756,6 @@ BW.MapAPI.Layers = function(mapImplementation){
                 mapImplementation.MoveLayerToIndex(subLayer, targetLayerIndex);
             }
         }
-    }
-
-    function _showBaseLayer(bwLayer) {
-        var subLayers = bwLayer.subLayers;
-        for(var j = 0; j < subLayers.length; j++){
-            var bwSubLayer = subLayers[j];
-            mapImplementation.HideLayer(bwSubLayer);
-            if(shouldBeVisible(bwSubLayer)){
-                mapImplementation.ShowBaseLayer(bwSubLayer);
-            }
-        }
-
-        bwLayer.isVisible = true;
-        _recalculateMapLayerIndexes();
     }
 
     function _recalculateMapLayerIndexes(){
@@ -2258,6 +2258,8 @@ BW.MapImplementation.OL3.Map = function(repository, eventHandler, httpHelper, me
         }
 
         map.getLayers().insertAt(0, layer);
+
+        _trigLayersChanged();
     }
 
     function hideLayer(bwSubLayer){
