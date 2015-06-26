@@ -368,14 +368,13 @@ BW.MapImplementation.OL3.Map = function(repository, eventHandler, httpHelper, me
         for (var i = 0; i < layers.length; i++) {
             var layer = layers[i];
             if (layer.getVisible() === true) {
-                               visibleLayers.push(layers[i]);
+               visibleLayers.push(layers[i]);
             }
         }
-
         visibleLayers.sort(_compareMapLayerIndex);
         var result = [];
         for(var j = 0; j < visibleLayers.length; j++){
-            result.push(visibleLayers[j].guid + ':' + visibleLayers[j].opacity);
+            result.push(visibleLayers[j].guid + ':' +  visibleLayers[j].getOpacity() * 100);
         }
         return result.join(",");
     }
