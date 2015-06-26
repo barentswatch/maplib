@@ -260,14 +260,21 @@ BW.MapAPI.Map = function(mapImplementation, eventHandler, featureInfo, layerHand
         if(viewPropertyObject.layers){
             var layerGuids = viewPropertyObject.layers;
             var guids = layerGuids.split(",");
-            guids.forEach(function (guid){
+            guids.forEach(function (layerinfo){
+                var guid = layerinfo;
+                var opacity = 100;
+                var s = layerinfo.split(':');
+                if (s.count===2) {
+                    guid = s[0];
+                    opacity = s[1];
+                }
                 var layer = getLayerById(guid);
                 if (layer) {
                     if(layer.isBaseLayer === true){
-                        setBaseLayer(layer);
-                    }
+                        setBaseLayer(layer);                                                                   }
                     else{
                         showLayer(layer);
+                        setLayerOpacity(layer,opacity);
                     }
                 }
             });
