@@ -52,6 +52,10 @@ BW.MapAPI.Map = function(mapImplementation, eventHandler, featureInfo, layerHand
         mapImplementation.RedrawMap();
     }
 
+    function setUrl(){
+        eventHandler.TriggerEvent(BW.Events.EventTypes.ChangeCenter);
+    }
+
     function setBaseLayer(bwLayer){
         layerHandler.SetBaseLayer(bwLayer);
     }
@@ -334,6 +338,7 @@ BW.MapAPI.Map = function(mapImplementation, eventHandler, featureInfo, layerHand
         SetBaseLayer: setBaseLayer,
         SetStateFromUrlParams: setStateFromUrlParams,
         SetLayerOpacity: setLayerOpacity,
+        SetUrl: setUrl,
         MoveLayerToIndex: moveLayerToIndex,
         MoveLayerAbove: moveLayerAbove,
         // Layer end
