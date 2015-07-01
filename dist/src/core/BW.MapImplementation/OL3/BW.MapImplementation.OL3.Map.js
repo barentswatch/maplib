@@ -294,13 +294,10 @@ BW.MapImplementation.OL3.Map = function(repository, eventHandler, httpHelper, me
         var layer = _getLayerByGuid(bwSubLayer.id);
         if(layer && !isNaN(value)){
             layer.setOpacity(Math.min(value,1));
+            _trigLayersChanged();
         }
     }
-    function setUrl() {
-        console.log("setUrl mapimpl");
-        eventHandler.TriggerEvent(BW.Events.EventTypes.ChangeCenter);
-        // changed
-    }
+
     function setLayerSaturation(bwSubLayer, value){
         // Require WebGL-rendering of map
         var layer = _getLayerByGuid(bwSubLayer.id);
@@ -379,7 +376,7 @@ BW.MapImplementation.OL3.Map = function(repository, eventHandler, httpHelper, me
         visibleLayers.sort(_compareMapLayerIndex);
         var result = [];
         for(var j = 0; j < visibleLayers.length; j++){
-            result.push(visibleLayers[j].guid + ':' +  visibleLayers[j].getOpacity() * 100);
+            result.push(visibleLayers[j].guid + ':' +  Math.round(visibleLayers[j].getOpacity() * 100));
         }
         return result.join(",");
     }
@@ -608,7 +605,6 @@ BW.MapImplementation.OL3.Map = function(repository, eventHandler, httpHelper, me
         HideLayer: hideLayer,
         GetLayerByName: getLayerByName,
         SetLayerOpacity: setLayerOpacity,
-        SetUrl: setUrl,
         GetLayerParams: getLayerParams,
         SetLayerSaturation: setLayerSaturation,
         SetLayerHue: setLayerHue,
