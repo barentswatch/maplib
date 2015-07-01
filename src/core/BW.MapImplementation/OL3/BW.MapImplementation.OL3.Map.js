@@ -298,6 +298,7 @@ BW.MapImplementation.OL3.Map = function(repository, eventHandler, httpHelper, me
     }
     function setUrl() {
         console.log("setUrl mapimpl");
+        eventHandler.TriggerEvent(BW.Events.EventTypes.ChangeCenter);
     }
     function setLayerSaturation(bwSubLayer, value){
         // Require WebGL-rendering of map

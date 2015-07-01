@@ -53,7 +53,7 @@ BW.MapAPI.Map = function(mapImplementation, eventHandler, featureInfo, layerHand
     }
 
     function setUrl(){
-        eventHandler.TriggerEvent(BW.Events.EventTypes.ChangeCenter);
+        mapImplementation.SetUrl();
     }
 
     function setBaseLayer(bwLayer){
