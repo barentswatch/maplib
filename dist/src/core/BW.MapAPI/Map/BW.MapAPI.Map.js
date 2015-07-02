@@ -264,10 +264,12 @@ BW.MapAPI.Map = function(mapImplementation, eventHandler, featureInfo, layerHand
                 var guid = layerinfo;
                 var opacity = 100;
                 var s = layerinfo.split(':');
-                if (s.length===2) {
+                if (s.length === 2) {
                     guid = s[0];
                     // 2do Handle not a number
                     opacity = Number(s[1]) / 100;
+                } else {
+                    opacity = 1;
                 }
                 var layer = getLayerById(guid);
                 if (layer) {

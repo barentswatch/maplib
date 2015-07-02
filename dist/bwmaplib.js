@@ -1,5 +1,5 @@
 /**
- * bwmaplib - v0.2.0 - 2015-07-01
+ * bwmaplib - v0.2.0 - 2015-07-02
  * http://localhost
  *
  * Copyright (c) 2015 
@@ -1075,10 +1075,12 @@ BW.MapAPI.Map = function(mapImplementation, eventHandler, featureInfo, layerHand
                 var guid = layerinfo;
                 var opacity = 100;
                 var s = layerinfo.split(':');
-                if (s.length===2) {
+                if (s.length === 2) {
                     guid = s[0];
                     // 2do Handle not a number
                     opacity = Number(s[1]) / 100;
+                } else {
+                    opacity = 1;
                 }
                 var layer = getLayerById(guid);
                 if (layer) {
@@ -2498,8 +2500,13 @@ BW.MapImplementation.OL3.Map = function(repository, eventHandler, httpHelper, me
         }
         visibleLayers.sort(_compareMapLayerIndex);
         var result = [];
-        for(var j = 0; j < visibleLayers.length; j++){
-            result.push(visibleLayers[j].guid + ':' +  Math.round(visibleLayers[j].getOpacity() * 100));
+        for (var j = 0; j < visibleLayers.length; j++) {
+            if (visibleLayers[j].getOpacity() === 1) {
+                result.push(visibleLayers[j].guid);
+            }
+            else {
+                result.push(visibleLayers[j].guid + ':' + Math.round(visibleLayers[j].getOpacity() * 100));
+            }
         }
         return result.join(",");
     }
