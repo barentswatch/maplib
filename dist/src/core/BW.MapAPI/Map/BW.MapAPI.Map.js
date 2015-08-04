@@ -52,6 +52,14 @@ BW.MapAPI.Map = function(mapImplementation, eventHandler, featureInfo, layerHand
         mapImplementation.RedrawMap();
     }
 
+    function getLayerOpacity(bwLayer) {
+        var subLayers = bwLayer.subLayers;
+        if(subLayers.length > 0) {
+            var bwSubLayer = subLayers[0];
+            return mapImplementation.GetLayerOpacity(bwSubLayer);
+        }
+    }
+
     function setBaseLayer(bwLayer){
         layerHandler.SetBaseLayer(bwLayer);
     }
@@ -336,6 +344,7 @@ BW.MapAPI.Map = function(mapImplementation, eventHandler, featureInfo, layerHand
         SetBaseLayer: setBaseLayer,
         SetStateFromUrlParams: setStateFromUrlParams,
         SetLayerOpacity: setLayerOpacity,
+        GetLayerOpacity: getLayerOpacity,
         MoveLayerToIndex: moveLayerToIndex,
         MoveLayerAbove: moveLayerAbove,
         // Layer end

@@ -298,6 +298,13 @@ BW.MapImplementation.OL3.Map = function(repository, eventHandler, httpHelper, me
         }
     }
 
+    function getLayerOpacity(bwSubLayer) {
+        var layer = _getLayerByGuid(bwSubLayer.id);
+        if(layer){
+            return layer.getOpacity();
+        }      
+    }
+
     function setLayerSaturation(bwSubLayer, value){
         // Require WebGL-rendering of map
         var layer = _getLayerByGuid(bwSubLayer.id);
@@ -610,6 +617,7 @@ BW.MapImplementation.OL3.Map = function(repository, eventHandler, httpHelper, me
         HideLayer: hideLayer,
         GetLayerByName: getLayerByName,
         SetLayerOpacity: setLayerOpacity,
+        GetLayerOpacity: getLayerOpacity,
         GetLayerParams: getLayerParams,
         SetLayerSaturation: setLayerSaturation,
         SetLayerHue: setLayerHue,

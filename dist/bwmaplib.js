@@ -1,5 +1,5 @@
 /**
- * bwmaplib - v0.2.0 - 2015-07-02
+ * bwmaplib - v0.2.0 - 2015-08-04
  * http://localhost
  *
  * Copyright (c) 2015 
@@ -863,6 +863,14 @@ BW.MapAPI.Map = function(mapImplementation, eventHandler, featureInfo, layerHand
         mapImplementation.RedrawMap();
     }
 
+    function getLayerOpacity(bwLayer) {
+        var subLayers = bwLayer.subLayers;
+        if(subLayers.length > 0) {
+            var bwSubLayer = subLayers[0];
+            return mapImplementation.GetLayerOpacity(bwSubLayer);
+        }
+    }
+
     function setBaseLayer(bwLayer){
         layerHandler.SetBaseLayer(bwLayer);
     }
@@ -1147,6 +1155,7 @@ BW.MapAPI.Map = function(mapImplementation, eventHandler, featureInfo, layerHand
         SetBaseLayer: setBaseLayer,
         SetStateFromUrlParams: setStateFromUrlParams,
         SetLayerOpacity: setLayerOpacity,
+        GetLayerOpacity: getLayerOpacity,
         MoveLayerToIndex: moveLayerToIndex,
         MoveLayerAbove: moveLayerAbove,
         // Layer end
@@ -2423,6 +2432,13 @@ BW.MapImplementation.OL3.Map = function(repository, eventHandler, httpHelper, me
         }
     }
 
+    function getLayerOpacity(bwSubLayer) {
+        var layer = _getLayerByGuid(bwSubLayer.id);
+        if(layer){
+            return layer.getOpacity();
+        }      
+    }
+
     function setLayerSaturation(bwSubLayer, value){
         // Require WebGL-rendering of map
         var layer = _getLayerByGuid(bwSubLayer.id);
@@ -2735,6 +2751,7 @@ BW.MapImplementation.OL3.Map = function(repository, eventHandler, httpHelper, me
         HideLayer: hideLayer,
         GetLayerByName: getLayerByName,
         SetLayerOpacity: setLayerOpacity,
+        GetLayerOpacity: getLayerOpacity,
         GetLayerParams: getLayerParams,
         SetLayerSaturation: setLayerSaturation,
         SetLayerHue: setLayerHue,
