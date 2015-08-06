@@ -52,6 +52,14 @@ BW.MapAPI.Map = function(mapImplementation, eventHandler, featureInfo, layerHand
         mapImplementation.RedrawMap();
     }
 
+    function getLayerOpacity(bwLayer) {
+        var subLayers = bwLayer.subLayers;
+        if(subLayers.length > 0) {
+            var bwSubLayer = subLayers[0];
+            return mapImplementation.GetLayerOpacity(bwSubLayer);
+        }
+    }
+
     function setBaseLayer(bwLayer){
         layerHandler.SetBaseLayer(bwLayer);
     }
@@ -260,14 +268,24 @@ BW.MapAPI.Map = function(mapImplementation, eventHandler, featureInfo, layerHand
         if(viewPropertyObject.layers){
             var layerGuids = viewPropertyObject.layers;
             var guids = layerGuids.split(",");
-            guids.forEach(function (guid){
+            guids.forEach(function (layerinfo){
+                var guid = layerinfo;
+                var opacity = 100;
+                var s = layerinfo.split(':');
+                if (s.length === 2) {
+                    guid = s[0];
+                    // 2do Handle not a number
+                    opacity = Number(s[1]) / 100;
+                } else {
+                    opacity = 1;
+                }
                 var layer = getLayerById(guid);
                 if (layer) {
                     if(layer.isBaseLayer === true){
-                        setBaseLayer(layer);
-                    }
+                        setBaseLayer(layer);                                                                   }
                     else{
                         showLayer(layer);
+                        setLayerOpacity(layer,opacity);
                     }
                 }
             });
@@ -326,6 +344,7 @@ BW.MapAPI.Map = function(mapImplementation, eventHandler, featureInfo, layerHand
         SetBaseLayer: setBaseLayer,
         SetStateFromUrlParams: setStateFromUrlParams,
         SetLayerOpacity: setLayerOpacity,
+        GetLayerOpacity: getLayerOpacity,
         MoveLayerToIndex: moveLayerToIndex,
         MoveLayerAbove: moveLayerAbove,
         // Layer end

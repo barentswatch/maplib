@@ -1,5 +1,5 @@
 /**
- * bwmaplib - v0.3.0 - 2015-06-30
+ * bwmaplib - v0.3.0 - 2015-08-06
  * http://localhost
  *
  * Copyright (c) 2015 
@@ -863,6 +863,14 @@ BW.MapAPI.Map = function(mapImplementation, eventHandler, featureInfo, layerHand
         mapImplementation.RedrawMap();
     }
 
+    function getLayerOpacity(bwLayer) {
+        var subLayers = bwLayer.subLayers;
+        if(subLayers.length > 0) {
+            var bwSubLayer = subLayers[0];
+            return mapImplementation.GetLayerOpacity(bwSubLayer);
+        }
+    }
+
     function setBaseLayer(bwLayer){
         layerHandler.SetBaseLayer(bwLayer);
     }
@@ -1071,14 +1079,24 @@ BW.MapAPI.Map = function(mapImplementation, eventHandler, featureInfo, layerHand
         if(viewPropertyObject.layers){
             var layerGuids = viewPropertyObject.layers;
             var guids = layerGuids.split(",");
-            guids.forEach(function (guid){
+            guids.forEach(function (layerinfo){
+                var guid = layerinfo;
+                var opacity = 100;
+                var s = layerinfo.split(':');
+                if (s.length === 2) {
+                    guid = s[0];
+                    // 2do Handle not a number
+                    opacity = Number(s[1]) / 100;
+                } else {
+                    opacity = 1;
+                }
                 var layer = getLayerById(guid);
                 if (layer) {
                     if(layer.isBaseLayer === true){
-                        setBaseLayer(layer);
-                    }
+                        setBaseLayer(layer);                                                                   }
                     else{
                         showLayer(layer);
+                        setLayerOpacity(layer,opacity);
                     }
                 }
             });
@@ -1137,6 +1155,7 @@ BW.MapAPI.Map = function(mapImplementation, eventHandler, featureInfo, layerHand
         SetBaseLayer: setBaseLayer,
         SetStateFromUrlParams: setStateFromUrlParams,
         SetLayerOpacity: setLayerOpacity,
+        GetLayerOpacity: getLayerOpacity,
         MoveLayerToIndex: moveLayerToIndex,
         MoveLayerAbove: moveLayerAbove,
         // Layer end
@@ -2409,8 +2428,17 @@ BW.MapImplementation.OL3.Map = function(repository, eventHandler, httpHelper, me
         var layer = _getLayerByGuid(bwSubLayer.id);
         if(layer && !isNaN(value)){
             layer.setOpacity(Math.min(value,1));
+            _trigLayersChanged();
         }
     }
+
+    function getLayerOpacity(bwSubLayer) {
+        var layer = _getLayerByGuid(bwSubLayer.id);
+        if(layer){
+            return layer.getOpacity();
+        }      
+    }
+
     function setLayerSaturation(bwSubLayer, value){
         // Require WebGL-rendering of map
         var layer = _getLayerByGuid(bwSubLayer.id);
@@ -2483,14 +2511,18 @@ BW.MapImplementation.OL3.Map = function(repository, eventHandler, httpHelper, me
         for (var i = 0; i < layers.length; i++) {
             var layer = layers[i];
             if (layer.getVisible() === true) {
-                visibleLayers.push(layers[i]);
+               visibleLayers.push(layers[i]);
             }
         }
-
         visibleLayers.sort(_compareMapLayerIndex);
         var result = [];
-        for(var j = 0; j < visibleLayers.length; j++){
-            result.push(visibleLayers[j].guid);
+        for (var j = 0; j < visibleLayers.length; j++) {
+            if (visibleLayers[j].getOpacity() === 1) {
+                result.push(visibleLayers[j].guid);
+            }
+            else {
+                result.push(visibleLayers[j].guid + ':' + Math.round(visibleLayers[j].getOpacity() * 100));
+            }
         }
         return result.join(",");
     }
@@ -2719,6 +2751,7 @@ BW.MapImplementation.OL3.Map = function(repository, eventHandler, httpHelper, me
         HideLayer: hideLayer,
         GetLayerByName: getLayerByName,
         SetLayerOpacity: setLayerOpacity,
+        GetLayerOpacity: getLayerOpacity,
         GetLayerParams: getLayerParams,
         SetLayerSaturation: setLayerSaturation,
         SetLayerHue: setLayerHue,
