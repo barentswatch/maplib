@@ -25,6 +25,7 @@ BW.MapImplementation.OL3.Measure = function(eventHandler){
     }
 
     function deactivate(map){
+        console.log('deactivate');
         map.removeLayer(drawLayer);
         map.unByKey(measureKey);
         measureKey = "";
@@ -60,8 +61,12 @@ BW.MapImplementation.OL3.Measure = function(eventHandler){
     }
 
     function _addInteraction(map) {
-        circleOverlay = new ol.FeatureOverlay();
-        map.addOverlay(circleOverlay);
+        circleOverlay = new ol.layer.Vector({
+            map: map,
+            source: new ol.source.Vector({
+                features: new ol.Collection()
+            })
+        });
 
         var source = new ol.source.Vector();
         var measureStyle = new BW.MapImplementation.OL3.Styles.Measure();
@@ -85,7 +90,7 @@ BW.MapImplementation.OL3.Measure = function(eventHandler){
                 // Start circle drawing
                 var firstPoint = currentFeature.getGeometry().getCoordinates()[0][0];
                 circleFeature = new ol.Feature(new ol.geom.Circle(firstPoint, 0));
-                circleOverlay.addFeature(circleFeature);
+                circleOverlay.getSource().addFeature(circleFeature);
             },
             this
         );
