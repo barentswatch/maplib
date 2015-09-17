@@ -10,3 +10,4 @@ node_modules/
 .idea/
 .sass-cache/
 .divshot-cache/
+*.log
