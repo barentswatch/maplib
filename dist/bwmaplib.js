@@ -1,5 +1,5 @@
 /**
- * bwmaplib - v0.4.0 - 2015-08-06
+ * bwmaplib - v0.4.0 - 2015-09-17
  * http://localhost
  *
  * Copyright (c) 2015 
@@ -2664,7 +2664,7 @@ BW.MapImplementation.OL3.Map = function(repository, eventHandler, httpHelper, me
      */
 
     function fitExtent(extent){
-        map.getView().fitExtent(extent, map.getSize());
+        map.getView().fit(extent, map.getSize());
     }
 
     var _getUrlObject = function(){
@@ -2879,8 +2879,12 @@ BW.MapImplementation.OL3.Measure = function(eventHandler){
     }
 
     function _addInteraction(map) {
-        circleOverlay = new ol.FeatureOverlay();
-        map.addOverlay(circleOverlay);
+        circleOverlay = new ol.layer.Vector({
+            map: map,
+            source: new ol.source.Vector({
+                features: new ol.Collection()
+            })
+        });
 
         var source = new ol.source.Vector();
         var measureStyle = new BW.MapImplementation.OL3.Styles.Measure();
@@ -2904,7 +2908,7 @@ BW.MapImplementation.OL3.Measure = function(eventHandler){
                 // Start circle drawing
                 var firstPoint = currentFeature.getGeometry().getCoordinates()[0][0];
                 circleFeature = new ol.Feature(new ol.geom.Circle(firstPoint, 0));
-                circleOverlay.addFeature(circleFeature);
+                circleOverlay.getSource().addFeature(circleFeature);
             },
             this
         );

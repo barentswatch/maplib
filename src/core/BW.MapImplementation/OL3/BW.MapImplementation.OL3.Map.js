@@ -530,7 +530,7 @@ BW.MapImplementation.OL3.Map = function(repository, eventHandler, httpHelper, me
      */
 
     function fitExtent(extent){
-        map.getView().fitExtent(extent, map.getSize());
+        map.getView().fit(extent, map.getSize());
     }
 
     var _getUrlObject = function(){
