@@ -40,7 +40,7 @@
          </style>
     </head>
     <body>
-        
+
         <div id="about">
             <label>
                 <input type="checkbox" id="activate-measure-tool" /> Activate measuring tool
@@ -149,14 +149,16 @@
                 };
 
                 var eventHandler = new BW.Events.EventHandler();
-                
+
                 var mapImplementation = new BW.MapImplementation.OL3.Map(
                     null,
-                    eventHandler
+                    eventHandler,
+                    null,
+                    new BW.MapImplementation.OL3.Measure(eventHandler)
                 );
 
                 var layerHandler = new BW.MapAPI.Layers(mapImplementation);
-                
+
                 var categoryHandler = new BW.MapAPI.Categories();
 
                 var map = new BW.MapAPI.Map(
@@ -167,28 +169,24 @@
                     categoryHandler
                 );
 
-                var onMapInitialized = function (olMap) {
-                    eventHandler.RegisterEvent('MeasureMouseMove', function (args) {
-                        $('#circle-area').text(args.CircleArea());
-                        $('#edge-length').text(args.EdgeLength());
-                        $('#polygon-area').text(args.PolygonArea());
-                    })
+                map.Init('map', config);
 
-                    var measure = new BW.MapImplementation.OL3.Measure(eventHandler);
+                eventHandler.RegisterEvent('MeasureMouseMove', function (args) {
+                    $('#circle-area').text(args.CircleArea());
+                    $('#edge-length').text(args.EdgeLength());
+                    $('#polygon-area').text(args.PolygonArea());
+                });
 
-                    $('#activate-measure-tool').on('change', function (event) {
-                        var checked = $(event.currentTarget).prop('checked');
+                $('#activate-measure-tool').on('change', function (event) {
+                    var checked = $(event.currentTarget).prop('checked');
 
-                        if (checked) {
-                            measure.Activate(olMap);
-                        }
-                        else {
-                            measure.Deactivate(olMap);
-                        }
-                    });                  
-                };
-
-                map.Init('map', config, onMapInitialized);
+                    if (checked) {
+                        map.ActivateMeasure();
+                    }
+                    else {
+                        map.DeactivateMeasure();
+                    }
+                });
 
             }());
         </script>

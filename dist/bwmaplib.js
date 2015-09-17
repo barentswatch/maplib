@@ -1,5 +1,5 @@
 /**
- * bwmaplib - v0.4.0 - 2015-09-15
+ * bwmaplib - v0.4.0 - 2015-09-17
  * http://localhost
  *
  * Copyright (c) 2015 
@@ -2859,7 +2859,6 @@ BW.MapImplementation.OL3.Measure = function(eventHandler){
                 var polygonArea = _calculateArea(geom);
                 var lineLength = _formatPolygonLength(geom);
                 var circleArea = _formatArea(_drawCircle(geom));
-                // console.log('_mouseMoveHandler', polygonArea, lineLength, circleArea);
                 measureResult = new BW.Domain.MeasureResult(polygonArea, lineLength, circleArea);
             }
 

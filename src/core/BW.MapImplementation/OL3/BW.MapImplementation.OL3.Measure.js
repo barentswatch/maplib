@@ -25,7 +25,6 @@ BW.MapImplementation.OL3.Measure = function(eventHandler){
     }
 
     function deactivate(map){
-        console.log('deactivate');
         map.removeLayer(drawLayer);
         map.unByKey(measureKey);
         measureKey = "";
