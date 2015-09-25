@@ -29,9 +29,15 @@ BW.MapCore = BW.MapCore || {};
         */
 
         var eventHandler = new BW.Events.EventHandler();
+        var wmsTime = new BW.MapImplementation.OL3.Time();
         var mapImplementation = new BW.MapImplementation.OL3.Map(
             null,
-            eventHandler
+            eventHandler,
+            null,
+            null,
+            null,
+            null,
+            wmsTime
         );
         var layerHandler = new BW.MapAPI.Layers(mapImplementation);
         var categoryHandler = new BW.MapAPI.Categories();
