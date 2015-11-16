@@ -1,5 +1,5 @@
 /**
- * bwmaplib - v0.4.0 - 2015-09-24
+ * bwmaplib - v0.4.0 - 2015-11-16
  * http://localhost
  *
  * Copyright (c) 2015 
@@ -2140,6 +2140,7 @@ BW.MapImplementation.OL3.Map = function(repository, eventHandler, httpHelper, me
     var map;
     var layerPool = [];
     var proxyHost = "";
+    var skipMapCallbacks = false;
 
     /*
         Start up functions Start
@@ -2147,6 +2148,13 @@ BW.MapImplementation.OL3.Map = function(repository, eventHandler, httpHelper, me
 
     function initMap(targetId, mapConfig, callback, options){
         proxyHost = mapConfig.proxyHost;
+
+        if (options) {
+            if (options.skipMapCallbacks) {
+                skipMapCallbacks = options.skipMapCallbacks;
+            }
+        }
+
         var numZoomLevels = mapConfig.numZoomLevels;
         var newMapRes = [];
         newMapRes[0]= mapConfig.newMaxRes;
@@ -2177,9 +2185,9 @@ BW.MapImplementation.OL3.Map = function(repository, eventHandler, httpHelper, me
             interactions: interactions
         });
 
-        if (!(options && options.skipMapCallbacks)) {
+        if (!skipMapCallbacks) {
             _registerMapCallbacks();
-        } 
+        }
 
         if (callback) {
             callback(map);
@@ -2273,7 +2281,10 @@ BW.MapImplementation.OL3.Map = function(repository, eventHandler, httpHelper, me
                 maxResolution: newMaxRes,
                 numZoomLevels: bwSubLayer.numZoomLevels
             }));
-            _registerMapCallbacks();
+
+            if (!skipMapCallbacks) {
+                _registerMapCallbacks();
+            }
         }
 
         map.getLayers().insertAt(0, layer);
@@ -2436,7 +2447,7 @@ BW.MapImplementation.OL3.Map = function(repository, eventHandler, httpHelper, me
         var layer = _getLayerByGuid(bwSubLayer.id);
         if(layer){
             return layer.getOpacity();
-        }      
+        }
     }
 
     function setLayerSaturation(bwSubLayer, value){
