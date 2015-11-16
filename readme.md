@@ -4,16 +4,16 @@ Barentswatch maplib
 Fetching the code
 ----------------
 	1. Install nodejs and bower, make sure you can run the commands "node" and "bower" in your preferred command line
-	2. Run "bower install https://code.barentswatch.net/stash/scm/bw/maplib.git#lerkendal-move-maplib" (add "--save-dev" to save it to your bower.json)
+	2. Run "bower install https://code.barentswatch.net/stash/scm/bw/maplib.git" (add "--save-dev" to save it to your bower.json)
 		or
-	add "maplib": "https://code.barentswatch.net/stash/scm/bw/maplib.git#lerkendal-move-maplib" to your bower.json dependencies and run "bower install"
+	add "maplib": "https://code.barentswatch.net/stash/scm/bw/maplib.git" to your bower.json dependencies and run "bower install"
 
 Contributing
 ------------
     1. Install nodejs and npm
     2. Install grunt
     3. Install ruby and compass to build scss
-    4. Cloen the git-repository "https://code.barentswatch.net/stash/scm/bw/maplib.git#lerkendal-move-maplib"
+    4. Clone the git-repository "https://code.barentswatch.net/stash/scm/bw/maplib.git"
     5. Run "npm install" on the command line from within the fetched directory
     6. Run "bower install"
     7. Build and run unit tests with "grunt build"

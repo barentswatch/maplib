@@ -182,12 +182,6 @@ module.exports = function ( grunt ) {
       },
       extras: {
         files: {
-            '<%= compile_dir %>/ol2/bwmaplib_ol2.js': ['src/ol2/Mapcore.js'],
-            '<%= compile_dir %>/ol2/circledraw.js': ['src/ol2/CircleDraw.js'],
-            '<%= compile_dir %>/ol2/wfslayer.js': ['src/ol2/WfsLayer.js'],
-            '<%= compile_dir %>/ol2/clusterstyle.js': ['src/ol2/ClusterStyle.js'],
-            '<%= compile_dir %>/ol2/markers.js': ['src/ol2/Markers.js'],
-            '<%= compile_dir %>/ol2/wmshttpsproxy.js':['src/ol2/WmsHttpsProxy.js'],
             '<%= compile_dir %>/ol3/listmap.js': ['src/ol3/FeatureCollection.js', 'src/ol3/ListMapView.js'],
             '<%= compile_dir %>/ol3/markers.js': ['src/ol3/Markers.js'],
             '<%= compile_dir %>/ol3/selectevents.js': ['src/ol3/SelectEvents.js'],
@@ -215,13 +209,6 @@ module.exports = function ( grunt ) {
       },
       extras: {
         files: [
-          {
-            expand: true,
-            cwd: '<%= compile_dir %>/ol2',
-            src: '**/*.js',
-            dest: '<%= compile_dir %>/ol2',
-            ext: '.min.js'
-          },
           {
             expand: true,
             cwd: '<%= compile_dir %>/ol3',
