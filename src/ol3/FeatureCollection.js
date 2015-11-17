@@ -126,6 +126,7 @@ var BW = this.BW || {};
                 model.feature = new ol.Feature({
                     geometry: format.readGeometry(model.geometry)
                 });
+                console.log(model.feature);
                 delete model.geometry;
             }
             return model;
