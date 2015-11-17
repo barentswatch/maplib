@@ -2,7 +2,7 @@ var BW = BW || {};
 BW.MapImplementation = BW.MapImplementation || {};
 BW.MapImplementation.OL3 = BW.MapImplementation.OL3 || {};
 
-BW.MapImplementation.OL3.Map = function(repository, eventHandler, httpHelper, measure, featureInfo, mapExport, wmsTime){
+BW.MapImplementation.OL3.Map = function(repository, eventHandler, httpHelper, measure, featureInfo, mapExport, wmsTime, baat){
     var map;
     var layerPool = [];
     var proxyHost = "";
@@ -193,16 +193,19 @@ BW.MapImplementation.OL3.Map = function(repository, eventHandler, httpHelper, me
 
         if(layerFromPool !== null){
             layer = layerFromPool;
-        }
-        else{
+        } else {
+            var tokenparameter; 
+            if (bwSubLayer.authentication && bwSubLayer.authentication == BW.Domain.SubLayer.AUTHENTICATIONTYPES.baat) {
+                tokenparameter = "gkt=" + baat.getToken();
+            } 
             switch(bwSubLayer.source){
                 case BW.Domain.SubLayer.SOURCES.wmts:
-                    source = new BW.MapImplementation.OL3.Sources.Wmts(bwSubLayer);
+                    source = new BW.MapImplementation.OL3.Sources.Wmts(bwSubLayer, proxyHost, tokenparameter);
                     break;
 
                 case BW.Domain.SubLayer.SOURCES.proxyWmts:
+                    source = new BW.MapImplementation.OL3.Sources.Wmts(bwSubLayer, proxyHost, tokenparameter);
                     bwSubLayer.url = proxyHost + bwSubLayer.url;
-                    source = new BW.MapImplementation.OL3.Sources.Wmts(bwSubLayer);
                     break;
 
                 case BW.Domain.SubLayer.SOURCES.wms:

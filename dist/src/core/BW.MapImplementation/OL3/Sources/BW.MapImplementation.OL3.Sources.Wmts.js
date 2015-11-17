@@ -3,7 +3,7 @@ BW.MapImplementation = BW.MapImplementation || {};
 BW.MapImplementation.OL3 = BW.MapImplementation.OL3 || {};
 BW.MapImplementation.OL3.Sources = BW.MapImplementation.OL3.Sources || {};
 
-BW.MapImplementation.OL3.Sources.Wmts = function(bwSubLayer){
+BW.MapImplementation.OL3.Sources.Wmts = function(bwSubLayer, proxyhost, tokenparameter){
     var projection = new ol.proj.Projection({
         code: bwSubLayer.coordinate_system,
         extent: bwSubLayer.extent,
@@ -24,9 +24,20 @@ BW.MapImplementation.OL3.Sources.Wmts = function(bwSubLayer){
         resolutions[z] = size / Math.pow(2, z);
         matrixIds[z] = matrixSet + ":" + z;
     }
+    
+    var url;
+    if (tokenparameter) {
+        //don't use proxy when using baat token
+        url = bwSubLayer.urlPattern ? bwSubLayer.urlPattern : bwSubLayer.url;
+        url = url + tokenparameter;
+    } else if (proxyhost && !tokenparameter) {
+        url = proxyhost + bwSubLayer.url;
+    } else if (!proxyhost && !tokenparameter) {
+        url = bwSubLayer.urlPattern ? bwSubLayer.urlPattern : bwSubLayer.url;
+    }
 
     return new ol.source.WMTS({
-        url: bwSubLayer.url,
+        url: url,
         layer: bwSubLayer.name,
         format: bwSubLayer.format,
         projection: projection,

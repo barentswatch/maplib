@@ -7,7 +7,8 @@ describe('BW.MapImplementation.OL3.Map', function(){
         eventHandler,
         featureInfo,
         mapExport,
-        httpHelper;
+        httpHelper,
+        baat;
 
     beforeEach(function(){
         repository = new BW.Repository.StaticRepository();
@@ -30,8 +31,9 @@ describe('BW.MapImplementation.OL3.Map', function(){
         featureInfo = new BW.MapImplementation.OL3.FeatureInfo();
         mapExport = new BW.MapImplementation.OL3.Export();
         wmsTime = new BW.MapImplementation.OL3.Time();
+        baat = new BW.Repository.Baat({token: "123"});
 
-        map = new BW.MapImplementation.OL3.Map(repository, eventHandler, httpHelper, measure, featureInfo, mapExport, wmsTime);
+        map = new BW.MapImplementation.OL3.Map(repository, eventHandler, httpHelper, measure, featureInfo, mapExport, wmsTime, baat);
 
         spyOn(map, 'InitMap').and.callThrough();
         spyOn(map, 'ShowLayer');
