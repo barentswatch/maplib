@@ -16,15 +16,14 @@ BW.MapImplementation.OL3.Sources.Wmts = function(bwSubLayer, proxyhost, tokenpar
     var matrixIds = new Array(bwSubLayer.numZoomLevels);
     var numZoomLevels = bwSubLayer.numZoomLevels;
     var matrixSet = bwSubLayer.matrixSet;
-    if (matrixSet === null || matrixSet === '' || matrixSet === undefined)
-    {
-           matrixSet=bwSubLayer.coordinate_system;
+    if (matrixSet === null || matrixSet === '' || matrixSet === undefined) {
+           matrixSet = bwSubLayer.coordinate_system;
     }
     for (var z = 0; z < numZoomLevels; ++z) {
         resolutions[z] = size / Math.pow(2, z);
         matrixIds[z] = matrixSet + ":" + z;
     }
-    
+
     var url;
     if (tokenparameter) {
         //don't use proxy when using baat token
