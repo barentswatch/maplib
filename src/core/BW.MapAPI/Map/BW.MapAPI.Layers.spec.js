@@ -8,7 +8,8 @@ describe('BW.MapAPI.Layers', function(){
         featureInfo,
         mapExport,
         httpHelper,
-        layers;
+        layers,
+        baat;
 
     beforeEach(function(){
         repository = new BW.Repository.StaticRepository();
@@ -31,8 +32,9 @@ describe('BW.MapAPI.Layers', function(){
         featureInfo = new BW.MapImplementation.OL3.FeatureInfo();
         mapExport = new BW.MapImplementation.OL3.Export();
         wmsTime = new BW.MapImplementation.OL3.Time();
+        baat = new BW.Repository.Baat({token: "123"});
 
-        map = new BW.MapImplementation.OL3.Map(repository, eventHandler, httpHelper, measure, featureInfo, mapExport, wmsTime);
+        map = new BW.MapImplementation.OL3.Map(repository, eventHandler, httpHelper, measure, featureInfo, mapExport, wmsTime, baat);
         map.InitMap(dummyDivId, mapConfig);
 
         layers = new BW.MapAPI.Layers(map);

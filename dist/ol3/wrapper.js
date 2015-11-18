@@ -9,7 +9,7 @@ BW.MapCore = BW.MapCore || {};
 (function (ns) {
     'use strict';
 
-    ns.setupMap = function (mapDiv, mapConfig, callback) {
+    ns.setupMap = function (mapDiv, mapConfig, callback, token) {
 
         /*
         //load config from json
@@ -37,7 +37,8 @@ BW.MapCore = BW.MapCore || {};
             null,
             null,
             null,
-            wmsTime
+            wmsTime,
+            token ? new BW.Repository.Baat({token: token}) : null
         );
         var layerHandler = new BW.MapAPI.Layers(mapImplementation);
         var categoryHandler = new BW.MapAPI.Categories();
