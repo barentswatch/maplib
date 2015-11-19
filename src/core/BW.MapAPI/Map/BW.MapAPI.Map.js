@@ -257,7 +257,7 @@ BW.MapAPI.Map = function(mapImplementation, eventHandler, featureInfo, layerHand
     function fitExtent(extent){
         mapImplementation.FitExtent(extent);
     }
-    
+
     function extentToGeoJson(x, y){
         mapImplementation.ExtentToGeoJson(x, y);
     }
@@ -312,6 +312,10 @@ BW.MapAPI.Map = function(mapImplementation, eventHandler, featureInfo, layerHand
 
     function addZoomSlider() {
         mapImplementation.AddZoomSlider();
+    }
+
+    function coordinateToStringDDM (x, y) {
+        return mapImplementation.CoordinateToStringDDM(x, y);
     }
 
     /*function addVectorTestData(){
@@ -401,7 +405,8 @@ BW.MapAPI.Map = function(mapImplementation, eventHandler, featureInfo, layerHand
         ExtentToGeoJson: extentToGeoJson,
         GetZoomLevel: getZoomLevel,
         AddZoom: addZoom,
-        AddZoomSlider: addZoomSlider
+        AddZoomSlider: addZoomSlider,
+        CoordinateToStringDDM: coordinateToStringDDM
         //AddVectorTestData: addVectorTestData
         // Utility end
     };

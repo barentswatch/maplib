@@ -1,5 +1,5 @@
 /**
- * bwmaplib - v0.4.0 - 2015-11-18
+ * bwmaplib - v0.4.0 - 2015-11-19
  * http://localhost
  *
  * Copyright (c) 2015 
@@ -1073,7 +1073,7 @@ BW.MapAPI.Map = function(mapImplementation, eventHandler, featureInfo, layerHand
     function fitExtent(extent){
         mapImplementation.FitExtent(extent);
     }
-    
+
     function extentToGeoJson(x, y){
         mapImplementation.ExtentToGeoJson(x, y);
     }
@@ -1128,6 +1128,10 @@ BW.MapAPI.Map = function(mapImplementation, eventHandler, featureInfo, layerHand
 
     function addZoomSlider() {
         mapImplementation.AddZoomSlider();
+    }
+
+    function coordinateToStringDDM (x, y) {
+        return mapImplementation.CoordinateToStringDDM(x, y);
     }
 
     /*function addVectorTestData(){
@@ -1217,7 +1221,8 @@ BW.MapAPI.Map = function(mapImplementation, eventHandler, featureInfo, layerHand
         ExtentToGeoJson: extentToGeoJson,
         GetZoomLevel: getZoomLevel,
         AddZoom: addZoom,
-        AddZoomSlider: addZoomSlider
+        AddZoomSlider: addZoomSlider,
+        CoordinateToStringDDM: coordinateToStringDDM
         //AddVectorTestData: addVectorTestData
         // Utility end
     };
@@ -2752,6 +2757,52 @@ BW.MapImplementation.OL3.Map = function(repository, eventHandler, httpHelper, me
         map.addControl(zoomslider);
     }
 
+    // Coordinate to Degrees and Decimal Minutes
+    function coordinateToStringDDM(x, y) {
+        var returnString = '';
+
+        if (x && y && !isNaN(x) && !isNaN(y)) {
+            returnString = degreesToStringDDM(y, 'NS') + ' ' + degreesToStringDDM(x, 'EW');
+        }
+
+        return returnString;
+    }
+
+    function degreesToStringDDM(degrees, hemispheres) {
+
+        var normalizedDegrees = ((degrees + 180)%360) - 180;
+
+        var x = Math.abs(Math.round(3600 * normalizedDegrees));
+
+        degrees = Math.floor(x / 3600);
+        var decimalMinutes = padNumber((x / 60) % 60, 2, 2);
+
+        return degrees + '\u00b0 ' + decimalMinutes + '\u2032 ' + hemispheres.charAt(normalizedDegrees < 0 ? 1 : 0);
+    }
+
+    function padNumber(num, length, precision) {
+        if (precision) {
+            num = num.toFixed(precision);
+        }
+
+        num =  num.toString();
+
+        var index = num.indexOf('.');
+
+        if (index === -1) {
+            index = num.length;
+        }
+
+        var padding = '';
+
+        for (var i = 0; i < Math.max(0, length - index); i++) {
+            padding += '0';
+        }
+
+        return padding + num;
+    }
+
+
     /*
         Utility functions End
      */
@@ -2825,8 +2876,8 @@ BW.MapImplementation.OL3.Map = function(repository, eventHandler, httpHelper, me
         ExtentToGeoJson: extentToGeoJson,
         GetZoomLevel: getZoomLevel,
         AddZoom: addZoom,
-        AddZoomSlider: addZoomSlider
-
+        AddZoomSlider: addZoomSlider,
+        CoordinateToStringDDM: coordinateToStringDDM
         // Utility end
     };
 };

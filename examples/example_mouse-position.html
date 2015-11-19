@@ -1,0 +1,169 @@
+<!-- Example of mouse position as degrees and decimal minutes -->
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style type="text/css">
+             html, body {
+                 height:100%;
+                 width:100%;
+                 padding: 0;
+                 margin: 0;
+             }
+
+             #map {
+                 width:100%;
+                 height:100%;
+                 background-color: #D8E7EF;
+             }
+
+             #mouse-position-control {
+                background: rgba(255,255,255,0.5);
+                border-radius: 0 3px 3px 0;
+                box-shadow: 0 0 170px rgba(0,0,0,0.5);
+                font-family: sans-serif;
+                font-size: 50px;
+                height: 100px;
+                left: 50%;
+                line-height: 100px;
+                margin-left: -350px;
+                position: absolute;
+                text-align: center;
+                top: 0;
+                width: 700px;
+                z-index: 100000;
+             }
+         </style>
+    </head>
+<body>
+
+<div id="mouse-position-control"></div>
+
+<div id="map"></div>
+
+<script type="text/javascript" src="../vendor/openlayers3/ol.js"></script>
+<script type="text/javascript" src="../vendor/proj4/dist/proj4.js"></script>
+<script type="text/javascript" src="../dist/bwmaplib.js"></script>
+
+<script type="text/javascript">
+    (function () {
+        'use strict';
+
+        var config = {
+            "numZoomLevels": 18,
+            "newMaxRes":  24733,
+            "center": [
+                254979.524036, -3031334.467146
+            ],
+            "zoom": 3,
+            "layers": [
+                {
+                    "id": "1992",
+                    "isBaseLayer": true,
+                    "subLayers": [
+                        {
+                            "source": "WMTS",
+                            "url": "http://opencache.statkart.no/gatekeeper/gk/gk.open_wmts?",
+                            "name": "barentswatch_grunnkart",
+                            "format": "image/png",
+                            "coordinate_system": "EPSG:3575",
+                            "extent": [
+                                -2744977.209353,-6491243.976402,3586695.021047,-159571.746002
+                            ],
+                            "extentUnits": "m",
+                            "id": "1992",
+                            "tiled": true,
+                            "matrixSet": 'EPSG:3575_barentswatch_grunnkart',
+                            "numZoomLevels": 18
+                        }
+                    ],
+                    "visibleOnLoad": true
+                },
+                {
+                    "id": "1994",
+                    "isBaseLayer": false,
+                    "subLayers": [
+                        {
+                            "source": "WMTS",
+                            "url": "http://opencache.statkart.no/gatekeeper/gk/gk.open_wmts?",
+                            "name": "barentswatch_stedsnavn",
+                            "format": "image/png",
+                            "coordinate_system": "EPSG:3575",
+                            "extent": [
+                                -2744977.209353,-6491243.976402,3586695.021047,-159571.746002
+                            ],
+                            "extentUnits": "m",
+                            "id": "1994",
+                            "tiled": true,
+                            "matrixSet": 'EPSG:3575_barentswatch_grunnkart',
+                            "numZoomLevels": 18
+                        },
+                    ],
+                    "visibleOnLoad": true
+                },
+                {
+                    "id": "1996",
+                    "isBaseLayer": false,
+                    "subLayers": [
+                        {
+                            "source": "WMS",
+                            "url": "http://bw.ecc.no:8080/geoserver/ows",
+                            "name": "s57:s57",
+                            "format": "image/png",
+                            "coordinate_system": "EPSG:3575",
+                            "extent": [
+                                -2744977.209353,-6491243.976402,3586695.021047,-159571.746002
+                            ],
+                            "extentUnits": "m",
+                            "id": "1996",
+                            "tiled": true,
+                            "crossOrigin": null
+                        },
+                    ],
+                    "visibleOnLoad": true
+                }
+            ],
+            "coordinate_system": "EPSG:3575",
+            "extent": [
+                -2744977.209353,-6491243.976402,3586695.021047,-159571.746002
+            ],
+            "extentUnits": "m"
+        };
+
+        var eventHandler = new BW.Events.EventHandler();
+        var mapImplementation = new BW.MapImplementation.OL3.Map(
+            null,
+            eventHandler
+        );
+        var layerHandler = new BW.MapAPI.Layers(mapImplementation);
+        var categoryHandler = new BW.MapAPI.Categories();
+
+        var map = new BW.MapAPI.Map(
+            mapImplementation,
+            eventHandler,
+            null,
+            layerHandler,
+            categoryHandler
+        );
+
+        function addMousePositionControl(olMap) {
+            olMap.addControl(new ol.control.MousePosition({
+                coordinateFormat: function (coordinate) {
+                    var transformedCoordinate = ol.proj.transform(coordinate, 'EPSG:3575', 'EPSG:4326');
+                    return map.CoordinateToStringDDM(transformedCoordinate[0], transformedCoordinate[1]);
+                },
+                projection: 'EPSG:4326',
+                target: document.getElementById('mouse-position-control'),
+                undefinedHTML: '&nbsp;'
+            }));
+        }
+
+        map.Init('map', config, addMousePositionControl);
+
+    }());
+</script>
+
+</body>
+</html>

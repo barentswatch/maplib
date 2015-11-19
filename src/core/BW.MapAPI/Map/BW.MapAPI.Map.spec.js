@@ -21,6 +21,7 @@ describe('new BW.MapAPI.Map', function() {
         expect(mapModel.GetBaseLayers).not.toBe(undefined);
         expect(mapModel.SetBaseLayer).not.toBe(undefined);
         expect(mapModel.SetLayerOpacity).not.toBe(undefined);
+        expect(mapModel.CoordinateToStringDDM).not.toBe(undefined);
     });
 });
 

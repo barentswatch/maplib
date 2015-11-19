@@ -49,11 +49,24 @@ describe('BW.MapImplementation.OL3.Map', function(){
 
     it('Should return its public methods', function(){
         expect(map.ActivateInfoClick).not.toBeUndefined();
+        expect(map.CoordinateToStringDDM).not.toBeUndefined();
         // TODO: Add more methods
     });
 
     it('ShowLayer', function(){
         expect(map.ShowLayer).toHaveBeenCalled();
+    });
+
+    it('CoordinateToStringDDM', function () {
+        expect(map.CoordinateToStringDDM(10.3933, 63.4297)).toBe('63° 25.78′ N 10° 23.60′ E');
+        expect(map.CoordinateToStringDDM(10.0233, 63.0456)).toBe('63° 02.73′ N 10° 01.40′ E');
+        expect(map.CoordinateToStringDDM(-10.3933, 63.4297)).toBe('63° 25.78′ N 10° 23.60′ W');
+        expect(map.CoordinateToStringDDM(12.0258, -50.0317)).toBe('50° 01.90′ S 12° 01.55′ E');
+        expect(map.CoordinateToStringDDM(null, 63.4297)).toBe('');
+        expect(map.CoordinateToStringDDM(undefined, 63.4297)).toBe('');
+        expect(map.CoordinateToStringDDM(10.3933, null)).toBe('');
+        expect(map.CoordinateToStringDDM(10.3933, undefined)).toBe('');
+        expect(map.CoordinateToStringDDM('a', 'b')).toBe('');
     });
 
 });
