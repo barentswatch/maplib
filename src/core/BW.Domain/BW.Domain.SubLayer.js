@@ -20,7 +20,8 @@ BW.Domain.SubLayer = function(config){
         legendGraphicUrl: '',
         crossOrigin: 'anonymous',
         featureInfo: new BW.Domain.FeatureInfo(config),
-        wmsTimeSupport: false
+        wmsTimeSupport: false,
+        urlPattern: null
     };
     var instance =  $.extend({}, defaults, config); // subLayerInstance
 
@@ -55,4 +56,9 @@ BW.Domain.SubLayer.FORMATS = {
     imagepng: "image/png",
     imagejpeg: "image/jpeg",
     geoJson: "application/json"
+};
+
+BW.Domain.SubLayer.AUTHENTICATIONTYPES = {
+    baat: "baat",
+    ecc: "ecc"
 };
