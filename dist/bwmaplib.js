@@ -1,5 +1,5 @@
 /**
- * bwmaplib - v0.4.0 - 2015-11-17
+ * bwmaplib - v0.4.0 - 2015-11-18
  * http://localhost
  *
  * Copyright (c) 2015 
@@ -2334,7 +2334,7 @@ BW.MapImplementation.OL3.Map = function(repository, eventHandler, httpHelper, me
             layer = layerFromPool;
         } else {
             var tokenparameter; 
-            if (bwSubLayer.authentication && bwSubLayer.authentication == BW.Domain.SubLayer.AUTHENTICATIONTYPES.baat) {
+            if (bwSubLayer.authentication && bwSubLayer.authentication === BW.Domain.SubLayer.AUTHENTICATIONTYPES.baat) {
                 tokenparameter = "gkt=" + baat.getToken();
             } 
             switch(bwSubLayer.source){

@@ -68,10 +68,10 @@ module.exports = {
   vendor_files: {
     js: [
       'vendor/jquery/dist/jquery.js',
-      'vendor/openlayers3/build/ol.js',
+      'vendor/openlayers3/ol.js',
       'vendor/xml2json/xml2json.js',
       'vendor/proj4/dist/proj4.js',
-      'vendor/openlayers3/build/ol.css'
+      'vendor/openlayers3/ol.css'
     ],
     css: [
     ],
