@@ -626,17 +626,15 @@ BW.MapImplementation.OL3.Map = function(repository, eventHandler, httpHelper, me
 
     function degreesToStringDDM(degrees, hemispheres) {
         var normalizedDegrees = ((degrees + 180)%360) - 180;
-
-        var x = Math.abs(Math.round(3600 * normalizedDegrees));
-
-        degrees = Math.floor(x / 3600);
-
-        var decimalMinutes = padNumber((x / 60) % 60, 2, 3);
+        var x = Math.abs(Math.round(36000 * normalizedDegrees));
+        degrees = Math.floor(x / 36000);
+        var decimalMinutes = padNumber((x / 600) % 60, 2, 3);
 
         return degrees + '\u00b0 ' + decimalMinutes + ' ' + hemispheres.charAt(normalizedDegrees < 0 ? 1 : 0);
     }
 
     function padNumber(num, length, precision) {
+
         if (precision) {
             num = num.toFixed(precision);
         }

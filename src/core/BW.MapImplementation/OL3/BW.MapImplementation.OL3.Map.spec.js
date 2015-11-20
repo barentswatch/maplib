@@ -58,10 +58,10 @@ describe('BW.MapImplementation.OL3.Map', function(){
     });
 
     it('CoordinateToStringDDM', function () {
-        expect(map.CoordinateToStringDDM(10.3933, 63.4297)).toBe('63° 25.783 N 10° 23.600 E');
-        expect(map.CoordinateToStringDDM(10.0233, 63.0456)).toBe('63° 02.733 N 10° 01.400 E');
-        expect(map.CoordinateToStringDDM(-10.3933, 63.4297)).toBe('63° 25.783 N 10° 23.600 W');
-        expect(map.CoordinateToStringDDM(12.0258, -50.0317)).toBe('50° 01.900 S 12° 01.550 E');
+        expect(map.CoordinateToStringDDM(10.3933, 63.4297)).toBe('63° 25.782 N 10° 23.598 E');
+        expect(map.CoordinateToStringDDM(10.0233, 63.0456)).toBe('63° 02.737 N 10° 01.398 E');
+        expect(map.CoordinateToStringDDM(-10.3933, 63.4297)).toBe('63° 25.782 N 10° 23.598 W');
+        expect(map.CoordinateToStringDDM(12.0258, -50.0317)).toBe('50° 01.902 S 12° 01.548 E');
         expect(map.CoordinateToStringDDM(null, 63.4297)).toBe('');
         expect(map.CoordinateToStringDDM(undefined, 63.4297)).toBe('');
         expect(map.CoordinateToStringDDM(10.3933, null)).toBe('');
