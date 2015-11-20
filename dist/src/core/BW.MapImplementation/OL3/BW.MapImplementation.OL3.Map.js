@@ -615,7 +615,6 @@ BW.MapImplementation.OL3.Map = function(repository, eventHandler, httpHelper, me
 
     // Coordinate to Degrees and Decimal Minutes
     function coordinateToStringDDM(x, y) {
-
         var returnString = '';
 
         if (x && y && !isNaN(x) && !isNaN(y)) {
@@ -627,11 +626,8 @@ BW.MapImplementation.OL3.Map = function(repository, eventHandler, httpHelper, me
 
     function degreesToStringDDM(degrees, hemispheres) {
         var normalizedDegrees = ((degrees + 180)%360) - 180;
-
         var x = Math.abs(Math.round(36000 * normalizedDegrees));
-        console.log('normalizedDegrees ' +normalizedDegrees + " x: " +x );
         degrees = Math.floor(x / 36000);
-
         var decimalMinutes = padNumber((x / 600) % 60, 2, 3);
 
         return degrees + '\u00b0 ' + decimalMinutes + ' ' + hemispheres.charAt(normalizedDegrees < 0 ? 1 : 0);
