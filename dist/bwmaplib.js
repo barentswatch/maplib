@@ -1,5 +1,5 @@
 /**
- * bwmaplib - v0.6.0 - 2015-11-19
+ * bwmaplib - v0.6.0 - 2015-11-20
  * http://localhost
  *
  * Copyright (c) 2015 
@@ -2338,10 +2338,10 @@ BW.MapImplementation.OL3.Map = function(repository, eventHandler, httpHelper, me
         if(layerFromPool !== null){
             layer = layerFromPool;
         } else {
-            var tokenparameter; 
+            var tokenparameter;
             if (bwSubLayer.authentication && bwSubLayer.authentication === BW.Domain.SubLayer.AUTHENTICATIONTYPES.baat) {
                 tokenparameter = "gkt=" + baat.getToken();
-            } 
+            }
             switch(bwSubLayer.source){
                 case BW.Domain.SubLayer.SOURCES.wmts:
                     source = new BW.MapImplementation.OL3.Sources.Wmts(bwSubLayer, proxyHost, tokenparameter);
@@ -2769,15 +2769,15 @@ BW.MapImplementation.OL3.Map = function(repository, eventHandler, httpHelper, me
     }
 
     function degreesToStringDDM(degrees, hemispheres) {
-
         var normalizedDegrees = ((degrees + 180)%360) - 180;
 
         var x = Math.abs(Math.round(3600 * normalizedDegrees));
 
         degrees = Math.floor(x / 3600);
-        var decimalMinutes = padNumber((x / 60) % 60, 2, 2);
 
-        return degrees + '\u00b0 ' + decimalMinutes + '\u2032 ' + hemispheres.charAt(normalizedDegrees < 0 ? 1 : 0);
+        var decimalMinutes = padNumber((x / 60) % 60, 2, 3);
+
+        return degrees + '\u00b0 ' + decimalMinutes + ' ' + hemispheres.charAt(normalizedDegrees < 0 ? 1 : 0);
     }
 
     function padNumber(num, length, precision) {
