@@ -14,7 +14,8 @@ BW.Domain.Layer = function(config){
         opacity: 1,
         mapLayerIndex: -1,
         legendGraphicUrls: [],
-        selectedLayerOpen: false //todo johben temp
+        selectedLayerOpen: false, //todo johben temp
+        backgroundColor: ''
     };
     var layerInstance = $.extend({}, defaults, config); // layerInstance
 

@@ -1,8 +1,8 @@
 /**
- * bwmaplib - v0.7.0 - 2015-11-20
+ * bwmaplib - v0.7.0 - 2016-02-01
  * http://localhost
  *
- * Copyright (c) 2015 
+ * Copyright (c) 2016 
  */
 var BW = BW || {};
 BW.Domain = BW.Domain || {};
@@ -75,7 +75,8 @@ BW.Domain.Layer = function(config){
         opacity: 1,
         mapLayerIndex: -1,
         legendGraphicUrls: [],
-        selectedLayerOpen: false //todo johben temp
+        selectedLayerOpen: false, //todo johben temp
+        backgroundColor: ''
     };
     var layerInstance = $.extend({}, defaults, config); // layerInstance
 
