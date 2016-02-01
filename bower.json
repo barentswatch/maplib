@@ -1,6 +1,6 @@
 {
   "name": "bwmaplib",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "description": "Kartfunkjsonalitet for BW",
   "main": "dist/kartkjerne.js",
   "license": "BSD",
