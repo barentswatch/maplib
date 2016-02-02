@@ -55,7 +55,8 @@ BW.Domain.SubLayer.SOURCES = {
 BW.Domain.SubLayer.FORMATS = {
     imagepng: "image/png",
     imagejpeg: "image/jpeg",
-    geoJson: "application/json"
+    geoJson: "application/json",
+    topojson: "topojson"
 };
 
 BW.Domain.SubLayer.AUTHENTICATIONTYPES = {

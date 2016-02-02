@@ -1,20 +1,19 @@
+/*global ol*/
 var BW = BW || {};
 BW.MapImplementation = BW.MapImplementation || {};
 BW.MapImplementation.OL3 = BW.MapImplementation.OL3 || {};
 BW.MapImplementation.OL3.Sources = BW.MapImplementation.OL3.Sources || {};
 
-BW.MapImplementation.OL3.Sources.Vector = function(bwSubLayer, mapProjection){
+BW.MapImplementation.OL3.Sources.Vector = function (bwSubLayer) {
+    "use strict";
     var source;
-    switch (bwSubLayer.format){
-        case BW.Domain.SubLayer.FORMATS.geoJson:
-            source = new ol.source.GeoJSON({
-                projection: mapProjection,
-                strategy: ol.loadingstrategy.createTile(new ol.tilegrid.XYZ({
-                    maxZoom: 19
-                }))
-            });
-            source.parser = new ol.format.GeoJSON();
-            break;
+    switch (bwSubLayer.format) {
+    case BW.Domain.SubLayer.FORMATS.topojson:
+        source = new ol.source.Vector({
+            url: bwSubLayer.url, //TODO relative?
+            format: new ol.format.TopoJSON({defaultDataProjection: bwSubLayer.coordinate_system })
+        });
+        break;
     }
     return source;
 };

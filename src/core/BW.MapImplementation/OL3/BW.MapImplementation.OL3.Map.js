@@ -228,8 +228,7 @@ BW.MapImplementation.OL3.Map = function(repository, eventHandler, httpHelper, me
                     _setTime(bwSubLayer, source);
                     break;
                 case BW.Domain.SubLayer.SOURCES.vector:
-                    source = new BW.MapImplementation.OL3.Sources.Vector(bwSubLayer, map.getView().getProjection());
-                    _loadVectorLayer(bwSubLayer, source);
+                    source = new BW.MapImplementation.OL3.Sources.Vector(bwSubLayer);
                     break;
                 default:
                     throw "Unsupported source: BW.Domain.SubLayer.SOURCES.'" +
@@ -239,8 +238,16 @@ BW.MapImplementation.OL3.Map = function(repository, eventHandler, httpHelper, me
             }
 
             if(bwSubLayer.source === BW.Domain.SubLayer.SOURCES.vector){
+                var styleArray = [new ol.style.Style({
+                    fill: new ol.style.Fill({
+                        color: '#FFF7DF'
+                    })
+                })];
                 layer = new ol.layer.Vector({
-                    source: source
+                    "source": source,
+                    style: function () {
+                        return styleArray;
+                    }
                 });
             }
             else if (bwSubLayer.tiled) {
@@ -264,20 +271,6 @@ BW.MapImplementation.OL3.Map = function(repository, eventHandler, httpHelper, me
         }
 
         return layer;
-    }
-
-    function _loadVectorLayer(bwSubLayer, source){
-        var callback = function(data){
-            var fromProj = ol.proj.get(bwSubLayer.coordinate_system);
-            var toProj = ol.proj.get(source.getProjection().getCode());
-            var features = source.parser.readFeatures(data);
-            for(var i = 0; i < features.length; i++) {
-                var feature = features[i];
-                feature.getGeometry().transform(fromProj, toProj);
-            }
-            source.addFeatures(features);
-        };
-        httpHelper.get(bwSubLayer.url).success(callback);
     }
 
     function _getLayerFromPool(bwSubLayer){
